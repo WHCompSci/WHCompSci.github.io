@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Weight Class Calculator</title>
+        <style>
+            body {
+                font-family: Roboto, sans-serif;
+                margin: 0;
+                padding: 1em 3em 0em 3em;
+            }
+
+
+            h1 {
+                text-align: center;
+            }
+
+
+            form {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+
+            label {
+                display: block;
+                margin-bottom: 10px;
+                font-weight: bold;
+            }
+
+
+            input,
+            select {
+                font-family: inherit;
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+                margin-bottom: 20px;
+            }
+
+
+            button[type="submit"] {
+                width: 100%;
+                font-family: inherit;
+                background-color: #3932e2;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+
+            button[type="submit"]:hover {
+                background-color: #6c6ce4;
+            }
+
+
+            /* CSS style for the output element */
+            #result,
+            #summary {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                font-size: 20px;
+                font-weight: bold;
+                text-align: center;
+                transition: background-color 0.3s ease;
+            }
+            #result {
+                margin-top: 30px !important;
+            }
+
+
+            #summaryTitle {
+                display: none;
+                margin: 0px;
+                text-align: center;
+                text-decoration: underline;
+            }
+            #summary td {
+                padding: 0px 15px 5px;
+            }
+img {
+display:block;
+margin-right:auto;
+margin-left:auto;
+}
+.container {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center; /* Center the columns horizontally */
+
+}
+
+.column {
+ flex: 1 1 300px;
+ margin: 10px;
+ max-width: 100%; /* Ensure the columns don't exceed the container width */
+ padding-right: 2rem;
+ padding-left: 2rem;
+}
+
+        </style>
+    </head>
+
+
+    <body>
+
+        <h1>Weight Class Calculator</h1>
+<div class="container">
+        <form id="weightClassForm" class="column">
+            <label for="date">Start date:</label>
+            <input type="date" id="date" name="date" required />
+            <label for="weight">Initial weight (lbs):</label>
+            <input
+                type="number"
+                id="weight"
+                placeholder="Enter initial weight"
+                min="1"
+                max="2000"
+                step="any"
+                required
+            />
+            <label for="bodyFat">Initial Body Fat Percentage (%):</label>
+            <input
+                type="number"
+                id="bodyFat"
+                placeholder="Enter inital body fat percentage"
+                min="3"
+                max="99"
+                step="any"
+                required
+            />
+            <label for="sex">Sex:</label>
+            <select id="sex" required>
+                <option value="male" selected>Male</option>
+                <option value="female">Female</option>
+            </select>
+
+
+            <label for="weightClass">Select Weight Class:</label>
+            <select id="weightClass" required></select>
+
+
+            <button type="submit">Calculate</button>
+        </form>
+
+<div class="column">
+        <div id="result"></div>
+        <h2 id="summaryTitle">Summary</h2>
+        <table id="summary">
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+<img src="data:image/png;base64,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">
+</div>
+</div>
+
+        <script>
+            // Weight classes for male and female wrestlers
+
+
+            const maleWeightClasses = [
+                { weight: 106, label: "106 lbs" },
+                { weight: 113, label: "113 lbs" },
+                { weight: 120, label: "120 lbs" },
+                { weight: 126, label: "126 lbs" },
+                { weight: 132, label: "132 lbs" },
+                { weight: 138, label: "138 lbs" },
+                { weight: 144, label: "144 lbs" },
+                { weight: 150, label: "150 lbs" },
+                { weight: 157, label: "157 lbs" },
+                { weight: 165, label: "165 lbs" },
+                { weight: 175, label: "175 lbs" },
+                { weight: 190, label: "190 lbs" },
+                { weight: 215, label: "215 lbs" },
+                { weight: 285, label: "285 lbs" },
+            ];
+            //100, 107, 114, 120, 126, 132, 138, 145, 152, 165, 185, 235
+            //
+            const femaleWeightClasses = [
+                { weight: 100, label: "100 lbs" },
+                { weight: 107, label: "107 lbs" },
+                { weight: 114, label: "114 lbs" },
+                { weight: 120, label: "120 lbs" },
+                { weight: 126, label: "126 lbs" },
+                { weight: 132, label: "132 lbs" },
+                { weight: 138, label: "138 lbs" },
+                { weight: 145, label: "145 lbs" },
+                { weight: 152, label: "152 lbs" },
+                { weight: 165, label: "165 lbs" },
+                { weight: 185, label: "185 lbs" },
+                { weight: 235, label: "235 lbs" },
+            ];
+
+
+            const table = document.getElementById("summary");
+            const summaryTitle = document.getElementById("summaryTitle");
+            const weightSelect = document.getElementById("weightClass");
+            const weight = () =>
+                parseFloat(document.getElementById("weight").value);
+            const sex = () => document.getElementById("sex").value;
+            const bodyFat = () =>
+                parseFloat(document.getElementById("bodyFat").value);
+            const weightClass = () => parseFloat(weightSelect.value);
+
+
+            function updateWeightClasses() {
+                // Clear existing options
+                weightSelect.innerHTML = "";
+
+
+                // Select weight classes based on gender
+                const weightClasses =
+                    sex() === "male" ? maleWeightClasses : femaleWeightClasses;
+
+
+                // Add new options for weight classes
+                weightClasses.forEach(function (weightClass) {
+                    const option = document.createElement("option");
+                    option.value = weightClass.weight;
+                    option.text = weightClass.label;
+                    weightSelect.appendChild(option);
+                });
+            }
+
+
+            // Add event listener to gender dropdown
+            const sexSelect = document.getElementById("sex");
+            sexSelect.addEventListener("change", updateWeightClasses);
+
+
+            // Initial update of weight classes
+            updateWeightClasses();
+
+
+            document
+                .getElementById("weightClassForm")
+                .addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+
+                    // Calculate weight loss needed
+                    const weightDifference = weight() - weightClass();
+                    const bfMinimum = sex() === "male" ? 7 : 12;
+                    const bfPercentLossNeeded =
+                        (100 * weightDifference) / weight();
+                    const bfPercentAtGoalWeight =
+                        bodyFat() - bfPercentLossNeeded;
+                    const bodyFatDifference = bodyFat() - bfPercentAtGoalWeight;
+                    const LBSperWeek = 0.015 * weight();
+                    const daysUntilDesiredWeight = Math.ceil(
+                        7 * (weightDifference / LBSperWeek)
+                    );
+                    let resultText = "";
+
+
+                    if (weightDifference > 0) {
+                        if (bfPercentAtGoalWeight >= bfMinimum) {
+                            table.style.display = "flex";
+                            summaryTitle.style.display = "block";
+                            // Get today's date
+                            const today = new Date();
+                            const startDate = new Date(
+                                document.getElementById("date").value
+                            );
+
+
+                            // Calculate the future date
+                            const endDate = new Date(startDate);
+                            endDate.setDate(
+                                startDate.getDate() + daysUntilDesiredWeight
+                            );
+
+
+                            // Get the day and month of the future date
+                            const lastDay = endDate.getDate();
+                            const lastMonth = endDate.getMonth() + 1; // Months are zero-based, so we add 1
+
+
+                            const timeDiff =
+                                today.getTime() - startDate.getTime();
+
+
+                            // Convert milliseconds to days
+                            const daysSinceCertification = Math.ceil(
+                                timeDiff / (1000 * 60 * 60 * 24)
+                            );
+                            const totalLBSlost =
+                                (daysSinceCertification / 7) * LBSperWeek;
+                            const todaysWeight = weight() - totalLBSlost;
+                            const are = today <= endDate ? "are" : "were";
+                            resultText += `You ${are} eligible to wrestle this weight class on ${lastMonth}/${lastDay}.`;
+                            if (today > startDate && today < endDate) {
+                                resultText += `<br>Your weight today should be ${todaysWeight.toFixed(
+                                    1
+                                )} lbs.`;
+                            }
+                            table.rows[0].cells[0].textContent = `Drop ${weightDifference.toFixed(
+                                1
+                            )} lbs`;
+                            table.rows[0].cells[1].textContent = `${bfPercentLossNeeded.toFixed(
+                                1
+                            )} % weight loss`;
+                            table.rows[1].cells[0].textContent = `${(
+                                daysUntilDesiredWeight / 7
+                            ).toFixed(1)} week(s)`;
+                            table.rows[1].cells[1].textContent = `${daysUntilDesiredWeight} day(s)`;
+
+
+                        } else {
+                            table.style.display = "none";
+                            summaryTitle.style.display = "none";
+                            resultText = `You can't make ${weightClass()}. Your body fat would have to be ${bfPercentAtGoalWeight.toFixed(
+                                1
+                            )}%, which is too low.`;
+                        }
+                    } else {
+                        table.style.display = "none";
+                        summaryTitle.style.display = "none";
+                        resultText = "You are already within the weight class.";
+                    }
+
+
+                    document.getElementById("result").innerHTML = resultText;
+                });
+        </script>
+    </body>
+</html>
