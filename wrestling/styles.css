@@ -1,0 +1,89 @@
+body {
+    font-family: Roboto, sans-serif;
+    margin: 0;
+    padding: 1em 3em 0em 3em;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input,
+select {
+    font-family: inherit;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    font-family: inherit;
+    background-color: #3932e2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #6c6ce4;
+}
+
+#result,
+#summary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+#result {
+    margin-top: 30px !important;
+}
+
+#summaryTitle {
+    display: none;
+    margin: 0px;
+    text-align: center;
+    text-decoration: underline;
+}
+#summary td {
+    padding: 0px 15px 5px;
+}
+img {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+}
+
+.column {
+    flex: 1 1 300px;
+    margin: 10px;
+    max-width: 100%;
+    padding-right: 2rem;
+    padding-left: 2rem;
+}

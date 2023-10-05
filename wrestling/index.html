@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Weight Class Calculator</title>
+        <style rel="stylesheet" href="styles.css"></style>
+    </head>
+
+    <body>
+        <h1>Weight Class Calculator</h1>
+        <div class="container">
+            <form id="weightClassForm" class="column">
+                <label for="date">Start date:</label>
+                <input type="date" id="date" name="date" required />
+                <label for="weight">Initial weight (lbs):</label>
+                <input
+                    type="number"
+                    id="weight"
+                    placeholder="Enter initial weight"
+                    min="1"
+                    max="2000"
+                    step="any"
+                    required
+                />
+                <label for="bodyFat">Initial Body Fat Percentage (%):</label>
+                <input
+                    type="number"
+                    id="bodyFat"
+                    placeholder="Enter inital body fat percentage"
+                    min="3"
+                    max="99"
+                    step="any"
+                    required
+                />
+                <label for="sex">Sex:</label>
+                <select id="sex" required>
+                    <option value="male" selected>Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+                <label for="weightClass">Select Weight Class:</label>
+                <select id="weightClass" required></select>
+
+                <button type="submit">Calculate</button>
+            </form>
+
+            <div class="column">
+                <div id="result"></div>
+                <h2 id="summaryTitle">Summary</h2>
+                <table id="summary">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <img src="whlogo.png" />
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
