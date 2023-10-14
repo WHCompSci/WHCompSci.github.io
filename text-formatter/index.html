@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Warren Hills Computer Science Projects</title>
+        <title>Text Shapes</title>
         <style>
             body {
                 font-family: Roboto, sans-serif;
@@ -31,11 +31,23 @@
                 padding-right: 2rem;
                 padding-left: 2rem;
             }
+            canvas {
+                border: 1px solid black;
+            }
         </style>
+        <script src="processsing.js"></script>
     </head>
-
     <body>
-        <h1>Warren Hills Computer Science Projects</h1>
-        <a href="wrestling/index.html">Wrestling Weight Calculator→</a>
+        <h2>Text Formatter</h2>
+        <div>
+            <div class="inputoutput">
+                <img id="result" alt="No Image" />
+                <div class="caption">
+                    imageSrc <input type="file" id="fileInput" name="file" />
+                </div>
+            </div>
+            <canvas id="canvas"></canvas>
+        </div>
+        <script src="script.js"></script>
     </body>
 </html>
