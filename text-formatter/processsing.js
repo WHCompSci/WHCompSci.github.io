@@ -1,37 +1,70 @@
-function get_bounds_arr(image) {
-    // TODO probably a good idea to resize image to say 100x100px to limit computation
+class PixelRow {
+    constructor(data, edges, firstPixel, lastPixel) {
+        this.includedRanges = [];
+        this.firstPixelIsBG = isWhiteOrTransparent(data, firstPixel);
+        this.lastPixelIsBG = isWhiteOrTransparent(data, lastPixel);
+        // if the first pixel is not a BG (transparent or white), then .
+        if ((edges.length <= 1 || edges.length % 2 == 1) && !this.firstPixelIsBG)
+            edges.unshift(0);
+        if ((edges.length <= 2 || edges.length % 2 == 1) && !this.lastPixelIsBG)
+            edges.push(1);
+        for (let i = 1; i < edges.length; i += 2) {
+            this.includedRanges.push({ start: edges[i - 1], end: edges[i] });
+        }
+    }
+}
+function isWhiteOrTransparent(data, pixelIndex) {
+    // Extract the RGBA values from the pixel
+    const red = data[pixelIndex];
+    const green = data[pixelIndex + 1];
+    const blue = data[pixelIndex + 2];
+    const alpha = data[pixelIndex + 3];
+
+    return alpha === 0 || (red === 255 && green === 255 && blue === 255);
+}
+function get_bounds_arr(image, num_rows, num_cols) {
+    num_rows ??= image.height;
+    num_cols ??= image.height;
     const boundsArr = [];
     const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = image.width;
-    canvas.height = image.height;
-    ctx.drawImage(image, 0, 0);
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const XscaleFactor = num_cols / image.width;
+    const YscaleFactor = num_rows / image.height;
+
+    canvas.width = image.width * XscaleFactor;
+    canvas.height = image.height * YscaleFactor;
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const { width, height, data } = imageData;
 
-    const alphaValues = Array.from(imageData.data).filter(
-        (_, index) => (index + 1) % 4 === 0
-    ); // Filter alpha values
-    console.log(alphaValues)
     for (let y = 0; y < height; y++) {
-        const rowBounds = { start: null, end: null };
+        const edges = []; //edges between background and object
 
-        for (let x = 0; x < width; x++) {
-            const pixelIndex = (y * width + x) * 4; // Assuming RGBA image data
-
-            // Check if the pixel is non-transparent (adjust the condition based on your specific image format)
-            const isNonTransparent = data[pixelIndex + 3] !== 0;
-
-            if (isNonTransparent) {
-                if (rowBounds.start === null) {
-                    rowBounds.start = x;
-                }
-                rowBounds.end = x;
-            }
+        for (let x = 1; x < width; x++) {
+            const prevPixelIndex = (y * width + x - 1) * 4; //rgba image data
+            const prevIsWhiteOrTransparent = isWhiteOrTransparent(
+                data,
+                prevPixelIndex
+            );
+            const currPixelIndex = (y * width + x) * 4;
+            const currIsWhiteOrTransparent = isWhiteOrTransparent(
+                data,
+                currPixelIndex
+            );
+            if (prevIsWhiteOrTransparent == currIsWhiteOrTransparent) continue;
+            edges.push(x / width);
+            //intervals are inclusive-exclusive
         }
-
-        boundsArr.push(rowBounds);
+        edges.push();
+        boundsArr.push(
+            new PixelRow(
+                data,
+                edges,
+                y * width * 4,
+                (y * width + (width - 1)) * 4
+            )
+        );
     }
 
     return boundsArr;
