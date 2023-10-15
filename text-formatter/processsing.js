@@ -26,7 +26,7 @@ function get_bounds_arr(image, num_rows, num_cols) {
     num_rows ??= image.height;
     num_cols ??= image.height;
     const boundsArr = [];
-    const canvas = document.getElementById("canvas");
+    const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     const XscaleFactor = num_cols / image.width;
     const YscaleFactor = num_rows / image.height;
