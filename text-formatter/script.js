@@ -35,4 +35,4 @@ function changeText() {
     pictureOutput.innerText = text;
 
 }
-textInput.addEventListener("change", changeText);
+textInput.addEventListener("input", changeText);
