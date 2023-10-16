@@ -4,7 +4,10 @@ class PixelRow {
         this.firstPixelIsBG = isWhiteOrTransparent(data, firstPixel);
         this.lastPixelIsBG = isWhiteOrTransparent(data, lastPixel);
         // if the first pixel is not a BG (transparent or white), then .
-        if ((edges.length <= 1 || edges.length % 2 == 1) && !this.firstPixelIsBG)
+        if (
+            (edges.length <= 1 || edges.length % 2 == 1) &&
+            !this.firstPixelIsBG
+        )
             edges.unshift(0);
         if ((edges.length <= 2 || edges.length % 2 == 1) && !this.lastPixelIsBG)
             edges.push(1);
@@ -22,9 +25,11 @@ function isWhiteOrTransparent(data, pixelIndex) {
 
     return alpha === 0 || (red === 255 && green === 255 && blue === 255);
 }
-function get_bounds_arr(image, num_rows, num_cols) {
-    num_rows ??= image.height;
-    num_cols ??= image.height;
+function get_bounds_arr(
+    image,
+    num_rows = image.height,
+    num_cols = image.height
+) {
     const boundsArr = [];
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
