@@ -5,8 +5,8 @@ function handleUpload(event) {
     image.onload = function () {
         // The image has been loaded and is ready to use
         console.log(image);
-        const ROWS = 20
-        const COLS = 20;
+        const ROWS = 100;
+        const COLS = 100;
         const x = get_bounds_arr(image, ROWS, COLS);
         let res=""
         console.log(x)
@@ -24,3 +24,15 @@ function handleUpload(event) {
 
 const uploadInput = document.getElementById("fileInput");
 uploadInput.addEventListener("change", handleUpload);
+
+
+
+const textInput = document.getElementById("textinput");
+const pictureOutput = document.getElementById("pictureoutput");
+
+function changeText() {
+    const text = textInput.value;
+    pictureOutput.innerText = text;
+
+}
+textInput.addEventListener("change", changeText);
