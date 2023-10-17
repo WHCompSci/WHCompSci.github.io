@@ -1,0 +1,31 @@
+body {
+    font-family: Roboto, sans-serif;
+    margin: 0;
+    padding: 1em 3em 0em 3em;
+}
+
+h1 {
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center the columns horizontally */
+}
+
+.column {
+    flex: 1 1 300px;
+    margin: 10px;
+    max-width: 100%; /* Ensure the columns don't exceed the container width */
+    padding-right: 2rem;
+    padding-left: 2rem;
+}
+canvas {
+    border: 1px solid black;
+}
