@@ -1,3 +1,5 @@
+let boundsArr = null;
+
 function handleUpload(event) {
     const file = event.target.files[0];
 
@@ -6,8 +8,7 @@ function handleUpload(event) {
         // The image has been loaded and is ready to use
         console.log(image);
         const ROWS = 100;
-        const COLS = 100;
-        const x = get_bounds_arr(image, ROWS, COLS);
+        boundsArr = get_bounds_arr(image, ROWS);
         let res=""
         console.log(x)
         for (let row = 0; row < ROWS; row++) {
@@ -32,7 +33,13 @@ const pictureOutput = document.getElementById("pictureoutput");
 
 function changeText() {
     const text = textInput.value;
-    pictureOutput.innerText = text;
+    pictureOutput.innerText = formatText(text);
 
 }
 textInput.addEventListener("input", changeText);
+
+function formatText(text) {
+    if (boundsArr === null) {
+        return text;
+    }
+}
