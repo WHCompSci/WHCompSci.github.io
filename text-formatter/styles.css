@@ -23,8 +23,8 @@ img {
     flex: 1 1 300px;
     margin: 10px;
     max-width: 100%; /* Ensure the columns don't exceed the container width */
-    padding-right: 2rem;
-    padding-left: 2rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
 }
 canvas {
     border: 1px solid black;

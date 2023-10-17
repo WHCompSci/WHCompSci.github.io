@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Text Shapes</title>
-        <link rel="stylesheet" href="styles.css"></link>
-        <script src="edge-detection.js"></script>
-    </head>
-    <body>
-        <h2>Text Formatter</h2>
-        <div>
-            <div class="caption">
-                Input Image <input type="file" id="fileInput" name="file" />
-            </div>
-            <textarea id="textinput"></textarea>
-            <div class="inputoutput">
-            </div>
-            <p id="pictureoutput"></p>
-        </div>
-        <script src="script.js"></script>
-    </body>
+  <head>
+    <title>Text Shapes</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="edge-detection.js"></script>
+  </head>
+  <body>
+    <h2>Text Formatter</h2>
+    <div>
+      <div class="caption">
+        Input Image <input type="file" id="fileInput" name="file" />
+      </div>
+
+      <div class="container">
+        <textarea id="textinput" class="column"></textarea>
+        <p id="pictureoutput" class="column"></p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
 </html>
