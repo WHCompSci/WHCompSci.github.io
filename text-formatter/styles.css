@@ -29,3 +29,9 @@ img {
 canvas {
     border: 1px solid black;
 }
+
+#textinput {
+    width: 250px;
+    height: 350px;
+    resize: none;
+}
