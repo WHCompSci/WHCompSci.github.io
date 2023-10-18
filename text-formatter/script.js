@@ -10,9 +10,9 @@ function handleUpload(event) {
         const ROWS = 100;
         boundsArr = get_bounds_arr(image, ROWS);
         let res=""
-        console.log(x)
+        console.log(boundsArr)
         for (let row = 0; row < ROWS; row++) {
-            for (let range of x[row].includedRanges) {
+            for (let range of boundsArr[row].includedRanges) {
                 res += `(${range.start * ROWS}, ${ROWS - row}), `;
                 res += `(${range.end * ROWS}, ${ROWS - row}), `;
             }
@@ -42,4 +42,7 @@ function formatText(text) {
     if (boundsArr === null) {
         return text;
     }
+
+    //text justification algorithm
+
 }
