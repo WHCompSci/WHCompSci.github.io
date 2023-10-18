@@ -15,6 +15,10 @@ class PixelRow {
             this.includedRanges.push({ start: edges[i - 1], end: edges[i] });
         }
     }
+    inBounds() {
+        //checks whether a given proportion is part of the foreground
+        return false;
+    }
 }
 function isWhiteOrTransparent(data, pixelIndex) {
     // Extract the RGBA values from the pixel

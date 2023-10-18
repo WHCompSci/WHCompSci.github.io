@@ -35,3 +35,7 @@ canvas {
     height: 350px;
     resize: none;
 }
+
+#pictureoutput {
+    font-family:'Roboto Mono', Courier, monospace;
+}
