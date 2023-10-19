@@ -17,6 +17,7 @@ img {
     display: flex;
     flex-wrap: wrap;
     justify-content: center; /* Center the columns horizontally */
+    max-width: 100%;
 }
 
 .column {
@@ -38,4 +39,7 @@ canvas {
 
 #pictureoutput {
     font-family:'Roboto Mono', Courier, monospace;
+    font-size:12px;
+    word-wrap: break-word;
+    
 }

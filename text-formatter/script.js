@@ -7,7 +7,7 @@ function handleUpload(event) {
     image.onload = function () {
         // The image has been loaded and is ready to use
         console.log(image);
-        const ROWS = 100;
+        const ROWS = 15;
         boundsArr = get_bounds_arr(image, ROWS);
         let res=""
         console.log(boundsArr)
@@ -45,10 +45,7 @@ function getTextWidth(inputText) {
     context = canvas.getContext("2d"); 
     context.font = font; 
     width = context.measureText(inputText).width; 
-    formattedWidth = Math.ceil(width) + "px"; 
- 
-    document.querySelector('.output').textContent 
-                = formattedWidth; 
+    return Math.ceil(width);
 } 
 
 
@@ -59,36 +56,39 @@ function formatText(text) {
 
     //text justification algorithm
     const newText = [];
+    let index = 0;
     for (let lineNum = 0; lineNum < boundsArr.length; lineNum++) {
-        const lineBoundaries = boundsArr[lineNum].includedRanges;
-        const line = ""
-        if(lineBoundaries.length === 0) {
+        const lineBoundaries = boundsArr[lineNum];
+        let line = []
+        if(lineBoundaries.includedRanges.length === 0) {
             newText.push('\n');
             continue;
         }
 
-        const leftMargin = currPixelRow.includedRanges[0].start
-        const outputWidth = pictureOutput.style.width;
+        const outputWidth = pictureOutput.offsetWidth;
+        console.log(outputWidth)
         //adding left margin
-        while(getTextWidth(line) < leftMargin * outputWidth) {
-            line += " ";
+        while(getTextWidth(line) < outputWidth) {
+            if(lineBoundaries.inBounds(getTextWidth(line) / outputWidth)) {
+                line.push(text[index]);
+                index ++;
+                continue
+            }
+            line.push("_");
         }
-        //adding text
-        while(getTextWidth(line) < leftMargin * outputWidth) {
-            line += " ";
-        }
 
-
-
-
-        
             //if we're on a line
             
-        
-        newText.push(line);
+        line.push('\n')
+        newText.push(...line);
 
     }
-
+    console.log(newText.join(''))
     return newText.join('');
 
 }
+
+console.log(getTextWidth("a"))
+console.log(getTextWidth("aa"))
+console.log(getTextWidth("WWW"))
+console.log(pictureOutput.offsetWidth)
