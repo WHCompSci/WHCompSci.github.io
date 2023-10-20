@@ -7,7 +7,7 @@ function handleUpload(event) {
     image.onload = function () {
         // The image has been loaded and is ready to use
         console.log(image);
-        const ROWS = 15;
+        const ROWS = 25;
         boundsArr = get_bounds_arr(image, ROWS);
         let res=""
         console.log(boundsArr)
@@ -110,7 +110,7 @@ function formatText(text) {
                 index ++;
                 continue;
             }
-            line.push("&nbsp;");
+            line.push(" ");
         }
 
             //if we're on a line
