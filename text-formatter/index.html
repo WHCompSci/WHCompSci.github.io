@@ -1,23 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Text Shapes</title>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="edge-detection.js"></script>
-  </head>
-  <body>
-    <h2>Text Formatter</h2>
-    <div>
-      <div class="caption">
-        Input Image <input type="file" id="fileInput" name="file" />
-      </div>
+    <head>
+        <title>Text Shapes</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script src="edge-detection.js"></script>
+    </head>
+    <body>
+        <h2>Text Formatter</h2>
+        <div class="card">
+            <h2>Text Input</h2>
+            <textarea
+                id="text-input"
+                placeholder="Enter your paragraph"
+            ></textarea>
+            <div class="options">
+                <label for="linebreak">Allow Line Breaking</label>
+                <input type="checkbox" id="linebreak" />
+                <!-- Other formatting options here -->
+            </div>
+        </div>
+        <div>
+            <div class="card">
+                <h2>Image Upload</h2>
+                <input type="file" id="image-upload" accept="image/*" />
+                <div id="image-preview"></div>
+                <label for="threshold-slider">Threshold Level:</label>
+                <input
+                    type="range"
+                    id="threshold-slider"
+                    min="0"
+                    max="255"
+                    step="1"
+                />
+            </div>
 
-      <div class="container">
-        <textarea id="textinput" class="column"></textarea>
-        <p id="pictureoutput" class="column"></p>
-      </div>
-    </div>
+            <div class="card">
+                <h2>Formatted Text</h2>
+                <p id="picture-output" class="column"></p>
+                <label for="font-select">Change Fonts:</label>
+                <div id="font-select-container">
+                </div>
+            </div>
+            <div class="card">
+                <h2>Recently Uploaded Images</h2>
+                <div id="recent-images-gallery"></div>
+            </div>
+            <div class="caption">
+                Input Image <input type="file" id="fileInput" name="file" />
+            </div>
 
-    <script src="script.js"></script>
-  </body>
+            <div class="container">
+                
+                <button>Copy to Clipboard</button>
+            </div>
+        </div>
+        <script src="fonts.js"></script>
+        <script src="script.js"></script>
+    </body>
 </html>

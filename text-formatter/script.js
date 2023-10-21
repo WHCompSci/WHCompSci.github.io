@@ -8,6 +8,7 @@ function handleUpload(event) {
         // The image has been loaded and is ready to use
         console.log(image);
         const ROWS = 25;
+        imagePreview.innerHTML = `<img src="${image.src}" alt="Uploaded Image">`;
         boundsArr = get_bounds_arr(image, ROWS);
         let res=""
         console.log(boundsArr)
@@ -23,13 +24,14 @@ function handleUpload(event) {
     
 }
 
-const uploadInput = document.getElementById("fileInput");
+const uploadInput = document.getElementById("image-upload");
+const imagePreview = document.getElementById("image-preview");
 uploadInput.addEventListener("change", handleUpload);
 
 
 
-const textInput = document.getElementById("textinput");
-const pictureOutput = document.getElementById("pictureoutput");
+const textInput = document.getElementById("text-input");
+const pictureOutput = document.getElementById("picture-output");
 
 function changeText() {
     const text = textInput.value;
@@ -42,8 +44,7 @@ textInput.addEventListener("input", changeText);
 
 
 function getTextWidth(inputText) { 
-    const output = document.getElementById("pictureoutput");
-    const font = getComputedStyle(output).font;
+    const font = getComputedStyle(pictureOutput).font;
     canvas = document.createElement("canvas"); 
     context = canvas.getContext("2d"); 
     context.font = font; 
@@ -92,10 +93,3 @@ function formatText(text) {
 
 }
 
-console.log(getTextWidth("a"))
-console.log(getTextWidth("b"))
-console.log(getTextWidth("W"))
-console.log(getTextWidth("|"))
-console.log(getTextWidth("_"))
-const out = document.getElementById("pictureoutput");
-console.log(pictureOutput.offsetWidth)

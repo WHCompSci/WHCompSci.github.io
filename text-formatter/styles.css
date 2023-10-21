@@ -31,16 +31,73 @@ canvas {
     border: 1px solid black;
 }
 
-#textinput {
-    width: 250px;
-    height: 350px;
-    resize: none;
+
+.card {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
-#pictureoutput {
+.card h2 {
+  font-size: 1.2rem;
+  margin-top: 0;
+}
+
+.card textarea,
+.card input[type="file"],
+.card select {
+  display: block;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+}
+
+.card #image-preview {
+  height: 200px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+.card #formatted-text-output {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.card #recent-images-gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin: 5px;
+}
+
+.card #copy-button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.card #paste-textarea {
+  height: 100px;
+}
+#picture-output {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size:12px;
     word-wrap: break-word;
     white-space:pre;
+    max-width: 100%;
+    
+}
+.card #text-input {
+    resize: none;
     
 }
