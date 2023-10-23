@@ -95,6 +95,10 @@ canvas {
     word-wrap: break-word;
     white-space:pre;
     max-width: 100%;
+    min-height: 1em;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    margin: 10px 0px;
     
 }
 .card #text-input {
