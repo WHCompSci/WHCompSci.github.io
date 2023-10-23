@@ -7,18 +7,17 @@ function handleUpload(event) {
     image.onload = function () {
         // The image has been loaded and is ready to use
         console.log(image);
-        const ROWS = 25;
+        const ROWS = Math.round(this.height / 12);
+        console.log(ROWS)
         imagePreview.innerHTML = `<img src="${image.src}" alt="Uploaded Image">`;
-        boundsArr = get_bounds_arr(image, ROWS);
+        boundsArr = get_bounds_arr(image);
         let res=""
-        console.log(boundsArr)
         for (let row = 0; row < ROWS; row++) {
             for (let range of boundsArr[row].includedRanges) {
                 res += `(${range.start * ROWS}, ${ROWS - row}), `;
                 res += `(${range.end * ROWS}, ${ROWS - row}), `;
             }
         }
-        console.log(res)
     };
     image.src = URL.createObjectURL(file);
     
