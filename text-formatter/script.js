@@ -71,8 +71,10 @@ function formatText(text) {
         const outputWidth = pictureOutput.offsetWidth;
         console.log(outputWidth)
         //adding left margin
-        while(getTextWidth(line) < outputWidth) {
-            if(lineBoundaries.inBounds(getTextWidth(line) / outputWidth)) {
+        let currWidth = 0;
+        while(currWidth < outputWidth) {
+            currWidth = getTextWidthFast(line)
+            if(lineBoundaries.inBounds(currWidth / outputWidth)) {
                 line.push(text[index]);
                 index ++;
                 continue;
@@ -93,10 +95,29 @@ function formatText(text) {
 }
 
 const CHAR_ASPECT_RATIOS = []
-function populateCharSizeArray(fontSize, lines) {
+const fontSelector = document.getElementById("font-selection");
+
+fontSelector.addEventListener("change", populateCharSizeArray())
+
+
+
+function populateCharSizeArray() {
+    console.log("populating...")
     // run when font is changed, output does not change when fontsize is changed
+    const fontSize = pictureOutput.style.fontSize;
+    const lineHeight = pictureOutput.style.line;
     for (let i = 0; i < 128; i++) {
         const currChar = String.fromCharCode(i);
-        CHAR_ASPECT_RATIOS[i] = getTextWidth(currChar)/(fontSize * lines);
+        CHAR_ASPECT_RATIOS[i] = getTextWidth(currChar)/(fontSize * lineHeight);
     }
+}
+populateCharSizeArray()
+console.log(CHAR_ASPECT_RATIOS)
+function getTextWidthFast (text) {
+    let width;
+    for (let i = 0; i < text.length; i++) {
+        currentChar = text[i]
+        width += populateCharSizeArray[currentChari.charCodeAt(0)];
+    }
+    return width;
 }
