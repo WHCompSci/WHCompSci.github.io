@@ -92,3 +92,11 @@ function formatText(text) {
 
 }
 
+const CHAR_ASPECT_RATIOS = []
+function populateCharSizeArray(fontSize, lines) {
+    // run when font is changed, output does not change when fontsize is changed
+    for (let i = 0; i < 128; i++) {
+        const currChar = String.fromCharCode(i);
+        CHAR_ASPECT_RATIOS[i] = getTextWidth(currChar)/(fontSize * lines);
+    }
+}
