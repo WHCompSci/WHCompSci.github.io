@@ -97,27 +97,47 @@ function formatText(text) {
 const CHAR_ASPECT_RATIOS = []
 const fontSelector = document.getElementById("font-selection");
 
-fontSelector.addEventListener("change", populateCharSizeArray())
+//fontSelector.addEventListener("change", populateCharSizeArray())
 
 
+function getStyle(el,styleProp)
+{
+
+    if (el.currentStyle)
+        var y = el.currentStyle[styleProp];
+    else if (window.getComputedStyle)
+        var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+    return y;
+}
+
+let fontSize, lineHeight;
 
 function populateCharSizeArray() {
     console.log("populating...")
     // run when font is changed, output does not change when fontsize is changed
-    const fontSize = pictureOutput.style.fontSize;
-    const lineHeight = pictureOutput.style.line;
+    fontSize = parseInt(getStyle(pictureOutput, "font-size").match(/\d+/)[0]);
+    lineHeight = parseInt(getStyle(pictureOutput, "line-height").match(/\d+/)[0]);
     for (let i = 0; i < 128; i++) {
         const currChar = String.fromCharCode(i);
-        CHAR_ASPECT_RATIOS[i] = getTextWidth(currChar)/(fontSize * lineHeight);
+        const currTW = getTextWidth(currChar);
+        console.log("cTW="+currTW+" fs="+fontSize+" lh="+lineHeight)
+        CHAR_ASPECT_RATIOS[i] = currTW/(fontSize * lineHeight);
     }
 }
 populateCharSizeArray()
 console.log(CHAR_ASPECT_RATIOS)
-function getTextWidthFast (text) {
-    let width;
+function getTextWidthFast(text) {
+    console.log(text)
+    let width = 0;
     for (let i = 0; i < text.length; i++) {
-        currentChar = text[i]
-        width += populateCharSizeArray[currentChari.charCodeAt(0)];
+        let asciiCode = text[i].charCodeAt(0);
+        //console.log(width)
+        width += CHAR_ASPECT_RATIOS[asciiCode] * (fontSize * lineHeight);
+
     }
     return width;
 }
+
+console.log(getTextWidth("a")+" "+ getTextWidthFast("a"))
+console.log(getTextWidth("ad")+" "+ getTextWidthFast("ad"))
+console.log(getTextWidth("|||||WW")+" "+ getTextWidthFast("|||||WW"))
