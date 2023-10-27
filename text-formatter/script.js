@@ -7,10 +7,10 @@ function handleUpload(event) {
     image.onload = function () {
         // The image has been loaded and is ready to use
         console.log(image);
-        const ROWS = Math.round(this.height / 12);
+        const ROWS = 40;
         console.log(ROWS)
         imagePreview.innerHTML = `<img src="${image.src}" alt="Uploaded Image">`;
-        boundsArr = get_bounds_arr(image);
+        boundsArr = get_bounds_arr(image, ROWS);
         let res=""
         for (let row = 0; row < ROWS; row++) {
             for (let range of boundsArr[row].includedRanges) {
@@ -22,6 +22,7 @@ function handleUpload(event) {
     image.src = URL.createObjectURL(file);
     
 }
+const repeatText = document.getElementById('repeat-text');
 
 const uploadInput = document.getElementById("image-upload");
 const imagePreview = document.getElementById("image-preview");
@@ -32,8 +33,12 @@ uploadInput.addEventListener("change", handleUpload);
 const textInput = document.getElementById("text-input");
 const pictureOutput = document.getElementById("picture-output");
 
+function* textGenerator(text) {
+    //add repeating logic
+}
+
 function changeText() {
-    const text = textInput.value;
+    let text = textInput.value;
     pictureOutput.innerHTML = formatText(text);
 
 }
@@ -53,6 +58,7 @@ function getTextWidth(inputText) {
 
 
 function formatText(text) {
+    text = text.replace('\n', '').replace('\t', '').replace(' ', '');
     if (boundsArr === null) {
         return text;
     }
@@ -60,21 +66,24 @@ function formatText(text) {
     //text justification algorithm
     const newText = [];
     let index = 0;
+    
     for (let lineNum = 0; lineNum < boundsArr.length; lineNum++) {
         const lineBoundaries = boundsArr[lineNum];
-        let line = []
+        let line = [];
+        
         if(lineBoundaries.includedRanges.length === 0) {
             newText.push('\n');
             continue;
         }
 
         const outputWidth = pictureOutput.offsetWidth;
-        console.log(outputWidth)
+        let lineWidthPX = 0;
         //adding left margin
         let currWidth = 0;
-        while(currWidth < outputWidth) {
-            currWidth = getTextWidthFast(line)
-            if(lineBoundaries.inBounds(currWidth / outputWidth)) {
+        while(lineWidthPX < outputWidth) {
+            let asciiCode = text.charCodeAt(index);
+            lineWidthPX += CHAR_ASPECT_RATIOS[asciiCode] * (fontSize * lineHeight);
+            if(lineBoundaries.inBounds(lineWidthPX / outputWidth)) {
                 line.push(text[index]);
                 index ++;
                 continue;
@@ -88,8 +97,6 @@ function formatText(text) {
         newText.push(...line);
 
     }
-    console.log(newText)
-    console.log(newText.join(''))
     return newText.join('');
 
 }
@@ -120,8 +127,9 @@ function populateCharSizeArray() {
     for (let i = 0; i < 128; i++) {
         const currChar = String.fromCharCode(i);
         const currTW = getTextWidth(currChar);
+        const twoCurrTW = getTextWidth(currChar+currChar);
         console.log("cTW="+currTW+" fs="+fontSize+" lh="+lineHeight)
-        CHAR_ASPECT_RATIOS[i] = currTW/(fontSize * lineHeight);
+        CHAR_ASPECT_RATIOS[i] = (twoCurrTW-currTW)/(fontSize * lineHeight);
     }
 }
 populateCharSizeArray()
