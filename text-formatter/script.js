@@ -7,11 +7,11 @@ function handleUpload(event) {
     image.onload = function () {
         // The image has been loaded and is ready to use
         console.log(image);
-        const ROWS = 40;
+        const ROWS = 100;
         console.log(ROWS)
         imagePreview.innerHTML = `<img src="${image.src}" alt="Uploaded Image">`;
         boundsArr = get_bounds_arr(image, ROWS);
-        let res=""
+        let res = ""
         for (let row = 0; row < ROWS; row++) {
             for (let range of boundsArr[row].includedRanges) {
                 res += `(${range.start * ROWS}, ${ROWS - row}), `;
@@ -20,7 +20,7 @@ function handleUpload(event) {
         }
     };
     image.src = URL.createObjectURL(file);
-    
+
 }
 const repeatText = document.getElementById('repeat-text');
 
@@ -47,18 +47,19 @@ textInput.addEventListener("input", changeText);
 
 
 
-function getTextWidth(inputText) { 
+function getTextWidth(inputText) {
     const font = getComputedStyle(pictureOutput).font;
-    canvas = document.createElement("canvas"); 
-    context = canvas.getContext("2d"); 
-    context.font = font; 
-    width = context.measureText(inputText).width; 
+    canvas = document.createElement("canvas");
+    context = canvas.getContext("2d");
+    context.font = font;
+    width = context.measureText(inputText).width;
     return Math.ceil(width);
-} 
+}
 
 
 function formatText(text) {
-    text = text.replace('\n', '').replace('\t', '').replace(' ', '');
+
+
     if (boundsArr === null) {
         return text;
     }
@@ -66,12 +67,13 @@ function formatText(text) {
     //text justification algorithm
     const newText = [];
     let index = 0;
-    
+
     for (let lineNum = 0; lineNum < boundsArr.length; lineNum++) {
         const lineBoundaries = boundsArr[lineNum];
+
         let line = [];
-        
-        if(lineBoundaries.includedRanges.length === 0) {
+
+        if (lineBoundaries.includedRanges.length === 0) {
             newText.push('\n');
             continue;
         }
@@ -79,21 +81,29 @@ function formatText(text) {
         const outputWidth = pictureOutput.offsetWidth;
         let lineWidthPX = 0;
         //adding left margin
-        let currWidth = 0;
-        while(lineWidthPX < outputWidth) {
+        while (lineWidthPX < outputWidth) {
             let asciiCode = text.charCodeAt(index);
-            lineWidthPX += CHAR_ASPECT_RATIOS[asciiCode] * (fontSize * lineHeight);
-            if(lineBoundaries.inBounds(lineWidthPX / outputWidth)) {
+
+            if (lineBoundaries.inBounds(lineWidthPX / outputWidth)) {
+                lineWidthPX += CHAR_ASPECT_RATIOS[asciiCode] * (fontSize * lineHeight);
                 line.push(text[index]);
-                index ++;
+                if (repeatText.checked) {
+                    index = (index + 1) % text.length;
+                }
+                else {
+                    index++;
+                }
+
                 continue;
             }
+            lineWidthPX += CHAR_ASPECT_RATIOS[32] * (fontSize * lineHeight);
             line.push(" ");
+
         }
 
-            //if we're on a line
-            
-        line.push('<br>')
+        //if we're on a line
+
+        line.push('\n')
         newText.push(...line);
 
     }
@@ -107,13 +117,12 @@ const fontSelector = document.getElementById("font-selection");
 //fontSelector.addEventListener("change", populateCharSizeArray())
 
 
-function getStyle(el,styleProp)
-{
+function getStyle(el, styleProp) {
 
     if (el.currentStyle)
         var y = el.currentStyle[styleProp];
     else if (window.getComputedStyle)
-        var y = document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp);
+        var y = document.defaultView.getComputedStyle(el, null).getPropertyValue(styleProp);
     return y;
 }
 
@@ -127,25 +136,16 @@ function populateCharSizeArray() {
     for (let i = 0; i < 128; i++) {
         const currChar = String.fromCharCode(i);
         const currTW = getTextWidth(currChar);
-        const twoCurrTW = getTextWidth(currChar+currChar);
-        console.log("cTW="+currTW+" fs="+fontSize+" lh="+lineHeight)
-        CHAR_ASPECT_RATIOS[i] = (twoCurrTW-currTW)/(fontSize * lineHeight);
+        const twoCurrTW = getTextWidth(currChar + currChar);
+        console.log("cTW=" + currTW + " fs=" + fontSize + " lh=" + lineHeight)
+        CHAR_ASPECT_RATIOS[i] = (twoCurrTW - currTW) / (fontSize * lineHeight);
     }
 }
 populateCharSizeArray()
 console.log(CHAR_ASPECT_RATIOS)
-function getTextWidthFast(text) {
-    console.log(text)
-    let width = 0;
-    for (let i = 0; i < text.length; i++) {
-        let asciiCode = text[i].charCodeAt(0);
-        //console.log(width)
-        width += CHAR_ASPECT_RATIOS[asciiCode] * (fontSize * lineHeight);
 
-    }
-    return width;
-}
 
-console.log(getTextWidth("a")+" "+ getTextWidthFast("a"))
-console.log(getTextWidth("ad")+" "+ getTextWidthFast("ad"))
-console.log(getTextWidth("|||||WW")+" "+ getTextWidthFast("|||||WW"))
+
+console.log(repeatText.checked)
+
+

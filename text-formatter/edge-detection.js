@@ -32,7 +32,7 @@ function isWhiteOrTransparent(data, pixelIndex) {
 function get_bounds_arr(
     image,
     num_rows = image.height,
-    num_cols = image.height
+    num_cols = image.width
 ) {
     const boundsArr = [];
     const canvas = document.createElement("canvas");
@@ -62,7 +62,7 @@ function get_bounds_arr(
                 currPixelIndex
             );
             if (prevIsWhiteOrTransparent == currIsWhiteOrTransparent) continue;
-            edges.push(x / width);
+            edges.push(x / canvas.width);
             //intervals are inclusive-exclusive
         }
         edges.push();

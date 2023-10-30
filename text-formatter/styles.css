@@ -56,6 +56,7 @@ canvas {
 
 .card #image-preview {
   height: 200px;
+  display: flexbox;
   border: 1px solid #ddd;
   margin-bottom: 10px;
 }
@@ -73,8 +74,8 @@ canvas {
 .card img {
   width: 100px;
   height: 100px;
-  object-fit: cover;
-  margin: 5px;
+  object-fit:scale-down;
+
 }
 
 .card #copy-button {
