@@ -117,6 +117,7 @@ function loadFonts(json) {
             document.getElementById("picture-output").style.fontFamily = name;
             replacestyle("https://fonts.googleapis.com/css?family=" + font);
         }
+        changeText();
     };
 }
 

@@ -37,11 +37,11 @@ function get_bounds_arr(
     const boundsArr = [];
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    const XscaleFactor = num_cols / image.width;
-    const YscaleFactor = num_rows / image.height;
+    const scaleFactor = image.height / image.width;
+    //const displayHeightPX = scaleFactor * ;
 
-    canvas.width = image.width * XscaleFactor;
-    canvas.height = image.height * YscaleFactor;
+    canvas.width = image.width * scaleFactorr;
+    canvas.height = image.height * scaleFactor;
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);

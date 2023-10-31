@@ -5,6 +5,7 @@ function handleUpload(event) {
 
     const image = new Image();
     image.onload = function () {
+        
         // The image has been loaded and is ready to use
         console.log(image);
         const ROWS = 100;
@@ -18,32 +19,33 @@ function handleUpload(event) {
                 res += `(${range.end * ROWS}, ${ROWS - row}), `;
             }
         }
+        changeText();
     };
     image.src = URL.createObjectURL(file);
+    
 
 }
 const repeatText = document.getElementById('repeat-text');
 
 const uploadInput = document.getElementById("image-upload");
 const imagePreview = document.getElementById("image-preview");
-uploadInput.addEventListener("change", handleUpload);
+
 
 
 
 const textInput = document.getElementById("text-input");
 const pictureOutput = document.getElementById("picture-output");
 
-function* textGenerator(text) {
-    //add repeating logic
-}
 
 function changeText() {
+    console.log("changing text!")
     let text = textInput.value;
     pictureOutput.innerHTML = formatText(text);
 
 }
+uploadInput.addEventListener("change", handleUpload);
 textInput.addEventListener("input", changeText);
-
+repeatText.addEventListener("change", changeText)
 
 
 
@@ -137,7 +139,6 @@ function populateCharSizeArray() {
         const currChar = String.fromCharCode(i);
         const currTW = getTextWidth(currChar);
         const twoCurrTW = getTextWidth(currChar + currChar);
-        console.log("cTW=" + currTW + " fs=" + fontSize + " lh=" + lineHeight)
         CHAR_ASPECT_RATIOS[i] = (twoCurrTW - currTW) / (fontSize * lineHeight);
     }
 }
