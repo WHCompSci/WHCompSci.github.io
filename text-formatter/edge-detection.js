@@ -29,19 +29,21 @@ function isWhiteOrTransparent(data, pixelIndex) {
 
     return alpha === 0 || (red === 255 && green === 255 && blue === 255);
 }
-function get_bounds_arr(
-    image,
-    num_rows = image.height,
-    num_cols = image.width
-) {
+function get_bounds_arr(image, fontSize, lineHeight) {
     const boundsArr = [];
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    const scaleFactor = image.height / image.width;
-    //const displayHeightPX = scaleFactor * ;
 
-    canvas.width = image.width * scaleFactorr;
-    canvas.height = image.height * scaleFactor;
+    const clientWidthPX = document.getElementById("picture-output").clientWidth;
+    const clientHeightPX = (clientWidthPX / image.width) * image.height;
+    const clientRowHeightPX = fontSize + lineHeight;
+
+
+    canvas.width = Math.round(clientWidthPX);
+    canvas.height = Math.round(clientHeightPX / clientRowHeightPX);
+    console.log(
+        canvas.width + " x " + canvas.height + ". fs=" + fontSize + " lh="+lineHeight
+    );
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
