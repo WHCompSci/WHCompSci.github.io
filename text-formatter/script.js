@@ -127,7 +127,8 @@ function populateCharSizeArray() {
     for (let i = 0; i < 128; i++) {
         const currChar = String.fromCharCode(i);
         const currTW = context.measureText(currChar).width;
-        CHAR_ASPECT_RATIOS[i] = currTW / (fontSize + lineHeight);
+        const twoCurrTW = context.measureText(currChar+currChar).width;
+        CHAR_ASPECT_RATIOS[i] = (twoCurrTW - currTW) / (fontSize + lineHeight);
     }
 }
 populateCharSizeArray();
