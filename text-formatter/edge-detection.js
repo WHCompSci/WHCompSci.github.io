@@ -40,7 +40,7 @@ function get_bounds_arr(image, fontSize, lineHeight) {
 
 
     canvas.width = Math.round(clientWidthPX);
-    canvas.height = Math.round(clientHeightPX / clientRowHeightPX);
+    canvas.height = Math.round(clientHeightPX / clientRowHeightPX) * 2;
     console.log(
         canvas.width + " x " + canvas.height + ". fs=" + fontSize + " lh="+lineHeight
     );
