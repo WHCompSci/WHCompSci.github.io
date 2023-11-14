@@ -54,7 +54,6 @@ datalist {
 
 #guess-button:hover {
     background-color: rgb(164, 133, 62);
-    text-decoration: underline;
 }
 
 @media only screen and (max-width: 300px) {
