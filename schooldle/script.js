@@ -2,14 +2,11 @@ const collegeDropDown = document.getElementById("colleges");
 const collegeTextInput = document.getElementById("text-input");
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
-const urlOfFile = "collegelist.csv";
-let collegeOfTheDay;
-// option.value = weightClass.weight;
-// option.text = weightClass.label;
-// weightSelect.appendChild(option);
-// collegeDropDown.appendChild()
+const urlOfFile = "collegedata.csv";
+let collegeOfTheDay; // define it here so we can cheat in the chrome devtools ;)
 
 const collegeData = [];
+const collegeNames = new Set()
 const columnNames = [
     "Name",
     "ID",
@@ -45,7 +42,7 @@ function setupGame() {
 // Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", () => {
     // Fetch the file
-    fetch("collegedata.csv")
+    fetch(urlOfFile)
         .then((response) => response.text())
         .then((content) => {
             const lines = content.split("\n");
@@ -55,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const firstWord = line.substring(0, firstComma);
                 if (firstWord) {
                     collegeData.push(splitCSVLine(line));
+                    collegeNames.add(firstWord);
                     const option = document.createElement("option");
                     option.text = firstWord;
                     option.value = firstWord;
@@ -80,7 +78,7 @@ collegeTextInput.addEventListener("blur", (event) => {
     console.log("input text");
     const enteredValue = event.target.value;
     // Check if the entered value matches any of the options
-    if (!collegeData.includes(enteredValue)) {
+    if (!collegeNames.has(enteredValue)) {
         // Clear the input field if the entered value is not a valid option
         collegeTextInput.value = "";
     }

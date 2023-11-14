@@ -1,24 +1,72 @@
-#thisisme {
-    background-color: brown;
-    display: block;
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap");
+
+body {
+    background-color: #fcfcfc;
+    font-family: "EB Garamond", serif;
 }
 
-body{
-    background-color: #ccccff; /* hello */
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.hi {
-    background-color: aqua;
-}
-
-.color{
-    background-color: blue;
-}
-
-#heading{
+#heading {
     margin-bottom: 0px;
+    margin-top: 4rem;
+    text-align: center;
+    font-size: 4rem;
 }
-#colleges {
+
+#subheading {
+    text-align: center;
+}
+
+datalist {
     width: 200px;
+    font-family: "EB Garamond", serif;
+}
+
+#guess-button {
+    border-radius: 4px;
+    display: block;
+    margin: auto;
+    font-family: "EB Garamond", serif;
+    background-color: rgba(164, 133, 62, 0.824);
+    color: #fcfcfc;
+    border: none;
+    padding: 1rem 0.5rem;
+    font-size: 18px;
+    width: 250px;
+}
+
+#text-input {
+    margin: auto;
+    border-radius: 4px;
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 60vw;
+    min-width: 100px;
+    max-width: 600px;
+    padding: 1rem;
+    height: 3rem;
+    font-size: 17px;
+    padding: 0rem 0.5rem;
+    border: 1px solid rgb(2 40 115);
+    background-color: inherit;
+    font-family: inherit;
+}
+
+#guess-button:hover {
+    background-color: rgb(164, 133, 62);
+    text-decoration: underline;
+}
+
+@media only screen and (max-width: 300px) {
+    #heading {
+        font-size: 2.5rem;
+    }
+
+    #text-input {
+        width: 80vw;
+    }
+
+    #guess-button {
+        width: 100%;
+    }
 }
