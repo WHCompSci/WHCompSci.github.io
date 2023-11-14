@@ -3,6 +3,7 @@ const collegeTextInput = document.getElementById("text-input");
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegelist.csv";
+let collegeOfTheDay;
 // option.value = weightClass.weight;
 // option.text = weightClass.label;
 // weightSelect.appendChild(option);
@@ -36,8 +37,9 @@ function setupGame() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(now / 8.64e7);
     const todaysCollegeID = fullDaysSinceEpoch % answers.length;
+    collegeOfTheDay = collegeData[todaysCollegeID - 1][0];
     console.log(todaysCollegeID);
-    console.log(collegeData[todaysCollegeID - 1][0]);
+    console.log(collegeOfTheDay);
 }
 
 // Wait for the DOM to load
