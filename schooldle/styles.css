@@ -70,3 +70,9 @@ datalist {
         width: 100%;
     }
 }
+
+#guess-table {
+    margin-top: 1rem;
+    width:100%;
+    text-align: center;
+}
