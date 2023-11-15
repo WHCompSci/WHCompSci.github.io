@@ -1,9 +1,19 @@
+// Get the modal and button elements
+
+
+// Function to open the modal
+
+
+const modal = document.getElementById("modal");
+const openModalBtn = document.getElementById("open-modal-btn");
+const closeModalBtn = document.getElementById("modal-close-btn");
 const collegeDropDown = document.getElementById("colleges");
 const collegeTextInput = document.getElementById("text-input");
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegedata.csv";
-let collegeOfTheDay, collegeIndexOfTheDay; // define it here so we can cheat in the chrome devtools ;)
+let collegeOfTheDay, collegeIDOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
+const getIDfromSchoolName = {};
 const guesses = [];
 const collegeData = [];
 const collegeNames = [];
@@ -11,9 +21,9 @@ const columnNames = [
     "School",
     "Region",
     "State",
-    "Control",
+    "Public/Private",
     "Acceptance Rate",
-    "Total Population",
+    "Total Enrollment",
     "Total Cost",
 ];
 
@@ -30,13 +40,27 @@ const answers = [
     243, 65, 10, 192, 262, 18, 75,
 ]; //college ids are 0-indexed based on alphebetical order
 
+function openModal() {
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    modal.style.display = "none";
+
+}
+
+openModalBtn.addEventListener("click", openModal);
+closeModalBtn.addEventListener("click", closeModal);
+
 function setupGame() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(now / 8.64e7);
-    collegeIndexOfTheDay = answers[fullDaysSinceEpoch % answers.length];
-    collegeOfTheDay = collegeData[collegeIndexOfTheDay][0];
-    console.log(collegeIndexOfTheDay);
-    console.log(collegeOfTheDay);
+    collegeIDOfTheDay = answers[fullDaysSinceEpoch % answers.length];
+
+    collegeInfoOfTheDay = collegeData[collegeIDOfTheDay];
+    collegeOfTheDay = collegeInfoOfTheDay[0];
+    console.log(collegeIDOfTheDay);
+    console.log(collegeInfoOfTheDay);
 }
 
 // Wait for the DOM to load
@@ -46,20 +70,21 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.text())
         .then((content) => {
             const lines = content.split("\n");
-            lines.forEach((line) => {
+            lines.forEach((line, id) => {
                 line = line.trim();
-                const firstComma = line.indexOf(",");
-                const firstWord = line.substring(0, firstComma);
-                if (firstWord) {
-                    collegeData.push(splitCSVLine(line));
-                    collegeNames.push(firstWord);
+                const collegeInfo = splitCSVLine(line);
+                if (collegeInfo) {
+                    const collegeName = collegeInfo[0];
+                    collegeData.push(collegeInfo);
+                    getIDfromSchoolName[collegeName] = id;
+                    collegeNames.push(collegeName);
                     const option = document.createElement("option");
-                    option.text = firstWord;
-                    option.value = firstWord;
+                    option.text = collegeName;
+                    option.value = collegeName;
                     collegeDropDown.appendChild(option);
                 }
             });
-            console.log(collegeData);
+            console.log(getIDfromSchoolName);
             setupGame();
         })
         .catch((error) => {
@@ -71,7 +96,7 @@ function addSchoolGuessRow(selectedSchool) {
     if (guesses.length == 0) {
         addTableRow(columnNames);
     }
-    const selectedSchoolID = collegeNames.indexOf(selectedSchool);
+    const selectedSchoolID = getIDfromSchoolName[selectedSchool];
     const schoolData = collegeData[selectedSchoolID];
 
     addTableRow(schoolData);

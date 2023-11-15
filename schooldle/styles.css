@@ -1,8 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Nanum+Gothic&display=swap');
+
+
+:root {
+  --correct: rgb(89, 255, 80);
+  --partially-correct: rgb(240, 255, 80);
+  --incorrect: rgb(251, 86, 26);
+}
+
 
 body {
     background-color: #fcfcfc;
-    font-family: "EB Garamond", serif;
+    font-family: 'Nanum Gothic', sans-serif;
 }
 
 #heading {
@@ -10,10 +18,12 @@ body {
     margin-top: 4rem;
     text-align: center;
     font-size: 4rem;
+    font-family: "EB Garamond", serif;
 }
 
 #subheading {
     text-align: center;
+    
 }
 
 datalist {
@@ -25,7 +35,6 @@ datalist {
     border-radius: 4px;
     display: block;
     margin: auto;
-    font-family: "EB Garamond", serif;
     background-color: rgba(164, 133, 62, 0.824);
     color: #fcfcfc;
     border: none;
@@ -78,4 +87,111 @@ datalist {
 }
 #guess-table td{
     padding: 2rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 60px;
+  background-color: #f5f5f5;
+  padding: 0 20px;
+}
+
+.toolbar-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: transparent;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toolbar-button:hover {
+  background-color: #eee;
+}
+
+.fa-info-circle,
+.fa-external-link-alt {
+  font-size: 20px;
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  overflow: auto;
+}
+
+.modal-content {
+  background-color: #fff;
+  width: 60%;
+  max-width: 600px;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+  animation: modal-fade 0.4s ease-out;
+}
+
+.modal-title {
+    font-family: "EB Garamond", serif;
+  font-size: 40px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.modal-subtitle {
+    font-family: "EB Garamond", serif;
+  font-size: 25px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.green-highlight {
+    background-color: var(--correct);
+}
+.yellow-highlight {
+    background-color: var(--partially-correct);
+}
+.modal-paragraph {
+  font-size: 18px;
+
+  margin: 0px 30px 10px;
+}
+.modal-list {
+    text-align: left;
+    font-size: 18px;
+    margin: 0px 30px 10px;
+}
+
+.modal-close-btn {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+  }
 }
