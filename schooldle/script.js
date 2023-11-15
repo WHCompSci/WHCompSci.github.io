@@ -3,30 +3,39 @@ const collegeTextInput = document.getElementById("text-input");
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegedata.csv";
-let collegeOfTheDay; // define it here so we can cheat in the chrome devtools ;)
-
+let collegeOfTheDay, collegeIndexOfTheDay; // define it here so we can cheat in the chrome devtools ;)
+const guesses = [];
 const collegeData = [];
 const collegeNames = [];
 const columnNames = [
-    "Name",
+    "School",
+    "Region",
     "State",
     "Control",
     "Acceptance Rate",
-    "Total Cost",
     "Total Population",
-    "M/F",
+    "Total Cost",
 ];
 
 const answers = [
-    129, 511, 311, 497, 100, 396, 531, 976, 681, 323, 401, 823, 42, 260, 792, 713, 561, 78, 854, 177, 849, 887, 549, 88, 15, 710, 118, 550, 960, 66, 593, 513, 651, 918, 141, 422, 236, 897, 966, 190, 676, 894, 502, 243, 723, 75, 616, 565, 838, 343, 281, 626, 634, 317, 504, 152, 210, 512, 978, 197, 350, 932, 933, 808, 81, 919, 943, 263, 767, 114, 677, 283, 899, 465, 562, 905, 791, 48, 818, 286, 685, 522, 795, 158, 912, 908, 720, 232, 454, 178, 812, 99, 145, 936, 903, 904, 881, 816, 62, 183, 122, 687, 828, 238, 862, 67, 741, 584, 29, 803, 170, 805, 262, 605, 739, 493, 380, 821, 146, 982, 577, 744, 52
+    37, 293, 162, 269, 109, 46, 78, 77, 134, 29, 117, 41, 275, 5, 128, 280, 153,
+    127, 283, 248, 122, 9, 298, 193, 28, 223, 276, 129, 36, 42, 296, 201, 165,
+    189, 13, 141, 12, 208, 124, 86, 51, 230, 121, 285, 186, 278, 99, 249, 179,
+    105, 279, 1, 130, 148, 173, 143, 155, 218, 252, 111, 79, 239, 181, 72, 17,
+    55, 20, 52, 149, 164, 40, 273, 202, 56, 272, 225, 157, 228, 49, 57, 286,
+    211, 266, 195, 102, 188, 107, 140, 297, 6, 116, 175, 307, 232, 106, 227,
+    284, 47, 220, 172, 244, 145, 226, 274, 60, 64, 229, 233, 183, 270, 115, 136,
+    167, 177, 304, 67, 126, 309, 89, 294, 258, 96, 66, 289, 38, 159, 277, 176,
+    74, 291, 217, 144, 231, 16, 214, 58, 210, 184, 250, 54, 150, 90, 125, 118,
+    243, 65, 10, 192, 262, 18, 75,
 ]; //college ids are 0-indexed based on alphebetical order
 
 function setupGame() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(now / 8.64e7);
-    const todaysCollegeIndex = fullDaysSinceEpoch % answers.length;
-    collegeOfTheDay = collegeData[todaysCollegeIndex][0];
-    console.log(todaysCollegeIndex);
+    collegeIndexOfTheDay = answers[fullDaysSinceEpoch % answers.length];
+    collegeOfTheDay = collegeData[collegeIndexOfTheDay][0];
+    console.log(collegeIndexOfTheDay);
     console.log(collegeOfTheDay);
 }
 
@@ -56,24 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
         .catch((error) => {
             console.error("Error:", error);
         });
-
 });
 
 function addSchoolGuessRow(selectedSchool) {
+    if (guesses.length == 0) {
+        addTableRow(columnNames);
+    }
     const selectedSchoolID = collegeNames.indexOf(selectedSchool);
     const schoolData = collegeData[selectedSchoolID];
+
+    addTableRow(schoolData);
+    guesses.push(selectedSchoolID);
+    console.log(schoolData);
+}
+function addTableRow(data) {
     const tableRow = document.createElement("tr");
-    for(let i = 0; i < schoolData.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         const elem = document.createElement("td");
-        elem.innerText = schoolData[i];
+        elem.innerText = data[i];
         tableRow.appendChild(elem);
     }
-    
+
     guessTable.appendChild(tableRow);
-    console.log(schoolData);
-
 }
-
 
 //function to handle the college guess.
 guessButton.addEventListener("click", () => {
@@ -99,6 +113,7 @@ collegeTextInput.addEventListener("blur", (event) => {
 });
 
 function splitCSVLine(csvLine) {
+    csvLine += ",";
     const res = [];
     let lastCharEnd = 0;
     let numQuotations = 0;
@@ -120,4 +135,3 @@ function splitCSVLine(csvLine) {
     }
     return res;
 }
-

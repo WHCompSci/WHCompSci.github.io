@@ -74,4 +74,8 @@ datalist {
     margin-top: 1rem;
     width:100%;
     text-align: center;
+    background-color: rgb(240, 240, 240);
+}
+#guess-table td{
+    padding: 2rem;
 }
