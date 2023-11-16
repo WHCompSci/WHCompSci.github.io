@@ -92,7 +92,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 
-function addSchoolGuessRow(selectedSchool) {
+function addSchoolGuessRow() {
+    const selectedSchool = collegeTextInput.value;
+    if (selectedSchool === "") return;
+    if (!collegeNames.includes(selectedSchool)) {
+        return;
+    }
+    console.log('Guessing the School: "' + selectedSchool + '"');
+
+    collegeTextInput.value = "";
     if (guesses.length == 0) {
         addTableRow(columnNames);
     }
@@ -115,17 +123,13 @@ function addTableRow(data) {
 }
 
 //function to handle the college guess.
-guessButton.addEventListener("click", () => {
-    const selectedSchool = collegeTextInput.value;
-    if (selectedSchool === "") return;
-    if (!collegeNames.includes(selectedSchool)) {
-        return;
+guessButton.addEventListener("click", addSchoolGuessRow);
+document.addEventListener("keypress", (ke) => {
+    if(ke.key === "Enter")
+    {
+        addSchoolGuessRow();
     }
-    console.log('Guessing the School: "' + selectedSchool + '"');
-
-    collegeTextInput.value = "";
-    addSchoolGuessRow(selectedSchool);
-});
+})
 //Function to prevent User from entering invalid college names in the text box.
 collegeTextInput.addEventListener("blur", (event) => {
     console.log("input text");
