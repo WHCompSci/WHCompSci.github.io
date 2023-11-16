@@ -110,6 +110,10 @@ datalist {
   font-size: 24px;
   cursor: pointer;
   transition: background-color 0.3s;
+  text-decoration: none;
+}
+.toolbar-button:visited {
+  text-decoration: none;
 }
 
 .toolbar-button:hover {
