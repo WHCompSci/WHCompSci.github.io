@@ -7,6 +7,11 @@
 const modal = document.getElementById("modal");
 const openModalBtn = document.getElementById("open-modal-btn");
 const closeModalBtn = document.getElementById("modal-close-btn");
+
+const winModal = document.getElementById("win-modal");
+const winCloseModalBtn = document.getElementById("win-modal-close-btn");
+const numGuessesDisplay = document.getElementById("num-guesses");
+
 const collegeDropDown = document.getElementById("colleges");
 const collegeTextInput = document.getElementById("text-input");
 const guessTable = document.getElementById("guess-table");
@@ -40,17 +45,20 @@ const answers = [
     243, 65, 10, 192, 262, 18, 75,
 ]; //college ids are 0-indexed based on alphebetical order
 
-function openModal() {
-    modal.style.display = "block";
+function openModal(modalElement) {
+    modalElement.style.display = "block";
 }
 
-function closeModal() {
-    modal.style.display = "none";
+function closeModal(modalElement) {
+    modalElement.style.display = "none";
 
 }
 
-openModalBtn.addEventListener("click", openModal);
-closeModalBtn.addEventListener("click", closeModal);
+openModalBtn.addEventListener("click", () => openModal(modal));
+closeModalBtn.addEventListener("click", () => closeModal(modal));
+
+
+winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
 
 function setupGame() {
     const now = new Date();
@@ -100,16 +108,24 @@ function addSchoolGuessRow() {
     }
     console.log('Guessing the School: "' + selectedSchool + '"');
 
+
     collegeTextInput.value = "";
     if (guesses.length == 0) {
         addTableRow(columnNames);
     }
     const selectedSchoolID = getIDfromSchoolName[selectedSchool];
+    
     const schoolData = collegeData[selectedSchoolID];
 
     addTableRow(schoolData);
     guesses.push(selectedSchoolID);
     console.log(schoolData);
+
+    if (selectedSchoolID === collegeIDOfTheDay) { //player won
+        openModal(winModal);
+        numGuessesDisplay.innerHTML = "You got the correct answer in <strong>"+guesses.length+"</strong> guesses.";
+
+    }
 }
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
@@ -125,11 +141,10 @@ function addTableRow(data) {
 //function to handle the college guess.
 guessButton.addEventListener("click", addSchoolGuessRow);
 document.addEventListener("keypress", (ke) => {
-    if(ke.key === "Enter")
-    {
+    if (ke.key === "Enter") {
         addSchoolGuessRow();
     }
-})
+});
 //Function to prevent User from entering invalid college names in the text box.
 collegeTextInput.addEventListener("blur", (event) => {
     console.log("input text");
