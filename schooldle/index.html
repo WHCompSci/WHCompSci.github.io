@@ -11,6 +11,10 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <link rel="stylesheet" href="styles.css" />
+        <script
+  type="text/javascript"
+  src="https://geographiclib.sourceforge.io/scripts/geographiclib-geodesic.min.js">
+</script>
     </head>
 
     <body>
@@ -86,7 +90,18 @@
         <input type="text" list="colleges" pattern="^$" id="text-input" />
         <datalist id="colleges"> </datalist>
         <button id="guess-button">Guess this School!</button>
-        <table id="guess-table"></table>
+        <table id="guess-table">
+
+                <th>School</th>
+                <th>State</th>
+                <th>Control</th>
+                <th>Location</th>
+                <th>Acceptance</th>
+                <th>Size</th>
+                <th>Distance</th>
+                <th>Direction</th>
+
+        </table>
         <script src="script.js"></script>
     </body>
 </html>

@@ -1,8 +1,6 @@
 // Get the modal and button elements
 
-
 // Function to open the modal
-
 
 const modal = document.getElementById("modal");
 const openModalBtn = document.getElementById("open-modal-btn");
@@ -17,33 +15,21 @@ const collegeTextInput = document.getElementById("text-input");
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegedata.csv";
-let collegeOfTheDay, collegeIDOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
+const urlOfAnswerFile = "answerkey.csv";
+let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
 const getIDfromSchoolName = {};
 const guesses = [];
-const collegeData = [];
-const collegeNames = [];
+const collegeData = new Map();
 const columnNames = [
     "School",
-    "Region",
     "State",
-    "Public/Private",
+    "Control",
+    "Location",
     "Acceptance Rate",
-    "Total Enrollment",
-    "Total Cost",
+    "Size",
+    "Latitude",
+    "Longitude",
 ];
-
-const answers = [
-    37, 293, 162, 269, 109, 46, 78, 77, 134, 29, 117, 41, 275, 5, 128, 280, 153,
-    127, 283, 248, 122, 9, 298, 193, 28, 223, 276, 129, 36, 42, 296, 201, 165,
-    189, 13, 141, 12, 208, 124, 86, 51, 230, 121, 285, 186, 278, 99, 249, 179,
-    105, 279, 1, 130, 148, 173, 143, 155, 218, 252, 111, 79, 239, 181, 72, 17,
-    55, 20, 52, 149, 164, 40, 273, 202, 56, 272, 225, 157, 228, 49, 57, 286,
-    211, 266, 195, 102, 188, 107, 140, 297, 6, 116, 175, 307, 232, 106, 227,
-    284, 47, 220, 172, 244, 145, 226, 274, 60, 64, 229, 233, 183, 270, 115, 136,
-    167, 177, 304, 67, 126, 309, 89, 294, 258, 96, 66, 289, 38, 159, 277, 176,
-    74, 291, 217, 144, 231, 16, 214, 58, 210, 184, 250, 54, 150, 90, 125, 118,
-    243, 65, 10, 192, 262, 18, 75,
-]; //college ids are 0-indexed based on alphebetical order
 
 function openModal(modalElement) {
     modalElement.style.display = "block";
@@ -51,24 +37,26 @@ function openModal(modalElement) {
 
 function closeModal(modalElement) {
     modalElement.style.display = "none";
-
 }
 
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
-
 
 winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
 
 function setupGame() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(now / 8.64e7);
-    collegeIDOfTheDay = answers[fullDaysSinceEpoch % answers.length];
-
-    collegeInfoOfTheDay = collegeData[collegeIDOfTheDay];
-    collegeOfTheDay = collegeInfoOfTheDay[0];
-    console.log(collegeIDOfTheDay);
-    console.log(collegeInfoOfTheDay);
+    fetch(urlOfAnswerFile)
+        .then((response) => response.text())
+        .then((content) => {
+            const answers = content.split("\n").filter((x) => x.length > 1);
+            console.log(answers);
+            collegeOfTheDay =
+                answers[fullDaysSinceEpoch % answers.length].trim();
+            collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
+            console.log(collegeInfoOfTheDay);
+        });
 }
 
 // Wait for the DOM to load
@@ -78,14 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.text())
         .then((content) => {
             const lines = content.split("\n");
-            lines.forEach((line, id) => {
+            lines.forEach((line) => {
                 line = line.trim();
                 const collegeInfo = splitCSVLine(line);
                 if (collegeInfo) {
                     const collegeName = collegeInfo[0];
-                    collegeData.push(collegeInfo);
-                    getIDfromSchoolName[collegeName] = id;
-                    collegeNames.push(collegeName);
+                    collegeData.set(collegeName, collegeInfo);
                     const option = document.createElement("option");
                     option.text = collegeName;
                     option.value = collegeName;
@@ -103,38 +89,61 @@ document.addEventListener("DOMContentLoaded", () => {
 function addSchoolGuessRow() {
     const selectedSchool = collegeTextInput.value;
     if (selectedSchool === "") return;
-    if (!collegeNames.includes(selectedSchool)) {
+    if (!collegeData.has(selectedSchool)) {
         return;
     }
     console.log('Guessing the School: "' + selectedSchool + '"');
 
-
     collegeTextInput.value = "";
     if (guesses.length == 0) {
-        addTableRow(columnNames);
+        guessTable.firstChild.display = "block";
     }
-    const selectedSchoolID = getIDfromSchoolName[selectedSchool];
-    
-    const schoolData = collegeData[selectedSchoolID];
+    const schoolData = collegeData.get(selectedSchool);
 
     addTableRow(schoolData);
-    guesses.push(selectedSchoolID);
+    guesses.push(schoolData);
     console.log(schoolData);
 
-    if (selectedSchoolID === collegeIDOfTheDay) { //player won
+    if (selectedSchool === collegeOfTheDay) {
+        //player won
         openModal(winModal);
-        numGuessesDisplay.innerHTML = "You got the correct answer in <strong>"+guesses.length+"</strong> guesses.";
-
+        numGuessesDisplay.innerHTML =
+            "You got the correct answer in <strong>" +
+            guesses.length +
+            "</strong> guesses.";
     }
 }
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length - 2; i++) {
         const elem = document.createElement("td");
         elem.innerText = data[i];
+        console.log(data);
+        console.log(collegeInfoOfTheDay + " " + collegeOfTheDay);
+        if (data[i] === collegeInfoOfTheDay[i]) {
+            elem.style.backgroundColor = "var(--correct)";
+        }
         tableRow.appendChild(elem);
     }
-
+    const distTD = document.createElement("td");
+    const geod = geodesic.Geodesic.WGS84
+    const params = [
+        parseFloat(data[data.length - 1]),
+        parseFloat(data[data.length - 2]),
+        parseFloat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 1]),
+        parseFloat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 2]),
+    ];
+    
+    const measurements = geod.Inverse(...params);
+    console.log(measurements);
+    const distance = (0.000621371 * measurements.s12).toFixed(1);
+    distTD.innerText = distance + " mi";
+    tableRow.appendChild(distTD);
+    
+    const directionTD = document.createElement("td");
+    directionTD.innerHTML = getArrowEmoji(measurements.azi1, distance);
+    directionTD.style.fontFamily = "Noto Emoji Regular";
+    tableRow.appendChild(directionTD);
     guessTable.appendChild(tableRow);
 }
 
@@ -150,7 +159,7 @@ collegeTextInput.addEventListener("blur", (event) => {
     console.log("input text");
     const selectedSchool = event.target.value;
     // Check if the entered value matches any of the options
-    if (!collegeNames.includes(selectedSchool)) {
+    if (!collegeData.has(selectedSchool)) {
         // Clear the input field if the entered value is not a valid option
         collegeTextInput.value = "";
     }
@@ -179,3 +188,62 @@ function splitCSVLine(csvLine) {
     }
     return res;
 }
+
+function getArrowEmoji(angle, dist) {
+    const arrowUp = "⬆️";
+    const arrowDown = "⬇️";
+    const arrowLeft = "⬅️";
+    const arrowRight = "➡️";
+    const arrowUpRight = "↗️";
+    const arrowUpLeft = "↖️";
+    const arrowDownRight = "↘️";
+    const arrowDownLeft = "↙️";
+    const winningSymbol = "😎";
+    angle += 90; //little hack for now
+    if (dist < 0.01) {
+        return winningSymbol;
+    }
+    if (angle >= -22.5 && angle < 22.5) {
+        return arrowRight;
+    } else if (angle >= 22.5 && angle < 67.5) {
+        return arrowUpRight;
+    } else if (angle >= 67.5 && angle < 112.5) {
+        return arrowUp;
+    } else if (angle >= 112.5 && angle < 157.5) {
+        return arrowUpLeft;
+    } else if (
+        (angle >= 157.5 && angle <= 180) ||
+        (angle >= -180 && angle < -157.5)
+    ) {
+        return arrowLeft;
+    } else if (angle >= -157.5 && angle < -112.5) {
+        return arrowDownLeft;
+    } else if (angle >= -112.5 && angle < -67.5) {
+        return arrowDown;
+    } else {
+        return arrowDownRight;
+    }
+}
+
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const r = 6371; // km
+    const p = Math.PI / 180;
+
+    const a =
+        0.5 -
+        Math.cos((lat2 - lat1) * p) / 2 +
+        (Math.cos(lat1 * p) *
+            Math.cos(lat2 * p) *
+            (1 - Math.cos((lon2 - lon1) * p))) /
+            2;
+
+    return 2 * r * Math.asin(Math.sqrt(a)) * 0.621371;
+}
+
+function calculateAngle(lat1, lon1, lat2, lon2) {
+    const angleRad = Math.atan2(lon2 - lon1, lat2 - lat1);
+    return angleRad * 180 / Math.PI;
+
+}
+

@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Nanum+Gothic&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Nanum+Gothic&family=Noto+Emoji:wght@700&display=swap');
 
 :root {
-  --correct: rgb(89, 255, 80);
+  --correct: rgb(88, 176, 84);
   --partially-correct: rgb(240, 255, 80);
   --incorrect: rgb(251, 86, 26);
 }
@@ -85,8 +84,10 @@ datalist {
     text-align: center;
     background-color: rgb(240, 240, 240);
 }
-#guess-table td{
-    padding: 2rem;
+#guess-table td, th{
+    padding: 1rem;
+    border-radius: 5px;
+    border: none;
 }
 
 .toolbar {
