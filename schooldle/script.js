@@ -198,8 +198,8 @@ function getArrowEmoji(angle, dist) {
     const arrowUpLeft = "↖️";
     const arrowDownRight = "↘️";
     const arrowDownLeft = "↙️";
-    const winningSymbol = "😎";
-    angle += 90; //little hack for now
+    const winningSymbol = "🏆";
+    // angle += 90; //little hack for now
     if (dist < 0.01) {
         return winningSymbol;
     }
