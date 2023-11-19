@@ -58,6 +58,7 @@ datalist {
 }
 
 .custom-select-options {
+    display: none;
     width: 60vw;
     max-width: 600px;
     max-height: 200px;
@@ -226,9 +227,9 @@ tr {
 }
 
 :root {
-    --correct: rgb(88, 176, 84);
-    --partially-correct: rgb(240, 255, 80);
-    --incorrect: rgb(251, 86, 26);
+    --correct: rgb(106,170,100);
+    --partially-correct: rgb(201,180,88);
+    --incorrect: rgb(120,124,126);
 }
 
 #subheading {

@@ -34,6 +34,7 @@ function closeModal(modalElement) {
 }
 
 function openDropdown() {
+    console.log("opening dropdown")
     collegeDropDownReal.style.display = "block";
     collegeTextInput.style.borderRadius = "5px 5px 0 0";
 }
@@ -53,13 +54,13 @@ collegeTextInput.addEventListener("keypress", () => {
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
 
-
+winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
 function setupGame() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(
         ((now / 8.64e7) * 24) / newAnswerEveryXhours
     );
-        
+
     fetch(urlOfAnswerFile)
         .then((response) => response.text())
         .then((content) => {
@@ -154,11 +155,16 @@ function addTableRow(data) {
     const measurements = geod.Inverse(...params);
     const distance = (0.000621371 * measurements.s12).toFixed(1);
     distTD.innerText = distance + " mi";
+    
     tableRow.appendChild(distTD);
 
     const directionTD = document.createElement("td");
     directionTD.innerHTML = getArrowEmoji(...params);
     directionTD.style.fontFamily = "Noto Emoji Regular";
+    if (distance == 0) {
+        distTD.style.backgroundColor = "var(--correct)";
+        directionTD.style.backgroundColor = "var(--correct)";
+    }
     tableRow.appendChild(directionTD);
     guessTable.appendChild(tableRow);
     void tableRow.offsetHeight;
@@ -236,7 +242,9 @@ collegeTextInput.addEventListener("keyup", buildDropDownMenu);
 
 function buildDropDownMenu() {
     let query = collegeTextInput.value.toLowerCase();
+    let isquerry = true;
     if (query.length == 0) {
+        isquerry = false;
         query = "a";
     }
     const response = [...collegeData.entries()]
@@ -260,7 +268,7 @@ function buildDropDownMenu() {
         }
         collegeDropDownReal.children[i].innerText = response[i];
     }
-    if (response.length == 0) {
+    if (response.length == 0 || !isquerry) {
         closeDropdown();
     } else {
         openDropdown();
