@@ -126,22 +126,22 @@ function addTableRow(data) {
         tableRow.appendChild(elem);
     }
     const distTD = document.createElement("td");
-    const geod = geodesic.Geodesic.WGS84
+    const geod = geodesic.Geodesic.WGS84;
     const params = [
         parseFloat(data[data.length - 1]),
         parseFloat(data[data.length - 2]),
         parseFloat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 1]),
         parseFloat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 2]),
     ];
-    
+
     const measurements = geod.Inverse(...params);
     console.log(measurements);
     const distance = (0.000621371 * measurements.s12).toFixed(1);
     distTD.innerText = distance + " mi";
     tableRow.appendChild(distTD);
-    
+
     const directionTD = document.createElement("td");
-    directionTD.innerHTML = getArrowEmoji(measurements.azi1, distance);
+    directionTD.innerHTML = getArrowEmoji(...params);
     directionTD.style.fontFamily = "Noto Emoji Regular";
     tableRow.appendChild(directionTD);
     guessTable.appendChild(tableRow);
@@ -189,7 +189,7 @@ function splitCSVLine(csvLine) {
     return res;
 }
 
-function getArrowEmoji(angle, dist) {
+function getArrowEmoji(lat1, lon1, lat2, lon2) {
     const arrowUp = "⬆️";
     const arrowDown = "⬇️";
     const arrowLeft = "⬅️";
@@ -200,50 +200,16 @@ function getArrowEmoji(angle, dist) {
     const arrowDownLeft = "↙️";
     const winningSymbol = "🏆";
     // angle += 90; //little hack for now
-    if (dist < 0.01) {
+    if (lat1 == lat2 && lon1 == lon2) {
         return winningSymbol;
     }
-    if (angle >= -22.5 && angle < 22.5) {
-        return arrowRight;
-    } else if (angle >= 22.5 && angle < 67.5) {
-        return arrowUpRight;
-    } else if (angle >= 67.5 && angle < 112.5) {
-        return arrowUp;
-    } else if (angle >= 112.5 && angle < 157.5) {
-        return arrowUpLeft;
-    } else if (
-        (angle >= 157.5 && angle <= 180) ||
-        (angle >= -180 && angle < -157.5)
-    ) {
-        return arrowLeft;
-    } else if (angle >= -157.5 && angle < -112.5) {
-        return arrowDownLeft;
-    } else if (angle >= -112.5 && angle < -67.5) {
-        return arrowDown;
-    } else {
-        return arrowDownRight;
-    }
+    const angleDeg = -(Math.atan2(lon2 - lon1, lat2 - lat1) * 180) / Math.PI + 90;
+    const normalizedAngle = ((angleDeg % 360) + 360) % 360; //degree mod 360
+    console.log(angleDeg);
+    const rotationIndex = Math.round(normalizedAngle / 45) % 8;
+    //console.log(normalizedAngle + " " + rotationIndex);
+    const rot = ["➡️", "↗️", "⬆️", "↖️", "⬅️", "↙️", "⬇️", "↘️"];
+    return rot[rotationIndex]; //"➡️↗️⬆️↖️⬅️↙️⬇️↘️".charAt(rotationIndex);
 }
 
-
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const r = 6371; // km
-    const p = Math.PI / 180;
-
-    const a =
-        0.5 -
-        Math.cos((lat2 - lat1) * p) / 2 +
-        (Math.cos(lat1 * p) *
-            Math.cos(lat2 * p) *
-            (1 - Math.cos((lon2 - lon1) * p))) /
-            2;
-
-    return 2 * r * Math.asin(Math.sqrt(a)) * 0.621371;
-}
-
-function calculateAngle(lat1, lon1, lat2, lon2) {
-    const angleRad = Math.atan2(lon2 - lon1, lat2 - lat1);
-    return angleRad * 180 / Math.PI;
-
-}
 
