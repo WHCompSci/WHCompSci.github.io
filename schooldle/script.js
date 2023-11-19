@@ -22,16 +22,7 @@ let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in t
 const getIDfromSchoolName = {};
 const guesses = [];
 const collegeData = new Map();
-const columnNames = [
-    "School",
-    "State",
-    "Control",
-    "Location",
-    "Acceptance Rate",
-    "Size",
-    "Latitude",
-    "Longitude",
-];
+
 
 function openModal(modalElement) {
     modalElement.style.display = "block";
@@ -174,7 +165,8 @@ function addTableRow(data) {
 
 //function to handle the college guess.
 guessButton.addEventListener("click", addSchoolGuessRow);
-document.addEventListener("keypress", (ke) => {
+
+document.addEventListener("keydown", (ke) => {
     if (ke.key === "Enter") {
         addSchoolGuessRow();
     }
