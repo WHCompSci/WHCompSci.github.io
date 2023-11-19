@@ -11,8 +11,9 @@ const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
 const collegeDropDownReal = document.getElementById("guess-dropdown");
+const showDropDownButton = document.getElementById("dropdown-button");
 const collegeTextInput = document.getElementById("text-input");
-const maxSearchResults = 5;
+const maxSearchResults = 1000;
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegedata.csv";
@@ -40,6 +41,23 @@ function closeModal(modalElement) {
     modalElement.style.display = "none";
 }
 
+function openDropdown() {
+    collegeDropDownReal.style.display = "block";
+    collegeTextInput.style.borderRadius = "5px 5px 0 0";
+}
+function closeDropdown() {
+    collegeDropDownReal.style.display = "none";
+    collegeTextInput.style.borderRadius = "5px";
+}
+
+let hasTyped = false;
+showDropDownButton.addEventListener("click", () => collegeDropDownReal.style.display == "block"? closeDropdown() : openDropdown());
+collegeTextInput.addEventListener("keypress", () => {
+    if (!hasTyped) {
+        openDropdown();
+    }
+    hasTyped = true;
+})
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
 
@@ -52,17 +70,16 @@ function setupGame() {
         .then((response) => response.text())
         .then((content) => {
             const answers = content.split("\n").filter((x) => x.length > 1);
-            console.log(answers);
             collegeOfTheDay =
                 answers[fullDaysSinceEpoch % answers.length].trim();
             collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
-            console.log(collegeInfoOfTheDay);
+
         });
-    for(let i = 0; i < maxSearchResults; i++){
+    for (let i = 0; i < maxSearchResults; i++) {
         const option = document.createElement("li");
-        option.id = "option"+i
+        option.id = "option" + i;
         option.addEventListener("click", () => {
-            const currOption = document.getElementById("option"+i)
+            const currOption = document.getElementById("option" + i);
 
             collegeTextInput.value = currOption.textContent;
         });
@@ -71,9 +88,7 @@ function setupGame() {
         collegeDropDownReal.appendChild(option);
     }
     buildDropDownMenu();
-        
 }
-
 
 // Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", () => {
@@ -98,13 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function addSchoolGuessRow() {
-    
-    const selectedSchool = collegeTextInput.value;
+    const selectedSchool = collegeTextInput.value.split(",")[0];
     if (selectedSchool === "") return;
     if (!collegeData.has(selectedSchool)) {
         return;
     }
-    console.log('Guessing the School: "' + selectedSchool + '"');
 
     collegeTextInput.value = "";
     if (guesses.length == 0) {
@@ -114,7 +127,6 @@ function addSchoolGuessRow() {
 
     addTableRow(schoolData);
     guesses.push(selectedSchool);
-    console.log(schoolData);
     buildDropDownMenu();
     if (selectedSchool === collegeOfTheDay) {
         //player won
@@ -124,15 +136,12 @@ function addSchoolGuessRow() {
             guesses.length +
             "</strong> guesses.";
     }
-
 }
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
     for (let i = 0; i < data.length - 2; i++) {
         const elem = document.createElement("td");
         elem.innerText = data[i];
-        console.log(data);
-        console.log(collegeInfoOfTheDay + " " + collegeOfTheDay);
         if (data[i] === collegeInfoOfTheDay[i]) {
             elem.style.backgroundColor = "var(--correct)";
         }
@@ -148,7 +157,6 @@ function addTableRow(data) {
     ];
 
     const measurements = geod.Inverse(...params);
-    console.log(measurements);
     const distance = (0.000621371 * measurements.s12).toFixed(1);
     distTD.innerText = distance + " mi";
     tableRow.appendChild(distTD);
@@ -158,13 +166,11 @@ function addTableRow(data) {
     directionTD.style.fontFamily = "Noto Emoji Regular";
     tableRow.appendChild(directionTD);
     guessTable.appendChild(tableRow);
-     void tableRow.offsetHeight;
+    void tableRow.offsetHeight;
 
-     // Add class to apply animation
-     tableRow.classList.add("adding-row");
-
+    // Add class to apply animation
+    tableRow.classList.add("adding-row");
 }
-
 
 //function to handle the college guess.
 guessButton.addEventListener("click", addSchoolGuessRow);
@@ -174,15 +180,15 @@ document.addEventListener("keypress", (ke) => {
     }
 });
 //Function to prevent User from entering invalid college names in the text box.
-collegeTextInput.addEventListener("blur", (event) => {
-    console.log("input text");
-    const selectedSchool = event.target.value;
-    // Check if the entered value matches any of the options
-    if (!collegeData.has(selectedSchool)) {
-        // Clear the input field if the entered value is not a valid option
-        collegeTextInput.value = "";
-    }
-});
+// collegeTextInput.addEventListener("blur", (event) => {
+//     console.log("input text");
+//     const selectedSchool = event.target.value;
+//     // Check if the entered value matches any of the options
+//     if (!collegeData.has(selectedSchool)) {
+//         // Clear the input field if the entered value is not a valid option
+//         collegeTextInput.value = "";
+//     }
+// });
 
 function splitCSVLine(csvLine) {
     csvLine += ",";
@@ -225,9 +231,7 @@ function getArrowEmoji(lat1, lon1, lat2, lon2) {
     const angleDeg =
         -(Math.atan2(lon2 - lon1, lat2 - lat1) * 180) / Math.PI + 90;
     const normalizedAngle = ((angleDeg % 360) + 360) % 360; //degree mod 360
-    console.log(angleDeg);
     const rotationIndex = Math.round(normalizedAngle / 45) % 8;
-    //console.log(normalizedAngle + " " + rotationIndex);
     const rot = ["➡️", "↗️", "⬆️", "↖️", "⬅️", "↙️", "⬇️", "↘️"];
     return rot[rotationIndex]; //"➡️↗️⬆️↖️⬅️↙️⬇️↘️".charAt(rotationIndex);
 }
@@ -237,27 +241,32 @@ collegeTextInput.addEventListener("keyup", buildDropDownMenu);
 function buildDropDownMenu() {
     let query = collegeTextInput.value.toLowerCase();
     if (query.length == 0) {
-        query = 'a'
+        query = "a";
     }
-    console.log("q " + query);
-    const response = [...collegeData.keys()]
-        .map((str) => {
+    const response = [...collegeData.entries()]
+        .map(([name, data]) => {
             return {
-                name: str,
-                searchVal: str.toLowerCase().includes(query),
+                name: name,
+                display: name + ", " + data[1],
+                searchVal: (name + ", " + data[1])
+                    .toLowerCase()
+                    .includes(query),
             };
         })
         .filter((x) => x.searchVal && !guesses.includes(x.name))
         .slice(0, maxSearchResults)
-        .map(({ name, _ }) => name);
-    console.log(response);
+        .map(({ _, display, __ }) => display);
 
     for (let i = 0; i < maxSearchResults; i++) {
         collegeDropDownReal.children[i].style.display = "block";
         if (i >= response.length) {
             collegeDropDownReal.children[i].style.display = "none";
         }
-        collegeDropDownReal.children[i].innerText =
-            response[i];
+        collegeDropDownReal.children[i].innerText = response[i];
+    }
+    if (response.length == 0) {
+        closeDropdown();
+    } else {
+        openDropdown();
     }
 }
