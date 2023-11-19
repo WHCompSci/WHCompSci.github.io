@@ -34,6 +34,22 @@ datalist {
     align-items: center;
 }
 
+.custom-scrollbar::-webkit-scrollbar {
+    width: 10px; /* Adjust the scrollbar width */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #888; /* Adjust the thumb color */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Adjust the thumb color on hover */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Adjust the track color */
+}
+
 .custom-select {
     position: relative;
     display: inline-block;
@@ -68,7 +84,7 @@ datalist {
     margin-left: auto;
     margin-right: auto;
     margin-top: 0;
-    margin-bottom:0;
+    margin-bottom: 0;
     border: 1px solid #ccc;
     border-top: none;
     border-radius: 0 0 5px 5px;
@@ -81,7 +97,7 @@ datalist {
     top: 0;
     right: 0;
     width: 50px; /* Adjust the width as needed */
-    height: 120%;
+    height: 130%;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -112,8 +128,8 @@ datalist {
     padding: 1rem 0.5rem;
     font-size: 18px;
     width: 250px;
-    
 }
+
 
 #guess-button:hover {
     background-color: rgb(164, 133, 62);
@@ -121,19 +137,20 @@ datalist {
 
 #guess-table {
     margin-top: 1rem;
-
+    
     width: 100%;
     text-align: center;
     background-color: rgb(240, 240, 240);
 }
 
-#guess-table td,
 th {
     padding: 1rem;
     border-radius: 5px;
     border: none;
 }
-
+td {
+  padding: 1rem;
+}
 #heading {
     margin-bottom: 0px;
     margin-top: 4rem;
@@ -227,9 +244,9 @@ tr {
 }
 
 :root {
-    --correct: rgb(106,170,100);
-    --partially-correct: rgb(201,180,88);
-    --incorrect: rgb(120,124,126);
+    --correct: rgb(106, 170, 100);
+    --partially-correct: rgb(201, 180, 88);
+    --incorrect: rgb(120, 124, 126);
 }
 
 #subheading {
@@ -259,8 +276,7 @@ tr {
 
     border-radius: 5px;
 
-
-    text-indent:1rem;
+    text-indent: 1rem;
 }
 
 .toolbar {
@@ -321,6 +337,33 @@ tr {
     margin: 0;
 }
 
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 .yellow-highlight {
     background-color: var(--partially-correct);
 }
@@ -355,19 +398,4 @@ tr {
     #guess-button {
         width: 100%;
     }
-}
-.custom-scrollbar::-webkit-scrollbar {
-  width: 10px; /* Adjust the scrollbar width */
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background-color: #f1f1f1; /* Adjust the track color */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #888; /* Adjust the thumb color */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Adjust the thumb color on hover */
 }

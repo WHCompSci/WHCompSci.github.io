@@ -43,6 +43,7 @@
                 <span class="material-symbols-outlined">arrow_back</span>
             </a>
         </div>
+
         <div class="modal" id="modal">
             <div class="modal-content">
                 <h2 class="modal-title">How to play</h2>
@@ -113,20 +114,76 @@
                     </span>
                 </button>
             </div>
-            <ul id="guess-dropdown" class="custom-select-options custom-scrollbar"></ul>
+            <ul
+                id="guess-dropdown"
+                class="custom-select-options custom-scrollbar"
+            ></ul>
             <button id="guess-button">Guess this School!</button>
 
             <table>
                 <tbody id="guess-table">
                     <tr id="table-column-names">
-                        <th>School</th>
-                        <th>State</th>
-                        <th>Type</th>
-                        <th>Campus</th>
-                        <th>Acceptance rate</th>
-                        <th>Size</th>
-                        <th>Distance</th>
-                        <th>Direction</th>
+                        <th>
+                            <div class="tooltip">
+                                College
+                            </div>
+                        </th>
+                        <th>
+                            <div class="tooltip">
+                                State
+                            </div>
+                        </th>
+
+                        <th>
+                            <div class="tooltip">
+                                Type
+                                <span class="tooltiptext"
+                                    >Public or Private</span
+                                >
+                            </div>
+                        </th>
+                        <th>
+                            <div class="tooltip">
+                                Campus
+                                <span class="tooltiptext">
+                                    City, Suburb, or Town
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="tooltip">
+                                Acceptance Rate
+                                <span class="tooltiptext"
+                                    >&lt10%,
+                                    10%-25%, 26%-50%, 51%-75%, or &gt75%
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="tooltip">
+                                Size
+                                <span class="tooltiptext"
+                                    >Small, Medium, Large, or Extra Large</span
+                                >
+                            </div>
+                        </th>
+                        <th>
+                            <div class="tooltip">
+                                Distance
+                                <span class="tooltiptext">
+                                    The distance from your guess to the answer
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="tooltip">
+                                Direction
+                                <span class="tooltiptext">
+                                    The geographic direction to the answer from
+                                    your guess
+                                </span>
+                            </div>
+                        </th>
                     </tr>
                 </tbody>
             </table>
