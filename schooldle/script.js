@@ -10,6 +10,7 @@ const winModal = document.getElementById("win-modal");
 const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
+const newAnswerEveryXhours = 5;
 const collegeDropDownReal = document.getElementById("guess-dropdown");
 const showDropDownButton = document.getElementById("dropdown-button");
 const collegeTextInput = document.getElementById("text-input");
@@ -52,11 +53,13 @@ collegeTextInput.addEventListener("keypress", () => {
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
 
-winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
 
 function setupGame() {
     const now = new Date();
-    const fullDaysSinceEpoch = Math.floor(now / 8.64e7);
+    const fullDaysSinceEpoch = Math.floor(
+        ((now / 8.64e7) * 24) / newAnswerEveryXhours
+    );
+        
     fetch(urlOfAnswerFile)
         .then((response) => response.text())
         .then((content) => {
@@ -64,6 +67,7 @@ function setupGame() {
             collegeOfTheDay =
                 answers[fullDaysSinceEpoch % answers.length].trim();
             collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
+            console.log(collegeOfTheDay);
 
         });
     for (let i = 0; i < maxSearchResults; i++) {
