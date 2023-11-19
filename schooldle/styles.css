@@ -1,15 +1,110 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Nanum+Gothic&family=Noto+Emoji:wght@700&display=swap');
-
-:root {
-  --correct: rgb(88, 176, 84);
-  --partially-correct: rgb(240, 255, 80);
-  --incorrect: rgb(251, 86, 26);
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+  }
 }
 
+.adding-row {
+  opacity: 1;
+}
 
-body {
-    background-color: #fcfcfc;
-    font-family: 'Nanum Gothic', sans-serif;
+datalist {
+    width: 200px;
+    font-family: "EB Garamond", serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.custom-select {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select-input {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.custom-select-option {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.custom-select-option:hover {
+  background-color: #f0f0f0;
+}
+
+.custom-select-options {
+  display: 'flex';
+  flex-direction:column;
+  width: 60vw;
+  max-width: 600px;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top:0;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.fa-external-link-alt {
+  font-size: 20px;
+}
+
+.green-highlight {
+    background-color: var(--correct);
+}
+
+#guess-button {
+    border-radius: 4px;
+    display: block;
+    margin: auto;
+    margin-bottom: 1vh;
+    background-color: rgba(164, 133, 62, 0.824);
+    color: #fcfcfc;
+    border: none;
+    padding: 1rem 0.5rem;
+    font-size: 18px;
+    width: 250px;
+}
+
+#guess-button:hover {
+    background-color: rgb(164, 133, 62);
+}
+
+#guess-table {
+    margin-top: 1rem;
+    
+    width:100%;
+    text-align: center;
+    background-color: rgb(240, 240, 240);
+}
+
+#guess-table td, th {
+    padding: 1rem;
+    border-radius: 5px;
+    border: none;
 }
 
 #heading {
@@ -20,34 +115,104 @@ body {
     font-family: "EB Garamond", serif;
 }
 
+.info-button {
+  margin-right: 10px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  overflow: auto;
+}
+
+.modal-close-btn {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content {
+  background-color: #fff;
+  width: 60%;
+  max-width: 600px;
+  margin: 100px auto;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+  animation: modal-fade 0.4s ease-out;
+}
+
+.modal-list {
+    text-align: left;
+    font-size: 18px;
+    margin: 0px 30px 10px;
+    line-height: 24px;
+}
+
+.modal-paragraph {
+  line-height: 24px;
+  font-size: 18px;
+
+  margin: 0px 30px 10px;
+}
+
+.modal-subtitle {
+    font-family: "EB Garamond", serif;
+  font-size: 25px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.modal-title {
+    font-family: "EB Garamond", serif;
+  font-size: 40px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+body {
+    background-color: #fcfcfc;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+
+tr {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+:root {
+  --correct: rgb(88, 176, 84);
+  --partially-correct: rgb(240, 255, 80);
+  --incorrect: rgb(251, 86, 26);
+}
+
 #subheading {
     text-align: center;
     
 }
 
-datalist {
-    width: 200px;
-    font-family: "EB Garamond", serif;
+#table-column-names {
+  opacity:1;
 }
-
-#guess-button {
-    border-radius: 4px;
-    display: block;
-    margin: auto;
-    background-color: rgba(164, 133, 62, 0.824);
-    color: #fcfcfc;
-    border: none;
-    padding: 1rem 0.5rem;
-    font-size: 18px;
-    width: 250px;
+table {
+  margin-left: auto;
+  margin-right: auto;
 }
-
 #text-input {
     margin: auto;
     border-radius: 4px;
     display: block;
     margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     width: 60vw;
     min-width: 100px;
     max-width: 600px;
@@ -60,36 +225,6 @@ datalist {
     font-family: inherit;
 }
 
-#guess-button:hover {
-    background-color: rgb(164, 133, 62);
-}
-
-@media only screen and (max-width: 300px) {
-    #heading {
-        font-size: 2.5rem;
-    }
-
-    #text-input {
-        width: 80vw;
-    }
-
-    #guess-button {
-        width: 100%;
-    }
-}
-
-#guess-table {
-    margin-top: 1rem;
-    width:100%;
-    text-align: center;
-    background-color: rgb(240, 240, 240);
-}
-#guess-table td, th{
-    padding: 1rem;
-    border-radius: 5px;
-    border: none;
-}
-
 .toolbar {
   display: flex;
   justify-content: flex-end;
@@ -97,6 +232,14 @@ datalist {
   height: 60px;
   background-color: #f5f5f5;
   padding: 0 20px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 10px;
 }
 
 .toolbar-button {
@@ -113,92 +256,66 @@ datalist {
   transition: background-color 0.3s;
   text-decoration: none;
 }
-.toolbar-button:visited {
-  text-decoration: none;
+
+.toolbar-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .toolbar-button:hover {
   background-color: #eee;
 }
 
-.fa-info-circle,
-.fa-external-link-alt {
-  font-size: 20px;
+.toolbar-button:visited {
+  text-decoration: none;
 }
 
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-  overflow: auto;
-}
-
-.modal-content {
-  background-color: #fff;
-  width: 60%;
-  max-width: 600px;
-  margin: 100px auto;
-  padding: 20px;
-  border-radius: 4px;
-  text-align: center;
-  animation: modal-fade 0.4s ease-out;
-}
-
-.modal-title {
-    font-family: "EB Garamond", serif;
+.toolbar-title {
+      font-family: "EB Garamond", serif;
   font-size: 40px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-.modal-subtitle {
-    font-family: "EB Garamond", serif;
-  font-size: 25px;
-  margin-bottom: 5px;
-  margin-top: 5px;
+  flex-grow: 1;
+  text-align: center;
+
+  margin: 0;
 }
 
-.green-highlight {
-    background-color: var(--correct);
-}
 .yellow-highlight {
     background-color: var(--partially-correct);
 }
-.modal-paragraph {
-  line-height: 24px;
-  font-size: 18px;
 
-  margin: 0px 30px 10px;
-}
-.modal-list {
-    text-align: left;
-    font-size: 18px;
-    margin: 0px 30px 10px;
-    line-height: 24px;
-}
-
-.modal-close-btn {
-  background-color: #333;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-
-
-@keyframes modal-fade {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
+/* Additional styles for responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
   }
-  to {
-    opacity: 1;
+  #text-input {
+    margin: 0;
   }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  #text-input {
+    width: 100vw;
+  }
+}
+
+@media only screen and (max-width: 300px) {
+    #heading {
+        font-size: 2.5rem;
+    }
+
+    #text-input {
+        width: 80vw;
+    }
+
+    #guess-button {
+        width: 100%;
+    }
 }

@@ -10,8 +10,9 @@ const winModal = document.getElementById("win-modal");
 const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
-const collegeDropDown = document.getElementById("colleges");
+const collegeDropDownReal = document.getElementById("guess-dropdown");
 const collegeTextInput = document.getElementById("text-input");
+const maxSearchResults = 5;
 const guessTable = document.getElementById("guess-table");
 const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegedata.csv";
@@ -57,7 +58,22 @@ function setupGame() {
             collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
             console.log(collegeInfoOfTheDay);
         });
+    for(let i = 0; i < maxSearchResults; i++){
+        const option = document.createElement("li");
+        option.id = "option"+i
+        option.addEventListener("click", () => {
+            const currOption = document.getElementById("option"+i)
+
+            collegeTextInput.value = currOption.textContent;
+        });
+        option.className = "custom-select-option";
+
+        collegeDropDownReal.appendChild(option);
+    }
+    buildDropDownMenu();
+        
 }
+
 
 // Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", () => {
@@ -72,13 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (collegeInfo) {
                     const collegeName = collegeInfo[0];
                     collegeData.set(collegeName, collegeInfo);
-                    const option = document.createElement("option");
-                    option.text = collegeName;
-                    option.value = collegeName;
-                    collegeDropDown.appendChild(option);
                 }
             });
-            console.log(getIDfromSchoolName);
             setupGame();
         })
         .catch((error) => {
@@ -87,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function addSchoolGuessRow() {
+    
     const selectedSchool = collegeTextInput.value;
     if (selectedSchool === "") return;
     if (!collegeData.has(selectedSchool)) {
@@ -101,9 +113,9 @@ function addSchoolGuessRow() {
     const schoolData = collegeData.get(selectedSchool);
 
     addTableRow(schoolData);
-    guesses.push(schoolData);
+    guesses.push(selectedSchool);
     console.log(schoolData);
-
+    buildDropDownMenu();
     if (selectedSchool === collegeOfTheDay) {
         //player won
         openModal(winModal);
@@ -112,6 +124,7 @@ function addSchoolGuessRow() {
             guesses.length +
             "</strong> guesses.";
     }
+
 }
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
@@ -145,7 +158,13 @@ function addTableRow(data) {
     directionTD.style.fontFamily = "Noto Emoji Regular";
     tableRow.appendChild(directionTD);
     guessTable.appendChild(tableRow);
+     void tableRow.offsetHeight;
+
+     // Add class to apply animation
+     tableRow.classList.add("adding-row");
+
 }
+
 
 //function to handle the college guess.
 guessButton.addEventListener("click", addSchoolGuessRow);
@@ -203,7 +222,8 @@ function getArrowEmoji(lat1, lon1, lat2, lon2) {
     if (lat1 == lat2 && lon1 == lon2) {
         return winningSymbol;
     }
-    const angleDeg = -(Math.atan2(lon2 - lon1, lat2 - lat1) * 180) / Math.PI + 90;
+    const angleDeg =
+        -(Math.atan2(lon2 - lon1, lat2 - lat1) * 180) / Math.PI + 90;
     const normalizedAngle = ((angleDeg % 360) + 360) % 360; //degree mod 360
     console.log(angleDeg);
     const rotationIndex = Math.round(normalizedAngle / 45) % 8;
@@ -212,4 +232,32 @@ function getArrowEmoji(lat1, lon1, lat2, lon2) {
     return rot[rotationIndex]; //"➡️↗️⬆️↖️⬅️↙️⬇️↘️".charAt(rotationIndex);
 }
 
+collegeTextInput.addEventListener("keyup", buildDropDownMenu);
 
+function buildDropDownMenu() {
+    let query = collegeTextInput.value.toLowerCase();
+    if (query.length == 0) {
+        query = 'a'
+    }
+    console.log("q " + query);
+    const response = [...collegeData.keys()]
+        .map((str) => {
+            return {
+                name: str,
+                searchVal: str.toLowerCase().includes(query),
+            };
+        })
+        .filter((x) => x.searchVal && !guesses.includes(x.name))
+        .slice(0, maxSearchResults)
+        .map(({ name, _ }) => name);
+    console.log(response);
+
+    for (let i = 0; i < maxSearchResults; i++) {
+        collegeDropDownReal.children[i].style.display = "block";
+        if (i >= response.length) {
+            collegeDropDownReal.children[i].style.display = "none";
+        }
+        collegeDropDownReal.children[i].innerText =
+            response[i];
+    }
+}

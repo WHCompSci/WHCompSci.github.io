@@ -2,52 +2,67 @@
 <html lang="en">
     <head>
         <title>Schooldle</title>
-        <link rel="icon" href="schooldle_icon.ico" type="image/ico">
+        <link rel="icon" href="schooldle_icon.ico" type="image/ico" />
 
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
         />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        />
         <link rel="stylesheet" href="styles.css" />
         <script
-  type="text/javascript"
-  src="https://geographiclib.sourceforge.io/scripts/geographiclib-geodesic.min.js">
-</script>
+            type="text/javascript"
+            src="https://geographiclib.sourceforge.io/scripts/geographiclib-geodesic.min.js"
+        ></script>
     </head>
 
     <body>
         <div class="toolbar">
+            <button class="toolbar-button info-button">
+                <span class="material-symbols-outlined">info</span>
+            </button>
+
+            <h1 class="toolbar-title">Schooldle</h1>
+
             <button class="toolbar-button" id="open-modal-btn">
-                <span class="material-symbols-outlined">
-                    help
-                    </span>            </button>
+                <span class="material-symbols-outlined">help</span>
+            </button>
+
             <a class="toolbar-button" href="/">
-                <span class="material-symbols-outlined">
-                    arrow_back
-                    </span>
+                <span class="material-symbols-outlined">arrow_back</span>
             </a>
         </div>
         <div class="modal" id="modal">
             <div class="modal-content">
                 <h2 class="modal-title">How to play</h2>
                 <p class="modal-paragraph">
-                    Try to guess the daily college in as few tries as possible. Tiles
-                    change color to show proximity to the answer.
+                    Try to guess the daily college in as few tries as possible.
+                    Tiles change color to show proximity to the answer.
                 </p>
                 <h2 class="modal-subtitle">Color System:</h2>
                 <ul class="modal-list">
                     <li>
-                        <strong class="green-highlight">Green:</strong> Correct match in any column.
+                        <strong class="green-highlight">Green:</strong> Correct
+                        match in any column.
                     </li>
                     <li>
-                        <strong class="yellow-highlight">Yellow (Acceptance Rate):</strong> Correct rate
-                        within 5% of guess.
+                        <strong class="yellow-highlight"
+                            >Yellow (Acceptance Rate):</strong
+                        >
+                        Correct rate within 5% of guess.
                     </li>
                     <li>
-                        <strong class="yellow-highlight">Yellow (Region, State & Public/Private):</strong> No yellow
-                        color.
+                        <strong class="yellow-highlight"
+                            >Yellow (Region, State & Public/Private):</strong
+                        >
+                        No yellow color.
                     </li>
                     <li>
                         <strong class="yellow-highlight"
@@ -63,8 +78,7 @@
                 </p>
                 <h3 class="modal-subtitle">State Mode:</h3>
                 <p class="modal-paragraph">
-                    Guess any college in a state in 6 tries or
-                    less.
+                    Guess any college in a state in 6 tries or less.
                 </p>
 
                 <button class="modal-close-btn" id="modal-close-btn">
@@ -75,33 +89,34 @@
         <div class="modal" id="win-modal">
             <div class="modal-content">
                 <h2 class="modal-title">You won!</h2>
-                <p class="modal-paragraph" id="num-guesses">
-                    
-                </p>
-        
+                <p class="modal-paragraph" id="num-guesses"></p>
+
                 <button class="modal-close-btn" id="win-modal-close-btn">
                     Close
                 </button>
             </div>
         </div>
-        <h1 id="heading">Schooldle</h1>
-        <div id="subheading">American Colleges Guessing Game</div>
+        <div class="container">
+            <input type="text" list="colleges" pattern="^$" id="text-input" />
+            <ul id="guess-dropdown" class="custom-select-options"></ul>
+            <button id="guess-button">Guess this School!</button>
 
-        <input type="text" list="colleges" pattern="^$" id="text-input" />
-        <datalist id="colleges"> </datalist>
-        <button id="guess-button">Guess this School!</button>
-        <table id="guess-table">
+            <table>
+                <tbody id="guess-table">
+                    <tr id="table-column-names">
+                        <th>School</th>
+                        <th>State</th>
+                        <th>Control</th>
+                        <th>Location</th>
+                        <th>Acceptance</th>
+                        <th>Size</th>
+                        <th>Distance</th>
+                        <th>Direction</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <th>School</th>
-                <th>State</th>
-                <th>Control</th>
-                <th>Location</th>
-                <th>Acceptance</th>
-                <th>Size</th>
-                <th>Distance</th>
-                <th>Direction</th>
-
-        </table>
         <script src="script.js"></script>
     </body>
 </html>
