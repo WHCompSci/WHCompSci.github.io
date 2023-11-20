@@ -6,6 +6,10 @@ const modal = document.getElementById("modal");
 const openModalBtn = document.getElementById("open-modal-btn");
 const closeModalBtn = document.getElementById("modal-close-btn");
 
+const infoModal = document.getElementById("info-modal");
+const infoOpenModalBtn = document.getElementById("info-open-btn");
+const infoCloseModalBtn = document.getElementById("info-close-btn");
+
 const winModal = document.getElementById("win-modal");
 const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
@@ -53,6 +57,9 @@ collegeTextInput.addEventListener("keypress", () => {
 })
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
+
+infoOpenModalBtn.addEventListener("click", () => openModal(infoModal));
+infoCloseModalBtn.addEventListener("click", () => closeModal(infoModal));
 
 winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
 function setupGame() {
@@ -262,8 +269,7 @@ function buildDropDownMenu() {
             };
         })
         .filter((x) => x.searchVal && !guesses.includes(x.name))
-        .slice(0, maxSearchResults)
-        .map(({ _, name, display }) => [name, display]);
+        .slice(0, maxSearchResults);
     console.log(response)
     for (let i = 0; i < maxSearchResults; i++) {
         collegeDropDownReal.children[i].style.display = "flex";
@@ -271,11 +277,11 @@ function buildDropDownMenu() {
             collegeDropDownReal.children[i].style.display = "none";
             continue
         }
-        const text = response[i][0]
+        const text = response[i].display
         collegeDropDownReal.children[i].lastChild.innerText = text;
         const url =
             "https://logo.clearbit.com/" +
-            collegeData.get(response[i][0])[6] +
+            collegeData.get(response[i].name)[6] +
             "";
         try {
             collegeDropDownReal.children[i].firstChild.src = url
