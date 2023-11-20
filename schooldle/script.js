@@ -6,6 +6,10 @@ const modal = document.getElementById("modal");
 const openModalBtn = document.getElementById("open-modal-btn");
 const closeModalBtn = document.getElementById("modal-close-btn");
 
+const infoModal = document.getElementById("info-modal");
+const infoOpenModalBtn = document.getElementById("info-open-btn");
+const infoCloseModalBtn = document.getElementById("info-close-btn");
+
 const winModal = document.getElementById("win-modal");
 const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
@@ -53,6 +57,9 @@ collegeTextInput.addEventListener("keypress", () => {
 })
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
+
+infoOpenModalBtn.addEventListener("click", () => openModal(infoModal));
+infoCloseModalBtn.addEventListener("click", () => closeModal(infoModal));
 
 winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
 function setupGame() {
