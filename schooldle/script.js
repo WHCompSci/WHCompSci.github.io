@@ -262,8 +262,7 @@ function buildDropDownMenu() {
             };
         })
         .filter((x) => x.searchVal && !guesses.includes(x.name))
-        .slice(0, maxSearchResults)
-        .map(({ _, name, display }) => [name, display]);
+        .slice(0, maxSearchResults);
     console.log(response)
     for (let i = 0; i < maxSearchResults; i++) {
         collegeDropDownReal.children[i].style.display = "flex";
@@ -271,11 +270,11 @@ function buildDropDownMenu() {
             collegeDropDownReal.children[i].style.display = "none";
             continue
         }
-        const text = response[i][0]
+        const text = response[i].display
         collegeDropDownReal.children[i].lastChild.innerText = text;
         const url =
             "https://logo.clearbit.com/" +
-            collegeData.get(response[i][0])[6] +
+            collegeData.get(response[i].name)[6] +
             "";
         try {
             collegeDropDownReal.children[i].firstChild.src = url
