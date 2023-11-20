@@ -80,6 +80,7 @@ blockquote{
 .custom-select-option img {
     width: 30px;
     border-radius: 3px;
+    mix-blend-mode: multiply;
 }
 
 .custom-select-option span {
@@ -107,6 +108,7 @@ blockquote{
     border-radius: 0 0 5px 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1;
+    min-height: 30px;
 }
 
 #dropdown-button {
@@ -254,6 +256,9 @@ td {
 body {
     background-color: #fcfcfc;
     font-family: "Nanum Gothic", sans-serif;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
 }
 
 tr {
@@ -297,21 +302,13 @@ tr {
     text-indent: 1rem;
 }
 
-.toolbar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 60px;
-    background-color: #f5f5f5;
-    padding: 0 20px;
-}
 
 .toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #f0f0f0;
-    padding: 10px;
+    padding: 0px 20px;
 }
 
 .toolbar-button {

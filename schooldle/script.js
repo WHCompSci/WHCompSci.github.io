@@ -28,7 +28,6 @@ const getIDfromSchoolName = {};
 const guesses = [];
 const collegeData = new Map();
 
-
 function openModal(modalElement) {
     modalElement.style.display = "block";
 }
@@ -38,7 +37,7 @@ function closeModal(modalElement) {
 }
 
 function openDropdown() {
-    console.log("opening dropdown")
+    console.log("opening dropdown");
     collegeDropDownReal.style.display = "block";
     collegeTextInput.style.borderRadius = "5px 5px 0 0";
 }
@@ -48,13 +47,17 @@ function closeDropdown() {
 }
 
 let hasTyped = false;
-showDropDownButton.addEventListener("click", () => collegeDropDownReal.style.display == "block"? closeDropdown() : openDropdown());
+showDropDownButton.addEventListener("click", () =>
+    collegeDropDownReal.style.display == "block"
+        ? closeDropdown()
+        : openDropdown()
+);
 collegeTextInput.addEventListener("keypress", () => {
     if (!hasTyped) {
         openDropdown();
     }
     hasTyped = true;
-})
+});
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
 
@@ -76,15 +79,14 @@ function setupGame() {
                 answers[fullDaysSinceEpoch % answers.length].trim();
             collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
             console.log(collegeOfTheDay);
-
         });
     for (let i = 0; i < maxSearchResults; i++) {
         const option = document.createElement("li");
         const img = document.createElement("img");
         const text = document.createElement("span");
         option.id = "option" + i;
-        option.appendChild(img)
-        option.appendChild(text)
+        option.appendChild(img);
+        option.appendChild(text);
         option.addEventListener("click", () => {
             const currOption = document.getElementById("option" + i);
 
@@ -166,7 +168,7 @@ function addTableRow(data) {
     const measurements = geod.Inverse(...params);
     const distance = (0.000621371 * measurements.s12).toFixed(1);
     distTD.innerText = distance + " mi";
-    
+
     tableRow.appendChild(distTD);
 
     const directionTD = document.createElement("td");
@@ -270,26 +272,25 @@ function buildDropDownMenu() {
         })
         .filter((x) => x.searchVal && !guesses.includes(x.name))
         .slice(0, maxSearchResults);
-    console.log(response)
+    console.log(response);
     for (let i = 0; i < maxSearchResults; i++) {
         collegeDropDownReal.children[i].style.display = "flex";
         if (i >= response.length) {
             collegeDropDownReal.children[i].style.display = "none";
-            continue
+            continue;
         }
-        const text = response[i].display
+        const text = response[i].display;
         collegeDropDownReal.children[i].lastChild.innerText = text;
+        const collegeWebsite = collegeData.get(response[i].name)[6];
         const url =
-            "https://logo.clearbit.com/" +
-            collegeData.get(response[i].name)[6] +
-            "";
+            (/\.(png|svg|jpg|ico)$/i.test(collegeWebsite)
+                ? ""
+                : "https://logo.clearbit.com/") + collegeWebsite;
         try {
-            collegeDropDownReal.children[i].firstChild.src = url
-        }
-        catch(error) {
+            collegeDropDownReal.children[i].firstChild.src = url;
+        } catch (error) {
             collegeDropDownReal.children[i].firstChild.src = "whlogo.png";
         }
-        
     }
     if (response.length == 0 || !isquerry) {
         closeDropdown();
