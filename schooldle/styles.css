@@ -11,6 +11,7 @@
 table {
     margin-left: auto;
     margin-right: auto;
+    border-spacing: 10px;
 }
 
 .adding-row {
@@ -67,6 +68,18 @@ datalist {
 .custom-select-option {
     padding: 10px 1rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: left;
+}
+.custom-select-option img {
+    width: 30px;
+    border-radius: 3px;
+}
+
+.custom-select-option span {
+    padding-left: 20px;
 }
 
 .custom-select-option:hover {
@@ -130,14 +143,13 @@ datalist {
     width: 250px;
 }
 
-
 #guess-button:hover {
     background-color: rgb(164, 133, 62);
 }
 
 #guess-table {
     margin-top: 1rem;
-    
+
     width: 100%;
     text-align: center;
     background-color: rgb(240, 240, 240);
@@ -149,7 +161,7 @@ th {
     border: none;
 }
 td {
-  padding: 1rem;
+    padding: 1rem;
 }
 #heading {
     margin-bottom: 0px;

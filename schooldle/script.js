@@ -73,11 +73,15 @@ function setupGame() {
         });
     for (let i = 0; i < maxSearchResults; i++) {
         const option = document.createElement("li");
+        const img = document.createElement("img");
+        const text = document.createElement("span");
         option.id = "option" + i;
+        option.appendChild(img)
+        option.appendChild(text)
         option.addEventListener("click", () => {
             const currOption = document.getElementById("option" + i);
 
-            collegeTextInput.value = currOption.textContent;
+            collegeTextInput.value = currOption.lastChild.textContent;
         });
         option.className = "custom-select-option";
 
@@ -135,7 +139,7 @@ function addSchoolGuessRow() {
 }
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
-    for (let i = 0; i < data.length - 2; i++) {
+    for (let i = 0; i < data.length - 3; i++) {
         const elem = document.createElement("td");
         elem.innerText = data[i];
         if (data[i] === collegeInfoOfTheDay[i]) {
@@ -259,14 +263,27 @@ function buildDropDownMenu() {
         })
         .filter((x) => x.searchVal && !guesses.includes(x.name))
         .slice(0, maxSearchResults)
-        .map(({ _, display, __ }) => display);
-
+        .map(({ _, name, display }) => [name, display]);
+    console.log(response)
     for (let i = 0; i < maxSearchResults; i++) {
-        collegeDropDownReal.children[i].style.display = "block";
+        collegeDropDownReal.children[i].style.display = "flex";
         if (i >= response.length) {
             collegeDropDownReal.children[i].style.display = "none";
+            continue
         }
-        collegeDropDownReal.children[i].innerText = response[i];
+        const text = response[i][0]
+        collegeDropDownReal.children[i].lastChild.innerText = text;
+        const url =
+            "https://logo.clearbit.com/" +
+            collegeData.get(response[i][0])[6] +
+            "";
+        try {
+            collegeDropDownReal.children[i].firstChild.src = url
+        }
+        catch(error) {
+            collegeDropDownReal.children[i].firstChild.src = "whlogo.png";
+        }
+        
     }
     if (response.length == 0 || !isquerry) {
         closeDropdown();
