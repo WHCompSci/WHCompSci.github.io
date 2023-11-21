@@ -256,6 +256,10 @@ function getArrowEmoji(lat1, lon1, lat2, lon2) {
 collegeTextInput.addEventListener("keyup", buildDropDownMenu);
 
 function buildDropDownMenu() {
+    collegeDropDownReal.scroll({
+        top: 0,
+        behavior: "smooth",
+    });
     let query = collegeTextInput.value.toLowerCase();
     let isquerry = true;
     if (query.length == 0) {
