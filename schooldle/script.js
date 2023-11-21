@@ -27,7 +27,7 @@ let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in t
 const getIDfromSchoolName = {};
 const guesses = [];
 const collegeData = new Map();
-
+const noCollegesMSG = "No colleges found"
 function openModal(modalElement) {
     modalElement.style.display = "block";
 }
@@ -89,8 +89,10 @@ function setupGame() {
         option.appendChild(text);
         option.addEventListener("click", () => {
             const currOption = document.getElementById("option" + i);
-
-            collegeTextInput.value = currOption.lastChild.textContent;
+            if (currOption.lastChild.innerText == noCollegesMSG) {
+                return
+            }
+                collegeTextInput.value = currOption.lastChild.textContent;
         });
         option.className = "custom-select-option";
 
@@ -292,8 +294,10 @@ function buildDropDownMenu() {
             collegeDropDownReal.children[i].firstChild.src = "whlogo.png";
         }
     }
-    if (response.length == 0 || !isquerry) {
-        closeDropdown();
+    if (response.length == 0) {
+        collegeDropDownReal.firstChild.style.display = "flex";
+        collegeDropDownReal.firstChild.firstChild.src = "noresults.png";
+        collegeDropDownReal.firstChild.lastChild.innerText = noCollegesMSG;
     } else {
         openDropdown();
     }
