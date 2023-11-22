@@ -120,6 +120,7 @@ blockquote{
     background-color: transparent;
     border: none;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .dropdown-button span {
@@ -179,9 +180,7 @@ td {
     font-family: "EB Garamond", serif;
 }
 
-.info-button {
-    margin-right: 10px;
-}
+
 
 .input-field {
     padding-right: 40px; /* Adjust this value based on the desired spacing */
@@ -336,7 +335,7 @@ tr {
 }
 
 .toolbar-button:hover {
-    background-color: #eee;
+    background-color: #dedede;
 }
 
 .toolbar-button:visited {

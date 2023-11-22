@@ -14,13 +14,14 @@ const winModal = document.getElementById("win-modal");
 const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
+const maxGuesses = 8;
 const newAnswerEveryXhours = 5;
 const collegeDropDownReal = document.getElementById("guess-dropdown");
 const showDropDownButton = document.getElementById("dropdown-button");
 const collegeTextInput = document.getElementById("text-input");
 const maxSearchResults = 1000;
 const guessTable = document.getElementById("guess-table");
-const guessButton = document.getElementById("guess-button");
+// const guessButton = document.getElementById("guess-button");
 const urlOfFile = "collegedata.csv";
 const urlOfAnswerFile = "answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
@@ -93,6 +94,7 @@ function setupGame() {
                 return
             }
                 collegeTextInput.value = currOption.lastChild.textContent;
+                guessCollege();
         });
         option.className = "custom-select-option";
 
@@ -123,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 
-function addSchoolGuessRow() {
+function guessCollege() {
     const selectedSchool = collegeTextInput.value.split(",")[0];
     if (selectedSchool === "") return;
     if (!collegeData.has(selectedSchool)) {
@@ -135,7 +137,8 @@ function addSchoolGuessRow() {
         guessTable.firstChild.display = "block";
     }
     const schoolData = collegeData.get(selectedSchool);
-
+    closeDropdown()
+    hasTyped = false
     addTableRow(schoolData);
     guesses.push(selectedSchool);
     buildDropDownMenu();
@@ -189,11 +192,11 @@ function addTableRow(data) {
 }
 
 //function to handle the college guess.
-guessButton.addEventListener("click", addSchoolGuessRow);
+// guessButton.addEventListener("click", addSchoolGuessRow);
 
 document.addEventListener("keydown", (ke) => {
     if (ke.key === "Enter") {
-        addSchoolGuessRow();
+        guessCollege();
     }
 });
 //Function to prevent User from entering invalid college names in the text box.
@@ -258,7 +261,6 @@ collegeTextInput.addEventListener("keyup", buildDropDownMenu);
 function buildDropDownMenu() {
     collegeDropDownReal.scroll({
         top: 0,
-        behavior: "smooth",
     });
     let query = collegeTextInput.value.toLowerCase();
     let isquerry = true;
@@ -303,6 +305,6 @@ function buildDropDownMenu() {
         collegeDropDownReal.firstChild.firstChild.src = "noresults.png";
         collegeDropDownReal.firstChild.lastChild.innerText = noCollegesMSG;
     } else {
-        openDropdown();
+        // openDropdown();
     }
 }

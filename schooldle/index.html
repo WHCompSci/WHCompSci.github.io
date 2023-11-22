@@ -21,16 +21,20 @@
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
         />
-        <script
-            type="text/javascript"
-            src="https://geographiclib.sourceforge.io/scripts/geographiclib-geodesic.min.js"
-        ></script>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        />
+        <script type="text/javascript" src="geodesic.min.js"></script>
     </head>
 
     <body>
         <div class="toolbar">
-            <button id="info-open-btn" class="toolbar-button info-button">
-                <span class="material-symbols-outlined">info</span>
+            <a class="toolbar-button" href="/">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <button class="toolbar-button" id="endless-mode-btn">
+                <span class="material-symbols-outlined"> all_inclusive </span>
             </button>
 
             <div class="container">
@@ -38,13 +42,12 @@
                 <blockquote>A wordle inspired college-guessing game</blockquote>
             </div>
 
+            <button id="info-open-btn" class="toolbar-button info-button">
+                <span class="material-symbols-outlined">info</span>
+            </button>
             <button class="toolbar-button" id="open-modal-btn">
                 <span class="material-symbols-outlined">help</span>
             </button>
-
-            <a class="toolbar-button" href="/">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </a>
         </div>
         <div class="modal" id="modal">
             <div class="modal-content">
@@ -121,23 +124,7 @@
             </div>
         </div>
         <div class="container">
-            <div class="input-wrapper">
-                <input
-                    type="text"
-                    id="text-input"
-                    placeholder="Enter college name or abbreviation"
-                />
-                <button id="dropdown-button">
-                    <span class="material-symbols-outlined">
-                        arrow_drop_down
-                    </span>
-                </button>
-            </div>
-            <ul
-                id="guess-dropdown"
-                class="custom-select-options custom-scrollbar"
-            ></ul>
-            <button id="guess-button">Guess this School!</button>
+            <!-- <button id="guess-button">Guess this School!</button> -->
             <table>
                 <tbody id="guess-table">
                     <tr id="table-column-names">
@@ -156,14 +143,7 @@
                                 >
                             </div>
                         </th>
-                        <th>
-                            <div class="tooltip">
-                                Campus
-                                <span class="tooltiptext">
-                                    City, Suburb, or Town
-                                </span>
-                            </div>
-                        </th>
+                        <th><div class="tooltip">City</div></th>
                         <th>
                             <div class="tooltip">
                                 Acceptance Rate
@@ -185,7 +165,7 @@
                             <div class="tooltip">
                                 Distance
                                 <span class="tooltiptext">
-                                    from your guess to the answer
+                                    from your guess to the answer on a map
                                 </span>
                             </div>
                         </th>
@@ -193,13 +173,30 @@
                             <div class="tooltip">
                                 Direction
                                 <span class="tooltiptext">
-                                    from your guess to the answer
+                                    from your guess to the answer on a map
                                 </span>
                             </div>
                         </th>
                     </tr>
                 </tbody>
             </table>
+
+            <div class="input-wrapper">
+                <input
+                    type="text"
+                    id="text-input"
+                    placeholder="Enter college name or abbreviation"
+                />
+                <button id="dropdown-button">
+                    <span class="material-symbols-outlined">
+                        arrow_drop_down
+                    </span>
+                </button>
+            </div>
+            <ul
+                id="guess-dropdown"
+                class="custom-select-options custom-scrollbar"
+            ></ul>
         </div>
 
         <script src="script.js"></script>
