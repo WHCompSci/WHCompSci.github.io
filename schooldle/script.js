@@ -16,8 +16,8 @@ const numGuessesDisplay = document.getElementById("num-guesses");
 
 const maxGuesses = 8;
 const newAnswerEveryXhours = 5;
-const subtitle = document.getElementById("subtitle")
-const endlessModeButton = document.getElementById("endless-mode-btn")
+const subtitle = document.getElementById("subtitle");
+const endlessModeButton = document.getElementById("endless-mode-btn");
 const collegeDropDownReal = document.getElementById("guess-dropdown");
 const showDropDownButton = document.getElementById("dropdown-button");
 const collegeTextInput = document.getElementById("text-input");
@@ -27,18 +27,18 @@ const guessTable = document.getElementById("guess-table");
 const urlOfFile = "collegedata.csv";
 const urlOfAnswerFile = "answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
-let gameMode = "normal" // normal mode or endless mode
+let gameMode = "normal"; // normal mode or endless mode
 const getIDfromSchoolName = {};
 let guesses = [];
 const collegeData = new Map();
-const noCollegesMSG = "No colleges found"
+const noCollegesMSG = "No colleges found";
 let answers;
 
 function clearGuesses() {
     for (let guess = 0; guess < guesses.length; guess++) {
-        guessTable.removeChild(guessTable.lastChild)
+        guessTable.removeChild(guessTable.lastChild);
     }
-    guesses = []
+    guesses = [];
 }
 function enterEndlessMode() {
     collegeOfTheDay =
@@ -46,18 +46,16 @@ function enterEndlessMode() {
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log(collegeOfTheDay);
     clearGuesses();
-    gameMode = "endless"
-    subtitle.innerText = "Endless Mode"
+    gameMode = "endless";
+    subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
-    gameMode = "normal"
-    subtitle.innerText = "A wordle inspired college-guessing game"
+    gameMode = "normal";
+    subtitle.innerText = "A wordle inspired college-guessing game";
 }
-
 
 function openModal(modalElement) {
     modalElement.style.display = "block";
-
 }
 
 function closeModal(modalElement) {
@@ -87,9 +85,7 @@ collegeTextInput.addEventListener("keypress", () => {
     hasTyped = true;
 });
 endlessModeButton.addEventListener("click", () =>
-    gameMode == "normal"
-        ? enterEndlessMode()
-        : exitEndlessMode()
+    gameMode == "normal" ? enterEndlessMode() : exitEndlessMode()
 );
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
@@ -97,7 +93,16 @@ closeModalBtn.addEventListener("click", () => closeModal(modal));
 infoOpenModalBtn.addEventListener("click", () => openModal(infoModal));
 infoCloseModalBtn.addEventListener("click", () => closeModal(infoModal));
 
-winCloseModalBtn.addEventListener("click", () => closeModal(winModal));
+winCloseModalBtn.addEventListener("click", () => {
+    closeModal(winModal);
+    if (gameMode == "endless") {
+        collegeOfTheDay =
+            answers[Math.floor(Math.random() * answers.length)].trim();
+        collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
+        console.log(collegeOfTheDay);
+        clearGuesses();
+    }
+});
 function setupGame() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(
@@ -123,7 +128,7 @@ function setupGame() {
         option.addEventListener("click", () => {
             const currOption = document.getElementById("option" + i);
             if (currOption.lastChild.innerText == noCollegesMSG) {
-                return
+                return;
             }
             collegeTextInput.value = currOption.lastChild.textContent;
             guessCollege();
@@ -169,8 +174,8 @@ function guessCollege() {
         guessTable.firstChild.display = "block";
     }
     const schoolData = collegeData.get(selectedSchool);
-    closeDropdown()
-    hasTyped = false
+    closeDropdown();
+    hasTyped = false;
     addTableRow(schoolData);
     guesses.push(selectedSchool);
     buildDropDownMenu();
@@ -181,18 +186,20 @@ function guessCollege() {
             "You got the correct answer in <strong>" +
             guesses.length +
             "</strong> guesses.";
-        if (gameMode == "endless") {
-            collegeOfTheDay =
-                answers[Math.floor(Math.random() * answers.length)].trim();
-            collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
-            console.log(collegeOfTheDay);
-            clearGuesses();
-
-
-        }
-
     }
 }
+
+// Initialize and add the map
+let map;
+
+async function initMap() {
+  // The location of Uluru
+  const position = { lat: -25.344, lng: 131.031 };
+  // Request needed libraries.
+  //@ts-ignore
+  const { Map } = await google.maps.importLibrary("maps");
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
     for (let i = 0; i < data.length - 3; i++) {
