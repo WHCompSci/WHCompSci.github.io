@@ -16,6 +16,8 @@ const numGuessesDisplay = document.getElementById("num-guesses");
 
 const maxGuesses = 8;
 const newAnswerEveryXhours = 5;
+const subtitle = document.getElementById("subtitle")
+const endlessModeButton = document.getElementById("endless-mode-btn")
 const collegeDropDownReal = document.getElementById("guess-dropdown");
 const showDropDownButton = document.getElementById("dropdown-button");
 const collegeTextInput = document.getElementById("text-input");
@@ -25,12 +27,37 @@ const guessTable = document.getElementById("guess-table");
 const urlOfFile = "collegedata.csv";
 const urlOfAnswerFile = "answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
+let gameMode = "normal" // normal mode or endless mode
 const getIDfromSchoolName = {};
-const guesses = [];
+let guesses = [];
 const collegeData = new Map();
 const noCollegesMSG = "No colleges found"
+let answers;
+
+function clearGuesses() {
+    for (let guess = 0; guess < guesses.length; guess++) {
+        guessTable.removeChild(guessTable.lastChild)
+    }
+    guesses = []
+}
+function enterEndlessMode() {
+    collegeOfTheDay =
+        answers[Math.floor(Math.random() * answers.length)].trim();
+    collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
+    console.log(collegeOfTheDay);
+    clearGuesses();
+    gameMode = "endless"
+    subtitle.innerText = "Endless Mode"
+}
+function exitEndlessMode() {
+    gameMode = "normal"
+    subtitle.innerText = "A wordle inspired college-guessing game"
+}
+
+
 function openModal(modalElement) {
     modalElement.style.display = "block";
+
 }
 
 function closeModal(modalElement) {
@@ -59,6 +86,11 @@ collegeTextInput.addEventListener("keypress", () => {
     }
     hasTyped = true;
 });
+endlessModeButton.addEventListener("click", () =>
+    gameMode == "normal"
+        ? enterEndlessMode()
+        : exitEndlessMode()
+);
 openModalBtn.addEventListener("click", () => openModal(modal));
 closeModalBtn.addEventListener("click", () => closeModal(modal));
 
@@ -75,7 +107,7 @@ function setupGame() {
     fetch(urlOfAnswerFile)
         .then((response) => response.text())
         .then((content) => {
-            const answers = content.split("\n").filter((x) => x.length > 1);
+            answers = content.split("\n").filter((x) => x.length > 1);
             collegeOfTheDay =
                 answers[fullDaysSinceEpoch % answers.length].trim();
             collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
@@ -93,8 +125,8 @@ function setupGame() {
             if (currOption.lastChild.innerText == noCollegesMSG) {
                 return
             }
-                collegeTextInput.value = currOption.lastChild.textContent;
-                guessCollege();
+            collegeTextInput.value = currOption.lastChild.textContent;
+            guessCollege();
         });
         option.className = "custom-select-option";
 
@@ -149,6 +181,16 @@ function guessCollege() {
             "You got the correct answer in <strong>" +
             guesses.length +
             "</strong> guesses.";
+        if (gameMode == "endless") {
+            collegeOfTheDay =
+                answers[Math.floor(Math.random() * answers.length)].trim();
+            collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
+            console.log(collegeOfTheDay);
+            clearGuesses();
+
+
+        }
+
     }
 }
 function addTableRow(data) {
@@ -235,14 +277,14 @@ function splitCSVLine(csvLine) {
 }
 
 function getArrowEmoji(lat1, lon1, lat2, lon2) {
-    const arrowUp = "⬆️";
-    const arrowDown = "⬇️";
-    const arrowLeft = "⬅️";
-    const arrowRight = "➡️";
-    const arrowUpRight = "↗️";
-    const arrowUpLeft = "↖️";
-    const arrowDownRight = "↘️";
-    const arrowDownLeft = "↙️";
+    // const arrowUp = "⬆️";
+    // const arrowDown = "⬇️";
+    // const arrowLeft = "⬅️";
+    // const arrowRight = "➡️";
+    // const arrowUpRight = "↗️";
+    // const arrowUpLeft = "↖️";
+    // const arrowDownRight = "↘️";
+    // const arrowDownLeft = "↙️";
     const winningSymbol = "🏆";
     // angle += 90; //little hack for now
     if (lat1 == lat2 && lon1 == lon2) {
@@ -280,7 +322,6 @@ function buildDropDownMenu() {
         })
         .filter((x) => x.searchVal && !guesses.includes(x.name))
         .slice(0, maxSearchResults);
-    console.log(response);
     for (let i = 0; i < maxSearchResults; i++) {
         collegeDropDownReal.children[i].style.display = "flex";
         if (i >= response.length) {
