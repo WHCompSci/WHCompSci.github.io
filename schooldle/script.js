@@ -140,9 +140,7 @@ function resetMapPosAndClearMarkers() {
 function setupMap() {
     markersYetToBeAdded = [];
     markers = new OpenLayers.Layer.Markers("Markers");
-    var mapnik = new OpenLayers.Layer.OSM();
-
-    map.addLayer(mapnik);
+    map.addLayer(new OpenLayers.Layer.OSM())
     map.addLayer(markers);
     resetMapPosAndClearMarkers();
 }
@@ -223,10 +221,10 @@ function guessCollege() {
 
 function handleWin() {
     
-    numGuessesDisplay.innerHTML =
+    numGuessesDisplay.innerHTML = guesses.length > 1 ?
         "You got the correct answer in <strong>" +
         guesses.length +
-        "</strong> guesses.";
+        "</strong> guesses.": "First Try!";
     //player won
     let bounds = new OpenLayers.Bounds();
     markersYetToBeAdded.forEach((coord) => {
