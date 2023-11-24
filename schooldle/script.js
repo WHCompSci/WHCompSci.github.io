@@ -412,23 +412,3 @@ function buildDropDownMenu() {
         collegeDropDownReal.firstChild.lastChild.innerText = noCollegesMSG;
     }
 }
-
-function calculateMapCenterAndZoom(coordinates) {
-    // Find the bounding box
-
-    // Determine the zoom level
-    const mapWidth = 600; // Width of your map container in pixels
-    const mapHeight = 400; // Height of your map container in pixels
-    const maxExtent = new OpenLayers.Bounds(
-        -20037508,
-        -20037508,
-        20037508,
-        20037508
-    );
-    const zoom = 5;
-
-    return {
-        center: center,
-        zoom: zoom,
-    };
-}
