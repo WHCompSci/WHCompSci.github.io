@@ -13,7 +13,11 @@ table {
     margin-right: auto;
     border-spacing: 10px;
 }
-
+div.olControlAttribution, div.olControlScaleLine {
+    font-family: Verdana;
+    font-size: 0.7em;
+    bottom: 3px;
+}
 .adding-row {
     opacity: 1;
 }
@@ -216,7 +220,7 @@ td {
 .modal-content {
     background-color: #fff;
     width: 60%;
-    max-width: 600px;
+    max-width: 700px;
     margin: 100px auto;
     padding: 20px;
     border-radius: 4px;

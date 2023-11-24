@@ -24,15 +24,20 @@ const collegeTextInput = document.getElementById("text-input");
 const maxSearchResults = 1000;
 const guessTable = document.getElementById("guess-table");
 // const guessButton = document.getElementById("guess-button");
-const urlOfFile = "collegedata.csv";
-const urlOfAnswerFile = "answerkey.csv";
+const urlOfFile = "data/collegedata.csv";
+const urlOfAnswerFile = "data/answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
 let gameMode = "normal"; // normal mode or endless mode
-const getIDfromSchoolName = {};
 let guesses = [];
+let answers;
 const collegeData = new Map();
 const noCollegesMSG = "No colleges found";
-let answers;
+
+const fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
+const toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+let markers;
+let markersYetToBeAdded;
+let map;
 
 function clearGuesses() {
     for (let guess = 0; guess < guesses.length; guess++) {
@@ -46,10 +51,13 @@ function enterEndlessMode() {
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log(collegeOfTheDay);
     clearGuesses();
+    resetMap();
     gameMode = "endless";
     subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
+    clearGuesses();
+    setupGame()
     gameMode = "normal";
     subtitle.innerText = "A wordle inspired college-guessing game";
 }
@@ -101,9 +109,34 @@ winCloseModalBtn.addEventListener("click", () => {
         collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
         console.log(collegeOfTheDay);
         clearGuesses();
+        resetMap()
     }
 });
+function resetMap() {
+    var options = {
+
+        controls: [
+          new OpenLayers.Control.Navigation(),
+          new OpenLayers.Control.PanZoomBar(),
+          new OpenLayers.Control.Attribution()
+        ]
+      };
+    markersYetToBeAdded = [];
+    markers = new OpenLayers.Layer.Markers("Markers");
+    map = new OpenLayers.Map("map");
+    var mapnik = new OpenLayers.Layer.OSM();
+    var position = new OpenLayers.LonLat(-96, 39).transform(
+        fromProjection,
+        toProjection
+    );
+    var zoom = 3.5;
+    map.addLayer(mapnik);
+    map.addLayer(markers);
+
+    map.setCenter(position, zoom);
+}
 function setupGame() {
+    resetMap()
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(
         ((now / 8.64e7) * 24) / newAnswerEveryXhours
@@ -179,26 +212,22 @@ function guessCollege() {
     addTableRow(schoolData);
     guesses.push(selectedSchool);
     buildDropDownMenu();
+
     if (selectedSchool === collegeOfTheDay) {
-        //player won
+
         openModal(winModal);
         numGuessesDisplay.innerHTML =
             "You got the correct answer in <strong>" +
             guesses.length +
             "</strong> guesses.";
+                    //player won
+        for(let i = 0; i < markersYetToBeAdded.length; i++) {
+            setTimeout(() => {
+                markers.addMarker(markersYetToBeAdded[i])
+            }, (i + 1) * 500)
+        }
     }
 }
-
-// Initialize and add the map
-let map;
-
-async function initMap() {
-  // The location of Uluru
-  const position = { lat: -25.344, lng: 131.031 };
-  // Request needed libraries.
-  //@ts-ignore
-  const { Map } = await google.maps.importLibrary("maps");
-  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
@@ -218,7 +247,11 @@ function addTableRow(data) {
         parseFloat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 1]),
         parseFloat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 2]),
     ];
-
+    var position = new OpenLayers.LonLat(params[1], params[0]).transform(
+        fromProjection,
+        toProjection
+    );
+    markersYetToBeAdded.push(new OpenLayers.Marker(position));
     const measurements = geod.Inverse(...params);
     const distance = (0.000621371 * measurements.s12).toFixed(1);
     distTD.innerText = distance + " mi";
@@ -352,7 +385,5 @@ function buildDropDownMenu() {
         collegeDropDownReal.firstChild.style.display = "flex";
         collegeDropDownReal.firstChild.firstChild.src = "noresults.png";
         collegeDropDownReal.firstChild.lastChild.innerText = noCollegesMSG;
-    } else {
-        // openDropdown();
     }
 }
