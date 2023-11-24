@@ -13,7 +13,8 @@ table {
     margin-right: auto;
     border-spacing: 10px;
 }
-div.olControlAttribution, div.olControlScaleLine {
+div.olControlAttribution,
+div.olControlScaleLine {
     font-family: Verdana;
     font-size: 0.7em;
     bottom: 3px;
@@ -55,8 +56,8 @@ datalist {
     background-color: #f1f1f1; /* Adjust the track color */
 }
 
-blockquote{
-    margin:0;
+blockquote {
+    margin: 0;
 }
 
 .custom-select {
@@ -173,7 +174,7 @@ th {
 }
 td {
     padding: 1rem;
-    aspect-ratio: 1 / 1 ;
+    aspect-ratio: 1 / 1;
     border-radius: 2px;
 }
 #heading {
@@ -183,8 +184,6 @@ td {
     font-size: 4rem;
     font-family: "EB Garamond", serif;
 }
-
-
 
 .input-field {
     padding-right: 40px; /* Adjust this value based on the desired spacing */
@@ -207,7 +206,9 @@ td {
     z-index: 9999;
     overflow: auto;
 }
-
+#OpenLayers_Layer_Markers_4 > * {
+    display: block !important;
+}
 .modal-close-btn {
     background-color: #333;
     color: #fff;
@@ -304,7 +305,6 @@ tr {
 
     text-indent: 1rem;
 }
-
 
 .toolbar {
     display: flex;

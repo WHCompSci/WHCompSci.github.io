@@ -33,11 +33,13 @@ let answers;
 const collegeData = new Map();
 const noCollegesMSG = "No colleges found";
 
+const map = new OpenLayers.Map("map", {
+    controls: [],
+});
 const fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
 const toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 let markers;
 let markersYetToBeAdded;
-let map = new OpenLayers.Map("map");
 
 function clearGuesses() {
     for (let guess = 0; guess < guesses.length; guess++) {
@@ -46,28 +48,31 @@ function clearGuesses() {
     guesses = [];
 }
 function enterEndlessMode() {
+    clearGuesses();
+    resetMapPosAndClearMarkers();
     collegeOfTheDay =
         answers[Math.floor(Math.random() * answers.length)].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log(collegeOfTheDay);
-    clearGuesses();
-    markers.clearMarkers();
-    markersYetToBeAdded = [];
+
     gameMode = "endless";
     subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
     clearGuesses();
-    markers.clearMarkers();
-    markersYetToBeAdded = [];
+    resetMapPosAndClearMarkers();
+    pickCollegeOftheDay();
+    gameMode = "normal";
+    subtitle.innerText = "A wordle inspired college-guessing game";
+}
+
+function pickCollegeOftheDay() {
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(
         ((now / 8.64e7) * 24) / newAnswerEveryXhours
     );
     collegeOfTheDay = answers[fullDaysSinceEpoch % answers.length].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
-    gameMode = "normal";
-    subtitle.innerText = "A wordle inspired college-guessing game";
 }
 
 function openModal(modalElement) {
@@ -117,46 +122,37 @@ winCloseModalBtn.addEventListener("click", () => {
         collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
         console.log(collegeOfTheDay);
         clearGuesses();
-        markers.clearMarkers();
-        markersYetToBeAdded = [];
+        resetMapPosAndClearMarkers();
     }
 });
-function resetMap() {
-    var options = {
-        controls: [
-            new OpenLayers.Control.Navigation(),
-            new OpenLayers.Control.PanZoomBar(),
-            new OpenLayers.Control.Attribution(),
-        ],
-    };
-    markersYetToBeAdded = [];
-    markers = new OpenLayers.Layer.Markers("Markers");
-    var mapnik = new OpenLayers.Layer.OSM();
+function resetMapPosAndClearMarkers() {
     var position = new OpenLayers.LonLat(-96, 39).transform(
         fromProjection,
         toProjection
     );
-    var zoom = 3.5;
+    var zoom = 4;
+    map.setCenter(position, zoom);
+    markers.clearMarkers();
+    markersYetToBeAdded = [];
+}
+
+
+function setupMap() {
+    markersYetToBeAdded = [];
+    markers = new OpenLayers.Layer.Markers("Markers");
+    var mapnik = new OpenLayers.Layer.OSM();
+
     map.addLayer(mapnik);
     map.addLayer(markers);
-
-    map.setCenter(position, zoom);
+    resetMapPosAndClearMarkers();
 }
 function setupGame() {
-    resetMap();
-    const now = new Date();
-    const fullDaysSinceEpoch = Math.floor(
-        ((now / 8.64e7) * 24) / newAnswerEveryXhours
-    );
-
+    setupMap();
     fetch(urlOfAnswerFile)
         .then((response) => response.text())
         .then((content) => {
             answers = content.split("\n").filter((x) => x.length > 1);
-            collegeOfTheDay =
-                answers[fullDaysSinceEpoch % answers.length].trim();
-            collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
-            console.log(collegeOfTheDay);
+            pickCollegeOftheDay();
         });
     for (let i = 0; i < maxSearchResults; i++) {
         const option = document.createElement("li");
@@ -221,18 +217,40 @@ function guessCollege() {
     buildDropDownMenu();
 
     if (selectedSchool === collegeOfTheDay) {
-        openModal(winModal);
-        numGuessesDisplay.innerHTML =
-            "You got the correct answer in <strong>" +
-            guesses.length +
-            "</strong> guesses.";
-        //player won
-        for (let i = 0; i < markersYetToBeAdded.length; i++) {
-            setTimeout(() => {
-                markers.addMarker(markersYetToBeAdded[i]);
-            }, (i + 1) * 500);
-        }
+        handleWin();
     }
+}
+
+function handleWin() {
+    
+    numGuessesDisplay.innerHTML =
+        "You got the correct answer in <strong>" +
+        guesses.length +
+        "</strong> guesses.";
+    //player won
+    let bounds = new OpenLayers.Bounds();
+    markersYetToBeAdded.forEach((coord) => {
+        bounds.extend(coord.lonlat);
+    });
+
+    // Calculate the center
+    const centerLonLat = bounds.getCenterLonLat();
+    console.log(centerLonLat);
+
+    var zoom = 4;
+    map.setCenter(centerLonLat, zoom);
+    map.zoomToExtent(bounds)
+    markersYetToBeAdded[markersYetToBeAdded.length - 1].setUrl('img/marker-final.png');
+    for (let i = 0; i < markersYetToBeAdded.length; i++) {
+        setTimeout(() => {
+            markers.addMarker(markersYetToBeAdded[i]);
+        }, (i + 2) * 500);
+        
+    }
+    console.log(markers)
+    console.log(markersYetToBeAdded)
+    openModal(winModal);
+    
 }
 
 function addTableRow(data) {
@@ -257,7 +275,10 @@ function addTableRow(data) {
         fromProjection,
         toProjection
     );
-    markersYetToBeAdded.push(new OpenLayers.Marker(position));
+    
+    const nextMarker = new OpenLayers.Marker(position)
+    markersYetToBeAdded.push(nextMarker);
+    console.log(markersYetToBeAdded);
     const measurements = geod.Inverse(...params);
     const distance = (0.000621371 * measurements.s12).toFixed(1);
     distTD.innerText = distance + " mi";
@@ -389,7 +410,27 @@ function buildDropDownMenu() {
     }
     if (response.length == 0) {
         collegeDropDownReal.firstChild.style.display = "flex";
-        collegeDropDownReal.firstChild.firstChild.src = "noresults.png";
+        collegeDropDownReal.firstChild.firstChild.src = "./img/noresults.png";
         collegeDropDownReal.firstChild.lastChild.innerText = noCollegesMSG;
     }
+}
+
+function calculateMapCenterAndZoom(coordinates) {
+    // Find the bounding box
+
+    // Determine the zoom level
+    const mapWidth = 600; // Width of your map container in pixels
+    const mapHeight = 400; // Height of your map container in pixels
+    const maxExtent = new OpenLayers.Bounds(
+        -20037508,
+        -20037508,
+        20037508,
+        20037508
+    );
+    const zoom = 5;
+
+    return {
+        center: center,
+        zoom: zoom,
+    };
 }
