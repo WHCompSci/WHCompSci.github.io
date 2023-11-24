@@ -216,16 +216,36 @@ function guessCollege() {
 
     if (selectedSchool === collegeOfTheDay) {
         handleWin();
+        return
+    }
+    if (guesses.length >= maxGuesses) {
+        handleLoss()
     }
 }
 
+function handleLoss() {
+    var position = new OpenLayers.LonLat(collegeInfoOfTheDay[collegeInfoOfTheDay.length - 2], collegeInfoOfTheDay[collegeInfoOfTheDay.length - 1]).transform(
+        fromProjection,
+        toProjection
+    );
+    const nextMarker = new OpenLayers.Marker(position)
+    markersYetToBeAdded.push(nextMarker);
+    document.getElementById('win-title').innerText = "😔You Lost!😔"
+    numGuessesDisplay.innerHTML = "The winning school was <strong>"+collegeOfTheDay+"</strong>."
+    zoomToMarkers()
+}
 function handleWin() {
-    
+    document.getElementById('win-title').innerText = "🎉You won!🎉"
     numGuessesDisplay.innerHTML = guesses.length > 1 ?
         "You got the correct answer in <strong>" +
         guesses.length +
         "</strong> guesses.": "First Try!";
     //player won
+
+    zoomToMarkers()
+}
+
+function zoomToMarkers() {
     let bounds = new OpenLayers.Bounds();
     markersYetToBeAdded.forEach((coord) => {
         bounds.extend(coord.lonlat);
@@ -248,9 +268,7 @@ function handleWin() {
     console.log(markers)
     console.log(markersYetToBeAdded)
     openModal(winModal);
-    
 }
-
 function addTableRow(data) {
     const tableRow = document.createElement("tr");
     for (let i = 0; i < data.length - 3; i++) {
@@ -273,7 +291,7 @@ function addTableRow(data) {
         fromProjection,
         toProjection
     );
-    
+
     const nextMarker = new OpenLayers.Marker(position)
     markersYetToBeAdded.push(nextMarker);
     console.log(markersYetToBeAdded);
