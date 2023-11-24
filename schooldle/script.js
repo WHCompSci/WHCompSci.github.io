@@ -37,7 +37,7 @@ const fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from
 const toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
 let markers;
 let markersYetToBeAdded;
-let map;
+let map = new OpenLayers.Map("map");
 
 function clearGuesses() {
     for (let guess = 0; guess < guesses.length; guess++) {
@@ -51,13 +51,21 @@ function enterEndlessMode() {
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log(collegeOfTheDay);
     clearGuesses();
-    resetMap();
+    markers.clearMarkers();
+    markersYetToBeAdded = [];
     gameMode = "endless";
     subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
     clearGuesses();
-    setupGame()
+    markers.clearMarkers();
+    markersYetToBeAdded = [];
+    const now = new Date();
+    const fullDaysSinceEpoch = Math.floor(
+        ((now / 8.64e7) * 24) / newAnswerEveryXhours
+    );
+    collegeOfTheDay = answers[fullDaysSinceEpoch % answers.length].trim();
+    collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     gameMode = "normal";
     subtitle.innerText = "A wordle inspired college-guessing game";
 }
@@ -109,21 +117,20 @@ winCloseModalBtn.addEventListener("click", () => {
         collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
         console.log(collegeOfTheDay);
         clearGuesses();
-        resetMap()
+        markers.clearMarkers();
+        markersYetToBeAdded = [];
     }
 });
 function resetMap() {
     var options = {
-
         controls: [
-          new OpenLayers.Control.Navigation(),
-          new OpenLayers.Control.PanZoomBar(),
-          new OpenLayers.Control.Attribution()
-        ]
-      };
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.PanZoomBar(),
+            new OpenLayers.Control.Attribution(),
+        ],
+    };
     markersYetToBeAdded = [];
     markers = new OpenLayers.Layer.Markers("Markers");
-    map = new OpenLayers.Map("map");
     var mapnik = new OpenLayers.Layer.OSM();
     var position = new OpenLayers.LonLat(-96, 39).transform(
         fromProjection,
@@ -136,7 +143,7 @@ function resetMap() {
     map.setCenter(position, zoom);
 }
 function setupGame() {
-    resetMap()
+    resetMap();
     const now = new Date();
     const fullDaysSinceEpoch = Math.floor(
         ((now / 8.64e7) * 24) / newAnswerEveryXhours
@@ -214,17 +221,16 @@ function guessCollege() {
     buildDropDownMenu();
 
     if (selectedSchool === collegeOfTheDay) {
-
         openModal(winModal);
         numGuessesDisplay.innerHTML =
             "You got the correct answer in <strong>" +
             guesses.length +
             "</strong> guesses.";
-                    //player won
-        for(let i = 0; i < markersYetToBeAdded.length; i++) {
+        //player won
+        for (let i = 0; i < markersYetToBeAdded.length; i++) {
             setTimeout(() => {
-                markers.addMarker(markersYetToBeAdded[i])
-            }, (i + 1) * 500)
+                markers.addMarker(markersYetToBeAdded[i]);
+            }, (i + 1) * 500);
         }
     }
 }
