@@ -22,6 +22,9 @@ div.olControlScaleLine {
 .adding-row {
     opacity: 1;
 }
+#guesses-remaining {
+    margin-top: 0.5rem;
+}
 
 datalist {
     width: 200px;

@@ -16,6 +16,7 @@ const numGuessesDisplay = document.getElementById("num-guesses");
 
 const maxGuesses = 8;
 const newAnswerEveryXhours = 5;
+const guessesRemainingText = document.getElementById("guesses-remaining");
 const subtitle = document.getElementById("subtitle");
 const endlessModeButton = document.getElementById("endless-mode-btn");
 const collegeDropDownReal = document.getElementById("guess-dropdown");
@@ -140,7 +141,7 @@ function resetMapPosAndClearMarkers() {
 function setupMap() {
     markersYetToBeAdded = [];
     markers = new OpenLayers.Layer.Markers("Markers");
-    map.addLayer(new OpenLayers.Layer.OSM())
+    map.addLayer(new OpenLayers.Layer.OSM());
     map.addLayer(markers);
     resetMapPosAndClearMarkers();
 }
@@ -213,13 +214,24 @@ function guessCollege() {
     addTableRow(schoolData);
     guesses.push(selectedSchool);
     buildDropDownMenu();
+    const guessesRemaining = maxGuesses - guesses.length;
+    if (guessesRemaining > 1) {
+        guessesRemainingText.innerHTML = "You have <strong>" + guessesRemaining + " guesses remaining.</strong>";
+    }
+    else if (guessesRemaining === 1) {
+        guessesRemainingText.innerHTML = "You have <strong>1 guess remaining.</strong>";
+    }
+    else {
+        guessesRemainingText.innerHTML = "You have <strong>no guesses remaining.</strong>";
+    }
+
 
     if (selectedSchool === collegeOfTheDay) {
         handleWin();
-        return
+        return;
     }
     if (guesses.length >= maxGuesses) {
-        handleLoss()
+        handleLoss();
     }
 }
 
@@ -228,21 +240,21 @@ function handleLoss() {
         fromProjection,
         toProjection
     );
-    const nextMarker = new OpenLayers.Marker(position)
+    const nextMarker = new OpenLayers.Marker(position);
     markersYetToBeAdded.push(nextMarker);
-    document.getElementById('win-title').innerText = "😔You Lost!😔"
-    numGuessesDisplay.innerHTML = "The winning school was <strong>"+collegeOfTheDay+"</strong>."
-    zoomToMarkers()
+    document.getElementById('win-title').innerText = "😔You Lost!😔";
+    numGuessesDisplay.innerHTML = "The winning school was <strong>" + collegeOfTheDay + "</strong>.";
+    zoomToMarkers();
 }
 function handleWin() {
-    document.getElementById('win-title').innerText = "🎉You won!🎉"
+    document.getElementById('win-title').innerText = "🎉You won!🎉";
     numGuessesDisplay.innerHTML = guesses.length > 1 ?
         "You got the correct answer in <strong>" +
         guesses.length +
-        "</strong> guesses.": "First Try!";
+        "</strong> guesses." : "First Try!";
     //player won
 
-    zoomToMarkers()
+    zoomToMarkers();
 }
 
 function zoomToMarkers() {
@@ -257,16 +269,16 @@ function zoomToMarkers() {
 
     var zoom = 4;
     map.setCenter(centerLonLat, zoom);
-    map.zoomToExtent(bounds)
+    map.zoomToExtent(bounds);
     markersYetToBeAdded[markersYetToBeAdded.length - 1].setUrl('img/marker-final.png');
     for (let i = 0; i < markersYetToBeAdded.length; i++) {
         setTimeout(() => {
             markers.addMarker(markersYetToBeAdded[i]);
         }, (i + 2) * 500);
-        
+
     }
-    console.log(markers)
-    console.log(markersYetToBeAdded)
+    console.log(markers);
+    console.log(markersYetToBeAdded);
     openModal(winModal);
 }
 function addTableRow(data) {
@@ -292,7 +304,7 @@ function addTableRow(data) {
         toProjection
     );
 
-    const nextMarker = new OpenLayers.Marker(position)
+    const nextMarker = new OpenLayers.Marker(position);
     markersYetToBeAdded.push(nextMarker);
     console.log(markersYetToBeAdded);
     const measurements = geod.Inverse(...params);
