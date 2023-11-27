@@ -166,15 +166,24 @@ function setupGame() {
                 return;
             }
             collegeTextInput.value = currOption.lastChild.textContent;
-            guessCollege();
+            guessCollege(getSelectedCollege());
         });
         option.className = "custom-select-option";
 
         collegeDropDownReal.appendChild(option);
     }
     buildDropDownMenu();
+    const previousGuesses = localStorage.getItem("guessList");
+    console.log(previousGuesses)
+    for (const guess of previousGuesses) {
+        guessCollege(guess)
+    }
+
 }
 
+function getSelectedCollege() {
+    return collegeTextInput.value.split(",")[0];
+}
 // Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", () => {
     // Fetch the file
@@ -197,8 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
 
-function guessCollege() {
-    const selectedSchool = collegeTextInput.value.split(",")[0];
+function guessCollege(selectedSchool) {
     if (selectedSchool === "") return;
     if (!collegeData.has(selectedSchool)) {
         return;
@@ -213,6 +221,10 @@ function guessCollege() {
     hasTyped = false;
     addTableRow(schoolData);
     guesses.push(selectedSchool);
+    if (gameMode === "normal") {
+        localStorage.setItem("guessList", guesses);
+    }
+    
     buildDropDownMenu();
     const guessesRemaining = maxGuesses - guesses.length;
     if (guessesRemaining > 1) {
@@ -333,7 +345,7 @@ function addTableRow(data) {
 
 document.addEventListener("keydown", (ke) => {
     if (ke.key === "Enter") {
-        guessCollege();
+        guessCollege(getSelectedCollege());
     }
 });
 //Function to prevent User from entering invalid college names in the text box.
