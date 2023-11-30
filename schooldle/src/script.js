@@ -25,8 +25,8 @@ const collegeTextInput = document.getElementById("text-input");
 const maxSearchResults = 1000;
 const guessTable = document.getElementById("guess-table");
 // const guessButton = document.getElementById("guess-button");
-const urlOfFile = "data/collegedata.csv";
-const urlOfAnswerFile = "data/answerkey.csv";
+const urlOfFile = "./data/collegedata.csv";
+const urlOfAnswerFile = "./data/answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
 let gameMode = "normal"; // normal mode or endless mode
 let guesses = [];
