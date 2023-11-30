@@ -74,10 +74,33 @@ function pickCollegeOftheDay() {
     const fullDaysSinceEpoch = Math.floor(
         ((now / 8.64e7) * 24) / newAnswerEveryXhours
     );
+
+    console.log(msToTime(now - Math.ceil(
+        ((now / 8.64e7) * 24) / newAnswerEveryXhours
+    ) * 8.64e7/24 ))
     collegeOfTheDay = answers[fullDaysSinceEpoch % answers.length].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log("Set the college info to be "+collegeInfoOfTheDay)
 }
+
+function getTimeToNextAnswer() {
+    return msToTime(now - Math.ceil(
+        ((now / 8.64e7) * 24) / newAnswerEveryXhours
+    ) * 8.64e7/24 );
+}
+
+function msToTime(duration) {
+    var milliseconds = Math.floor((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+    seconds = (seconds < 10) ? "0" + seconds : seconds;
+  
+    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+  }
 
 function openModal(modalElement) {
     modalElement.style.display = "block";
@@ -164,6 +187,7 @@ function getWithExpiry(key) {
 	if (now.getTime() > item.expiry) {
 		// If the item is expired, delete the item from storage
 		// and return null
+        console.log("removing")
 		localStorage.removeItem(key)
 		return null
 	}
@@ -187,7 +211,7 @@ function setupGame() {
             pickCollegeOftheDay();
             loadPreviousAnswers();
             if (getWithExpiry("hasWon") === null) {
-                localStorage.setWithExpiry("hasWon", false, 60 *1000) //stay for 60 secs
+                setWithExpiry("hasWon", false, 3 *1000) //stay for 60 secs
             }
             
         });
@@ -215,12 +239,9 @@ function setupGame() {
 }
 
 function loadPreviousAnswers() {
-    const strPrevGuesses = localStorage.getItem("guessList");
-    if (strPrevGuesses !== null) {
-        console.log(strPrevGuesses);
-        const previousGuesses = strPrevGuesses.split(",");
-        console.log(previousGuesses);
-        for (const guess of previousGuesses) {
+    const prevGuesses = getWithExpiry("guessList");
+    if (prevGuesses !== null) {
+        for (const guess of prevGuesses) {
             console.log("guessing " + guess);
             guessCollege(guess);
         }
@@ -268,13 +289,13 @@ function guessCollege(selectedSchool) {
     addTableRow(schoolData);
     guesses.push(selectedSchool);
     if (gameMode === "normal") {
-        localStorage.setItem("guessList", guesses);
+        setWithExpiry("guessList", guesses, 1000);
     }
     
     buildDropDownMenu();
     updateGuessesRemaining();
 
-    if ((selectedSchool === collegeOfTheDay) && (localStorage.getItem("hasWon") === "false")) {
+    if ((selectedSchool === collegeOfTheDay) && (getWithExpiry("hasWon") === "false")) {
         localStorage.setItem("hasWon", true);
         console.log("won for first time")
         handleWin();
