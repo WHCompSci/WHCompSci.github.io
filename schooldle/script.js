@@ -47,6 +47,7 @@ function clearGuesses() {
         guessTable.removeChild(guessTable.lastChild);
     }
     guesses = [];
+    updateGuessesRemaining();
 }
 function enterEndlessMode() {
     clearGuesses();
@@ -65,6 +66,7 @@ function exitEndlessMode() {
     pickCollegeOftheDay();
     gameMode = "normal";
     subtitle.innerText = "A wordle inspired college-guessing game";
+    loadPreviousAnswers();
 }
 
 function pickCollegeOftheDay() {
@@ -74,6 +76,7 @@ function pickCollegeOftheDay() {
     );
     collegeOfTheDay = answers[fullDaysSinceEpoch % answers.length].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
+    console.log("Set the college info to be "+collegeInfoOfTheDay)
 }
 
 function openModal(modalElement) {
@@ -137,6 +140,36 @@ function resetMapPosAndClearMarkers() {
     markersYetToBeAdded = [];
 }
 
+function setWithExpiry(key, value, ttl) {
+	const now = new Date()
+
+	// `item` is an object which contains the original value
+	// as well as the time when it's supposed to expire
+	const item = {
+		value: value,
+		expiry: now.getTime() + ttl,
+	}
+	localStorage.setItem(key, JSON.stringify(item))
+}
+
+function getWithExpiry(key) {
+	const itemStr = localStorage.getItem(key)
+	// if the item doesn't exist, return null
+	if (!itemStr) {
+		return null
+	}
+	const item = JSON.parse(itemStr)
+	const now = new Date()
+	// compare the expiry time of the item with the current time
+	if (now.getTime() > item.expiry) {
+		// If the item is expired, delete the item from storage
+		// and return null
+		localStorage.removeItem(key)
+		return null
+	}
+	return item.value
+}
+
 
 function setupMap() {
     markersYetToBeAdded = [];
@@ -152,6 +185,11 @@ function setupGame() {
         .then((content) => {
             answers = content.split("\n").filter((x) => x.length > 1);
             pickCollegeOftheDay();
+            loadPreviousAnswers();
+            if (getWithExpiry("hasWon") === null) {
+                localStorage.setWithExpiry("hasWon", false, 60 *1000) //stay for 60 secs
+            }
+            
         });
     for (let i = 0; i < maxSearchResults; i++) {
         const option = document.createElement("li");
@@ -173,12 +211,20 @@ function setupGame() {
         collegeDropDownReal.appendChild(option);
     }
     buildDropDownMenu();
-    const previousGuesses = localStorage.getItem("guessList");
-    console.log(previousGuesses)
-    for (const guess of previousGuesses) {
-        guessCollege(guess)
-    }
 
+}
+
+function loadPreviousAnswers() {
+    const strPrevGuesses = localStorage.getItem("guessList");
+    if (strPrevGuesses !== null) {
+        console.log(strPrevGuesses);
+        const previousGuesses = strPrevGuesses.split(",");
+        console.log(previousGuesses);
+        for (const guess of previousGuesses) {
+            console.log("guessing " + guess);
+            guessCollege(guess);
+        }
+    }
 }
 
 function getSelectedCollege() {
@@ -226,6 +272,20 @@ function guessCollege(selectedSchool) {
     }
     
     buildDropDownMenu();
+    updateGuessesRemaining();
+
+    if ((selectedSchool === collegeOfTheDay) && (localStorage.getItem("hasWon") === "false")) {
+        localStorage.setItem("hasWon", true);
+        console.log("won for first time")
+        handleWin();
+        return;
+    }
+    if (guesses.length >= maxGuesses) {
+        handleLoss();
+    }
+}
+
+function updateGuessesRemaining() {
     const guessesRemaining = maxGuesses - guesses.length;
     if (guessesRemaining > 1) {
         guessesRemainingText.innerHTML = "You have <strong>" + guessesRemaining + " guesses remaining.</strong>";
@@ -235,15 +295,6 @@ function guessCollege(selectedSchool) {
     }
     else {
         guessesRemainingText.innerHTML = "You have <strong>no guesses remaining.</strong>";
-    }
-
-
-    if (selectedSchool === collegeOfTheDay) {
-        handleWin();
-        return;
-    }
-    if (guesses.length >= maxGuesses) {
-        handleLoss();
     }
 }
 
@@ -294,6 +345,7 @@ function zoomToMarkers() {
     openModal(winModal);
 }
 function addTableRow(data) {
+    console.log("data="+data+" ciotd="+collegeInfoOfTheDay)
     const tableRow = document.createElement("tr");
     for (let i = 0; i < data.length - 3; i++) {
         const elem = document.createElement("td");
