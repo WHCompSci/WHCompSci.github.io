@@ -121,10 +121,9 @@ blockquote {
 
 #dropdown-button {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 28px;
+    right: 0px;
     width: 50px; /* Adjust the width as needed */
-    height: 130%;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -389,12 +388,13 @@ tr {
     background-color: var(--partially-correct);
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .container {
         padding: 20px;
     }
-    #text-input {
-        margin: 0;
+    #text-input, #guess-dropdown {
+        margin: 0 1rem;
+        width:99%;
     }
 }
 
@@ -402,8 +402,9 @@ tr {
     .container {
         padding: 10px;
     }
-    #text-input {
-        width: 100vw;
+    #text-input, #guess-dropdown {
+        margin: 0 1rem;
+        width:100vw;
     }
 }
 
@@ -419,4 +420,4 @@ tr {
     #guess-button {
         width: 100%;
     }
-}
+} */
