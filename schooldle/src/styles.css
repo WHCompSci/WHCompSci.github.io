@@ -421,3 +421,11 @@ tr {
         width: 100%;
     }
 } */
+
+
+#timer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: xx-large;
+    font-weight: 800;
+}

@@ -15,9 +15,14 @@ const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
 const maxGuesses = 8;
-const newAnswerEveryXhours = 5;
+const newAnswerEveryXhours = 2;
 const guessesRemainingText = document.getElementById("guesses-remaining");
 const subtitle = document.getElementById("subtitle");
+const timer = document.getElementById("timer");
+
+setInterval(() => {
+    timer.innerText = getTimeToNextAnswer();
+}, 10)
 const endlessModeButton = document.getElementById("endless-mode-btn");
 const collegeDropDownReal = document.getElementById("guess-dropdown");
 const showDropDownButton = document.getElementById("dropdown-button");
@@ -71,22 +76,24 @@ function exitEndlessMode() {
 
 function pickCollegeOftheDay() {
     const now = new Date();
-    const fullDaysSinceEpoch = Math.floor(
-        ((now / 8.64e7) * 24) / newAnswerEveryXhours
-    );
-
-    console.log(msToTime(now - Math.ceil(
-        ((now / 8.64e7) * 24) / newAnswerEveryXhours
-    ) * 8.64e7/24 ))
-    collegeOfTheDay = answers[fullDaysSinceEpoch % answers.length].trim();
+    const inc = incrementByXHours(now)
+    collegeOfTheDay = answers[inc % answers.length].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log("Set the college info to be "+collegeInfoOfTheDay)
 }
+function incrementByXHours(date) {
+    const millisecondsInHour = 60 * 60 * 1000;
+    const currentTime = date.getTime();
+    const hoursElapsed = Math.floor(currentTime / millisecondsInHour);
+    const result = Math.floor(hoursElapsed / newAnswerEveryXhours) + 1;
+    return result;
+  }
+
+console.log(incrementByXHours(new Date(0)))
 
 function getTimeToNextAnswer() {
-    return msToTime(now - Math.ceil(
-        ((now / 8.64e7) * 24) / newAnswerEveryXhours
-    ) * 8.64e7/24 );
+    const now = new Date();
+    return msToTime(now - (incrementByXHours(now)+1) * newAnswerEveryXhours * 60 * 60 * 1000);
 }
 
 function msToTime(duration) {
@@ -99,7 +106,7 @@ function msToTime(duration) {
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     seconds = (seconds < 10) ? "0" + seconds : seconds;
   
-    return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+    return hours + ":" + minutes + ":" + seconds
   }
 
 function openModal(modalElement) {
