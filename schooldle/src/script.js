@@ -19,8 +19,9 @@ const newAnswerEveryXhours = 2;
 const guessesRemainingText = document.getElementById("guesses-remaining");
 const subtitle = document.getElementById("subtitle");
 const timer = document.getElementById("timer");
-
+timer.style.display = "none"
 setInterval(() => {
+    
     timer.innerText = msToTime(getTimeMSToNextAnswer());
 }, 10)
 const endlessModeButton = document.getElementById("endless-mode-btn");
@@ -62,11 +63,15 @@ function enterEndlessMode() {
         answers[Math.floor(Math.random() * answers.length)].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log(collegeOfTheDay);
-
+    timer.style.display = "none"
     gameMode = "endless";
     subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
+    const hasWon = getWithExpiry("hasWon")
+    if(hasWon != null) {
+        timer.style.display = "block"
+    }
     clearGuesses();
     resetMapPosAndClearMarkers();
     pickCollegeOftheDay();
@@ -218,9 +223,6 @@ function setupGame() {
             answers = content.split("\n").filter((x) => x.length > 1);
             pickCollegeOftheDay();
             loadPreviousAnswers();
-            if (getWithExpiry("hasWon") === null) {
-                setWithExpiry("hasWon", false, 1000000000) //stay for 60 secs
-            }
             
         });
     for (let i = 0; i < maxSearchResults; i++) {
@@ -254,6 +256,11 @@ function loadPreviousAnswers() {
             guessCollege(guess);
         }
     }
+    const hasWon = getWithExpiry("hasWon")
+    if(hasWon != null) {
+        timer.style.display = "block"
+    }
+    
 }
 
 function getSelectedCollege() {
@@ -303,14 +310,19 @@ function guessCollege(selectedSchool) {
     buildDropDownMenu();
     updateGuessesRemaining();
 
-    if ((selectedSchool === collegeOfTheDay) && (getWithExpiry("hasWon") === "false")) {
+    const hasWon = getWithExpiry("hasWon")
+    if (selectedSchool === collegeOfTheDay && hasWon == null) {
         setWithExpiry("hasWon", true, getTimeMSToNextAnswer());
-        console.log("won for first time")
+        console.log("won for first time of the day")
         handleWin();
+        timer.style.display = "block"
         return;
     }
-    if (guesses.length >= maxGuesses) {
+    if (guesses.length >= maxGuesses && hasWon == null) {
+        
         handleLoss();
+        timer.style.display = "block"
+        setWithExpiry("hasWon", true, getTimeMSToNextAnswer());
     }
 }
 
@@ -362,9 +374,9 @@ function zoomToMarkers() {
     var zoom = 4;
     map.setCenter(centerLonLat, zoom);
     map.zoomToExtent(bounds);
-    markersYetToBeAdded[markersYetToBeAdded.length - 1].setUrl('img/marker-final.png');
     for (let i = 0; i < markersYetToBeAdded.length; i++) {
         setTimeout(() => {
+            markersYetToBeAdded[i].setUrl(i == markersYetToBeAdded.length - 1 ? 'img/marker-final.png' : 'img/marker.png')
             markers.addMarker(markersYetToBeAdded[i]);
         }, (i + 2) * 500);
 
