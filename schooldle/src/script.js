@@ -21,7 +21,7 @@ const subtitle = document.getElementById("subtitle");
 const timer = document.getElementById("timer");
 
 setInterval(() => {
-    timer.innerText = getTimeToNextAnswer();
+    timer.innerText = msToTime(getTimeMSToNextAnswer());
 }, 10)
 const endlessModeButton = document.getElementById("endless-mode-btn");
 const collegeDropDownReal = document.getElementById("guess-dropdown");
@@ -36,6 +36,7 @@ let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in t
 let gameMode = "normal"; // normal mode or endless mode
 let guesses = [];
 let answers;
+
 const collegeData = new Map();
 const noCollegesMSG = "No colleges found";
 
@@ -89,11 +90,11 @@ function incrementByXHours(date) {
     return result;
   }
 
-console.log(incrementByXHours(new Date(0)))
 
-function getTimeToNextAnswer() {
+function getTimeMSToNextAnswer() {
     const now = new Date();
-    return msToTime(now - (incrementByXHours(now)+1) * newAnswerEveryXhours * 60 * 60 * 1000);
+    return (incrementByXHours(now)  * newAnswerEveryXhours * 60 * 60 * 1000) - now.getTime()
+    // return msToTime(now - (+1) * newAnswerEveryXhours * 60 * 60 * 1000);
 }
 
 function msToTime(duration) {
@@ -218,7 +219,7 @@ function setupGame() {
             pickCollegeOftheDay();
             loadPreviousAnswers();
             if (getWithExpiry("hasWon") === null) {
-                setWithExpiry("hasWon", false, 3 *1000) //stay for 60 secs
+                setWithExpiry("hasWon", false, 1000000000) //stay for 60 secs
             }
             
         });
@@ -296,14 +297,14 @@ function guessCollege(selectedSchool) {
     addTableRow(schoolData);
     guesses.push(selectedSchool);
     if (gameMode === "normal") {
-        setWithExpiry("guessList", guesses, 1000);
+        setWithExpiry("guessList", guesses, getTimeMSToNextAnswer());
     }
     
     buildDropDownMenu();
     updateGuessesRemaining();
 
     if ((selectedSchool === collegeOfTheDay) && (getWithExpiry("hasWon") === "false")) {
-        localStorage.setItem("hasWon", true);
+        setWithExpiry("hasWon", true, getTimeMSToNextAnswer());
         console.log("won for first time")
         handleWin();
         return;
