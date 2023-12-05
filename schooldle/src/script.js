@@ -1,6 +1,7 @@
 // Get the modal and button elements
 
 // Function to open the modal
+const toolbar = document.getElementById("toolbar")
 
 const modal = document.getElementById("modal");
 const openModalBtn = document.getElementById("open-modal-btn");
@@ -15,13 +16,13 @@ const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
 const maxGuesses = 8;
-const newAnswerEveryXhours = 2;
+const newAnswerEveryXhours = 0.01;
 const guessesRemainingText = document.getElementById("guesses-remaining");
 const subtitle = document.getElementById("subtitle");
 const timer = document.getElementById("timer");
 timer.style.display = "none"
 setInterval(() => {
-    
+    const now = new Date()
     timer.innerText = msToTime(getTimeMSToNextAnswer());
 }, 10)
 const endlessModeButton = document.getElementById("endless-mode-btn");
@@ -57,6 +58,8 @@ function clearGuesses() {
     updateGuessesRemaining();
 }
 function enterEndlessMode() {
+    toolbar.style.backgroundColor = "#fbeabc"
+    console.log()
     clearGuesses();
     resetMapPosAndClearMarkers();
     collegeOfTheDay =
@@ -68,8 +71,9 @@ function enterEndlessMode() {
     subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
-    const hasWon = getWithExpiry("hasWon")
-    if(hasWon != null) {
+    toolbar.style.backgroundColor = "#f0f0f0"
+    const completedGame = getWithExpiry("completedGame")
+    if(completedGame != null) {
         timer.style.display = "block"
     }
     clearGuesses();
@@ -83,7 +87,7 @@ function exitEndlessMode() {
 function pickCollegeOftheDay() {
     const now = new Date();
     const inc = incrementByXHours(now)
-    collegeOfTheDay = answers[inc % answers.length].trim();
+    collegeOfTheDay = answers[Math.floor(inc/newAnswerEveryXhours) % answers.length].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log("Set the college info to be "+collegeInfoOfTheDay)
 }
@@ -91,14 +95,13 @@ function incrementByXHours(date) {
     const millisecondsInHour = 60 * 60 * 1000;
     const currentTime = date.getTime();
     const hoursElapsed = Math.floor(currentTime / millisecondsInHour);
-    const result = Math.floor(hoursElapsed / newAnswerEveryXhours) + 1;
-    return result;
+    return hoursElapsed + 1;
   }
 
 
 function getTimeMSToNextAnswer() {
     const now = new Date();
-    return (incrementByXHours(now)  * newAnswerEveryXhours * 60 * 60 * 1000) - now.getTime()
+    return (incrementByXHours(now) * 60 * 60 * 1000) - now.getTime()
     // return msToTime(now - (+1) * newAnswerEveryXhours * 60 * 60 * 1000);
 }
 
@@ -245,6 +248,7 @@ function setupGame() {
         collegeDropDownReal.appendChild(option);
     }
     buildDropDownMenu();
+    updateGuessesRemaining();
 
 }
 
@@ -256,8 +260,8 @@ function loadPreviousAnswers() {
             guessCollege(guess);
         }
     }
-    const hasWon = getWithExpiry("hasWon")
-    if(hasWon != null) {
+    const completedGame = getWithExpiry("completedGame")
+    if(completedGame != null) {
         timer.style.display = "block"
     }
     
@@ -310,19 +314,24 @@ function guessCollege(selectedSchool) {
     buildDropDownMenu();
     updateGuessesRemaining();
 
-    const hasWon = getWithExpiry("hasWon")
-    if (selectedSchool === collegeOfTheDay && hasWon == null) {
-        setWithExpiry("hasWon", true, getTimeMSToNextAnswer());
+    const completedGame = (getWithExpiry("completedGame") == null || gameMode == "endless")
+    if (selectedSchool === collegeOfTheDay && completedGame) {
+        setWithExpiry("completedGame", true, getTimeMSToNextAnswer());
         console.log("won for first time of the day")
         handleWin();
-        timer.style.display = "block"
+        if(gameMode != "endless") {
+            timer.style.display = "block"
+        }
+        
         return;
     }
-    if (guesses.length >= maxGuesses && hasWon == null) {
+    if (guesses.length >= maxGuesses && completedGame) {
         
         handleLoss();
-        timer.style.display = "block"
-        setWithExpiry("hasWon", true, getTimeMSToNextAnswer());
+        if(gameMode != "endless") {
+            timer.style.display = "block"
+        }
+        setWithExpiry("completedGame", true, getTimeMSToNextAnswer());
     }
 }
 

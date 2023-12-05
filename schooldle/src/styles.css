@@ -308,7 +308,7 @@ tr {
     text-indent: 1rem;
 }
 
-.toolbar {
+#toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
