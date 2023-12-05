@@ -286,6 +286,10 @@ tr {
     opacity: 1;
 }
 
+#timer {
+    font-family: "Nanum Gothic", sans-serif;
+}
+
 #text-input {
     margin: auto;
     border-radius: 4px;
