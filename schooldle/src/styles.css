@@ -192,7 +192,7 @@ td {
     width: 200px; /* Adjust the width as needed */
 }
 
-.input-wrapper {
+#input-wrapper {
     position: relative;
     display: inline-block;
 }
@@ -286,8 +286,15 @@ tr {
     opacity: 1;
 }
 
-#timer {
-    font-family: "Nanum Gothic", sans-serif;
+#timer-text {
+    font-weight: 600;
+    font-size: 48px;
+}
+#timer-info {
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: small;
+    color: rgb(95, 111, 117);
 }
 
 #text-input {

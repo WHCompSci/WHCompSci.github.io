@@ -20,10 +20,11 @@ const newAnswerEveryXhours = 0.01;
 const guessesRemainingText = document.getElementById("guesses-remaining");
 const subtitle = document.getElementById("subtitle");
 const timer = document.getElementById("timer");
+const timerText = document.getElementById("timer-text");
 timer.style.display = "none"
 setInterval(() => {
     const now = new Date()
-    timer.innerText = msToTime(getTimeMSToNextAnswer());
+    timerText.innerText = msToTime(getTimeMSToNextAnswer());
 }, 10)
 const endlessModeButton = document.getElementById("endless-mode-btn");
 const collegeDropDownReal = document.getElementById("guess-dropdown");
@@ -66,7 +67,7 @@ function enterEndlessMode() {
         answers[Math.floor(Math.random() * answers.length)].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log(collegeOfTheDay);
-    timer.style.display = "none"
+    hideTimerAndShowInput()
     gameMode = "endless";
     subtitle.innerText = "Endless Mode";
 }
@@ -74,7 +75,7 @@ function exitEndlessMode() {
     toolbar.style.backgroundColor = "#f0f0f0"
     const completedGame = getWithExpiry("completedGame")
     if(completedGame != null) {
-        timer.style.display = "block"
+        
     }
     clearGuesses();
     resetMapPosAndClearMarkers();
@@ -84,6 +85,18 @@ function exitEndlessMode() {
     loadPreviousAnswers();
 }
 
+function showTimerAndHideInput() {
+        guessesRemainingText.style.display = "none"
+        document.getElementById("input-wrapper").style.display = "none"
+        timer.style.display = "block"
+        closeDropdown()
+}
+function hideTimerAndShowInput() {
+    guessesRemainingText.style.display = "block"
+    document.getElementById("input-wrapper").style.display = "block"
+    timer.style.display = "none"
+    openDropdown()
+}
 function pickCollegeOftheDay() {
     const now = new Date();
     const inc = incrementByXHours(now)
@@ -262,7 +275,7 @@ function loadPreviousAnswers() {
     }
     const completedGame = getWithExpiry("completedGame")
     if(completedGame != null) {
-        timer.style.display = "block"
+        showTimerAndHideInput()
     }
     
 }
@@ -320,7 +333,7 @@ function guessCollege(selectedSchool) {
         console.log("won for first time of the day")
         handleWin();
         if(gameMode != "endless") {
-            timer.style.display = "block"
+            showTimerAndHideInput()
         }
         
         return;
@@ -329,7 +342,7 @@ function guessCollege(selectedSchool) {
         
         handleLoss();
         if(gameMode != "endless") {
-            timer.style.display = "block"
+            showTimerAndHideInput()
         }
         setWithExpiry("completedGame", true, getTimeMSToNextAnswer());
     }
