@@ -33,7 +33,7 @@ const collegeTextInput = document.getElementById("text-input");
 const maxSearchResults = 1000;
 const guessTable = document.getElementById("guess-table");
 // const guessButton = document.getElementById("guess-button");
-const urlOfFile = "./data/collegedata.csv";
+const urlOfFile = "./data/collegedata_abbr.csv";
 const urlOfAnswerFile = "./data/answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
 let gameMode = "normal"; // normal mode or endless mode
@@ -95,7 +95,7 @@ function hideTimerAndShowInput() {
     guessesRemainingText.style.display = "block"
     document.getElementById("input-wrapper").style.display = "block"
     timer.style.display = "none"
-    openDropdown()
+    //openDropdown()
 }
 function pickCollegeOftheDay() {
     const now = new Date();
@@ -410,7 +410,7 @@ function zoomToMarkers() {
 function addTableRow(data) {
     console.log("data="+data+" ciotd="+collegeInfoOfTheDay)
     const tableRow = document.createElement("tr");
-    for (let i = 0; i < data.length - 3; i++) {
+    for (let i = 0; i < data.length - 4; i++) {
         const elem = document.createElement("td");
         elem.innerText = data[i];
         if (data[i] === collegeInfoOfTheDay[i]) {
@@ -534,10 +534,12 @@ function buildDropDownMenu() {
     }
     const response = [...collegeData.entries()]
         .map(([name, data]) => {
+            const state = data[1]
+            const abbr = data[6]
             return {
                 name: name,
-                display: name + ", " + data[1],
-                searchVal: (name + ", " + data[1])
+                display: name + ", " + state,
+                searchVal: (name + ", " + state + " " + abbr)
                     .toLowerCase()
                     .includes(query),
             };
@@ -552,7 +554,7 @@ function buildDropDownMenu() {
         }
         const text = response[i].display;
         collegeDropDownReal.children[i].lastChild.innerText = text;
-        const collegeWebsite = collegeData.get(response[i].name)[6];
+        const collegeWebsite = collegeData.get(response[i].name)[7];
         const url =
             (/\.(png|svg|jpg|ico)$/i.test(collegeWebsite)
                 ? ""
