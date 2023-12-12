@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="src/output.css" rel="stylesheet" />
+        <script href="src/fraction.js" type="module"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script
+            id="MathJax-script"
+            async
+            src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+        ></script>
+        <script type="module" src="src/algorithm.js"></script>
+    </head>
+    <body class="font-Inter squares">
+        <div
+            class="container mx-auto my-10 px-3 max-w-[75vw] rounded-3xl bg-zinc-800 py-6 text-white bg-blend-multiply drop-shadow-xl"
+        >
+            <h1 class="mb-3 text-center text-4xl font-extrabold">
+                Yeargame
+                <span
+                    class="bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent underline decoration-[6px]"
+                    >Solver</span
+                >
+            </h1>
+            <p
+                class="mx-auto my-4 block max-w-md flex-col justify-center rounded border border-zinc-700 p-4 text-justify text-slate-400 drop-shadow-sm"
+            >
+                The Year Game is a puzzle that challenges you to express all the
+                numbers from 1 to 100 using only the digits of the current year.
+                Each digit must be used once and only once, however any number
+                of operations may be used to combine them. Please select the
+                operations below that the solver will have access to.
+            </p>
+
+            <form
+                id="form"
+                class="mx-auto flex max-w-md flex-col justify-center"
+            >
+                <div class="flex flex-row items-start justify-evenly">
+                    <div
+                        class="mb-4 flex flex-col"
+                        id="checkbox-container-unary"
+                    >
+                        <h2
+                            class="mb-2 text-center text-[20px] font-extralight uppercase text-slate-300"
+                        >
+                            Unary Operations
+                        </h2>
+                    </div>
+
+                    <div
+                        class="mb-4 flex flex-col"
+                        id="checkbox-container-binary"
+                    >
+                        <h2
+                            class="mb-2 text-center text-[20px] font-light uppercase text-slate-300"
+                        >
+                            Binary Operations
+                        </h2>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label
+                        for="year"
+                        class="mb-2 block text-sm font-medium text-white"
+                        >Year
+                        <span class="text-zinc-500"
+                            >(Slows down exponentially the more digits in the
+                            year)</span
+                        ></label
+                    >
+                    <input
+                        placeholder=""
+                        id="year"
+                        name="yearselect"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md bg-inherit bg-zinc-700 px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label
+                        for="min"
+                        class="mb-2 block text-sm font-medium text-white"
+                        >Minimum number
+                        <span class="text-zinc-500"
+                            >(Minimal performance cost)</span
+                        ></label
+                    >
+                    <input
+                        value="1"
+                        id="min"
+                        min="0"
+                        name="minselect"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md bg-inherit bg-zinc-700 px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label
+                        for="max"
+                        class="mb-2 block text-sm font-medium text-white"
+                        >Maximum number
+                        <span class="text-zinc-500">(Minimal performance cost)</span>
+                    </label>
+
+                    <input
+                        value="100"
+                        id="max"
+                        name="maxselect"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md bg-inherit bg-zinc-700 px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label
+                        for="max"
+                        class="mb-2 block text-sm font-medium text-white"
+                        >Max # of equations displayed per number
+                        <span class="text-zinc-500">(Minimal performance cost)</span>
+                    </label>
+
+                    <input
+                        value="1"
+                        id="maxPerLine"
+                        name="maxperline"
+                        type="number"
+                        step="1"
+                        class="border-grey-300 w-full rounded-md bg-inherit bg-zinc-700 px-3 py-2"
+                    />
+                </div>
+                <div class="mb-4">
+                    <label
+                        for="searchPerformance"
+                        class="mb-2 block text-sm font-medium text-white"
+                        >Search Depth <span class="text-zinc-500">(Try shallow search before deep search)</span></label
+                    >
+                    <select
+                        id="searchPerformance"
+                        name="plevel"
+                        class="block w-full rounded-lg border border-zinc-700 bg-zinc-700 p-2.5 text-sm text-white"
+                    >
+                        <option value="shallow">
+                            Shallow Search (Fastest)
+                        </option>
+                        <option value="medium">Medium Search (Faster)</option>
+                        <option value="deep">Deep Search (Slowest)</option>
+                    </select>
+                </div>
+                <button
+                    class="group relative my-6 inline-flex items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-pink-500 to-orange-400 p-0.5 text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-4 focus:ring-pink-800 group-hover:from-pink-500 group-hover:to-orange-400"
+                >
+                    <span
+                        id="submit-text"
+                        class="relative w-full rounded-md bg-zinc-800 px-5 py-2.5 transition-all duration-75 ease-in group-hover:bg-opacity-0"
+                    >
+                        Generate Solutions
+                    </span>
+                </button>
+            </form>
+            <div class="flex-none pb-5 text-center">
+                <span
+                    id="download-button"
+                    class="mx-auto mb-4 inline cursor-pointer bg-none bg-[length:100%_3px] bg-bottom bg-no-repeat pb-1 text-center font-extrabold text-zinc-300 hover:bg-gradient-to-r hover:from-pink-500 hover:to-orange-400 hover:text-zinc-200"
+                >
+                    Download Solutions
+                </span>
+            </div>
+        </div>
+    </body>
+    <script type="module" src="src/script.js"></script>
+</html>
