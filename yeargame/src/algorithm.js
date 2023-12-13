@@ -15,85 +15,20 @@ const PERF_LEVELS = {
     },
 }
 const FACTORIAL = new Uint32Array([
-    1,
-    1,
-    2,
-    6,
-    24,
-    120,
-    720,
-    5040,
-    40320,
-    362880,
-    3628800,
-    39916800,
-    479001600,
-    6227020800,
-    87178291200,
-    1307674368000,
-    20922789888000,
-    355687428096000,
+    1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600,
+    6227020800, 87178291200, 1307674368000, 20922789888000, 355687428096000,
     6402373705728000,
 ])
 
 const PRIMES = new Uint32Array([
-    2,
-    3,
-    5,
-    7,
-    11,
-    13,
-    17,
-    19,
-    23,
-    29,
-    31,
-    37,
-    41,
-    43,
-    47,
-    53,
-    59,
-    61,
-    67,
-    71,
-    73,
-    79,
-    83,
-    89,
-    97,
+    2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
+    73, 79, 83, 89, 97,
 ]) //used for hashing
 const DOUBLE_FACTORIAL = new Uint32Array([
-    1,
-    1,
-    2,
-    3,
-    8,
-    15,
-    48,
-    105,
-    384,
-    945,
-    3840,
-    10395,
-    46080,
-    135135,
-    645120,
-    2027025,
-    10321920,
-    34459425,
-    185794560,
-    654729075,
-    3715891200,
-    13749310575,
-    81749606400,
-    316234143225,
-    1961990553600,
-    7905853580625,
-    51011754393600,
-    213458046676875,
-    1428329123020800,
-    6190283353629375,
+    1, 1, 2, 3, 8, 15, 48, 105, 384, 945, 3840, 10395, 46080, 135135, 645120,
+    2027025, 10321920, 34459425, 185794560, 654729075, 3715891200, 13749310575,
+    81749606400, 316234143225, 1961990553600, 7905853580625, 51011754393600,
+    213458046676875, 1428329123020800, 6190283353629375,
 ])
 
 const PROPS = Object.freeze({
@@ -172,18 +107,18 @@ const DEFAULT_OPERATIONS = {
         },
         true
     ),
-    common_log: operation(
-        (x) => `\\log ${x}`,
-        (x) => `log(${x})`,
-        (x) => {
-            if (x.s === 1) {
-                return null
-            }
-            let n = Math.log10(x.n) - Math.log10(x.d)
-            return (n | 0) === n ? Fraction(n) : null
-        },
-        false
-    ),
+    // common_log: operation(
+    //     (x) => `\\log ${x}`,
+    //     (x) => `log(${x})`,
+    //     (x) => {
+    //         if (x <= 0) {
+    //             return null
+    //         }
+    //         let n = Math.log10(x.n) - Math.log10(x.d)
+    //         return n % 1 < Number.EPSILON ? Fraction(Math.round(n)) : null
+    //     },
+    //     false
+    // ),
     floor: operation(
         (x) => `\\lfloor ${x} \\rfloor`,
         (x) => `floor(${x})`,
@@ -196,6 +131,13 @@ const DEFAULT_OPERATIONS = {
         (x) => `ceil(${x})`,
         (x) => x.ceil(),
         false
+    ),
+    sign: operation(
+        (x) => `\\text{sign } ${x}`,
+        (x) => `sign(${x})`,
+        (x) => x == 0 ? x : Fraction(x.s),
+        false,
+        PROPS.RECIPRICOL
     ),
     recipricol: operation(
         (x) => `${x}^{-1}`,
@@ -274,23 +216,27 @@ const DEFAULT_OPERATIONS = {
         },
         true
     ),
-    log_base: operation(
-        (a, b) => `\\log_{\\,${a}} ${b}`,
-        (a, b) => `log(${a}, ${b})`,
-        (a, b) => {
-            if (a.equals(1) || a < 0 || b <= 0) return null
-            if (b.equals(1) || a.equals(0)) {
-                return Fraction(0)
-            }
-            let n = Math.log(b.n) - Math.log(b.d)
-            let d = Math.log(a.n) - Math.log(a.d)
-            if ((n | 0) === n && (d | 0) === d) {
-                return Fraction(n, d)
-            }
-            return null
-        },
-        false
-    ),
+    // log_base: operation(
+    //     (a, b) => `\\log_{\\,${a}} ${b}`,
+    //     (a, b) => `log(${a}, ${b})`,
+    //     (a, b) => {
+    //         if (a.equals(1) || a < 0 || b <= 0) return null
+    //         if (b.equals(1) || a.equals(0)) {
+    //             console.log("A: "+a+" "+b)
+    //             return Fraction(0)
+    //         }
+    //         let frac = (Math.log(b.n) - Math.log(b.d))/(Math.log(a.n) - Math.log(a.d))
+    //         let frac_rounded = parseFloat(frac.toFixed(5))
+    //         if (Math.abs(frac - frac_rounded) < 1e-15) {
+    //             return Fraction((frac_rounded * 100000), 100000)
+    //         }
+    //         console.log(
+    //             "B: " + a + " " + b + " " + Math.abs(frac - frac_rounded)
+    //         )
+    //         return null
+    //     },
+    //     false
+    // ),
     // remainder: operation(
     //     (a, b) => `${a} \\% ${b}`,
     //     (a, b) => `(${a}) % (${b})`,
@@ -302,6 +248,25 @@ const DEFAULT_OPERATIONS = {
         (a, b) => `${a} \\bmod{${b}}`,
         (a, b) => `mod(${a}, ${b})`,
         (a, b) => a.mod(b).add(b).mod(b),
+        false
+    ),
+    binom: operation(
+        (a, b) => `\\binom ${a}${b}`,
+        (a, b) => `C(${a}, ${b})`,
+        (a, b) => {
+            if (b.d !== 1 || b < 0 || b > 18 || b > a) return null
+            if (a == b || b == 0) return Fraction(1)
+            if (a == 0) return Fraction(0)
+            if (a.d === 1 && a > 0 && a <= 18) {
+                return Fraction(FACTORIAL[a.n], FACTORIAL[b.n] * FACTORIAL[a.n - b.n])
+            }
+            let numer = a
+            for(let i = 1; i < b; i++) {numer = numer.mul(a.sub(i))}
+    
+            return numer.mul(FACTORIAL[b.n].inverse)
+
+             
+        },
         false
     ),
 }
@@ -426,7 +391,7 @@ function find_all_equations(
     }
 
     for (const simple of used_number_groups[used_number_groups.length - 1]) {
-        if(add_solution(simple)) return getReturnValue()//short circuit
+        if (add_solution(simple)) return getReturnValue() //short circuit
     }
     const queue = new Queue(used_number_groups.flat())
 
@@ -475,7 +440,7 @@ function find_all_equations(
                 index: index,
                 stacked_u_ops: curr_expression.stacked_u_ops + 1,
             }
-            if (add_solution(next_expression)) return getReturnValue()//short circuit
+            if (add_solution(next_expression)) return getReturnValue() //short circuit
 
             if (
                 !similar_expressions.has(hashed) &&
@@ -538,7 +503,8 @@ function find_all_equations(
                             index: new_idx,
                             stacked_u_ops: 0,
                         }
-                        if(add_solution(next_expression)) return getReturnValue()//short circuit
+                        if (add_solution(next_expression))
+                            return getReturnValue() //short circuit
                         used_number_groups[new_idx].push(next_expression)
                         if (!similar_expressions.has(hashed)) {
                             queue.enqueue(next_expression)
@@ -559,7 +525,6 @@ function find_all_equations(
         )
     }
     return getReturnValue()
-    
 }
 
 function* all_digital_orderings(year, year_digits_sorted, max_index) {

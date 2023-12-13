@@ -26,7 +26,7 @@ year_box.defaultValue = new Date().getFullYear()
 
 function createToggle(id, text, is_checked_by_default) {
 
-    return `<div class="justify-left mb-3 flex w-full items-center">
+    return `<div class="justify-left mb-4 flex w-full items-center">
         <label
             for="${id}"
             class="text-dark flex flex-row cursor-pointer select-none items-center dark:text-white"
