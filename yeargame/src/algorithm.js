@@ -1,5 +1,5 @@
 import Fraction from "./fraction.js"
-
+let I = 1
 const PERF_LEVELS = {
     shallow: {
         MAX_INTERMEDIATE: 1000,
@@ -99,11 +99,15 @@ const DEFAULT_OPERATIONS = {
         (x) => `\\sqrt ${x}`,
         (x) => `root(${x})`,
         (x) => {
-            if (x.d != 1 || x.s != 1) {
+            if (x < 0) {
                 return null
             }
-            let root = Math.sqrt(x)
-            return (root | 0) === root ? Fraction(root) : null
+            let root_numerator = Math.sqrt(x.n)
+            let root_denom = Math.sqrt(x.d)
+            return (root_numerator | 0) === root_numerator &&
+                (root_denom | 0) === root_denom
+                ? Fraction(root_numerator, root_denom)
+                : null
         },
         true
     ),
@@ -325,16 +329,25 @@ function find_all_equations(
             solutions[solution.value.n] = []
             // if this number has not been found yet
             num_undiscovered_solutions--
+            console.log(
+                "discovered new solution for " +
+                    solution.value.n +
+                    " :: " +
+                    solution.expression +
+                    "  num_undiscovered_solutions=" +
+                    num_undiscovered_solutions + " " + I
+            )
+            I++
             // once we find all the solutions, we don't need to keep searching
             if (short_circuit && num_undiscovered_solutions <= 0) {
                 solutions[solution.value.n].push(solution.expression)
-                console.log("Found All solutions")
+                console.log("Found All solutions. The last one was: " + solution.expression)
                 return true
             }
         }
-        if (solutions[solution.value.n].length < max_equations_per_num) {
-            solutions[solution.value.n].push(solution.expression)
-        }
+        
+        solutions[solution.value.n].push(solution.expression)
+        
     }
     const year_digits_sorted = Array.from(new Set(year)).sort()
     const [max_index, max_arr] = goedel_encode(
