@@ -217,7 +217,7 @@ document.addEventListener("keydown", (event) => {
         car.visitedPositions = [{ x: car.startPos.x, y: car.startPos.y }]
         car.draw()
     }
-    // if (event.key == "e") {
+    //if (event.key == "e") {
     //     const lastPos = car.visitedPositions[car.visitedPositions.length - 1]
     //     const lastCell = {
     //         x: Math.floor(lastPos.x / cellSize),
@@ -269,59 +269,58 @@ function getPossibleNextStates(currState) {
             ) {
                 continue
             }
-            //project a ray from the car's current position to the potential next position to make sure there are no walls in the way
-            // const deltaX = nextState.x - currState.x
-            // let hitWall = false
-            // if (deltaX == 0) {
-            //     //if deltaX is 0, then the slope is undefined, so we have to handle this case separately
-            //     for (let y = currState.y + 1; y <= nextState.y; y++) {
-            //         if (grid.get(currState.x, y) == MouseState.WALL) {
-            //             hitWall = true
-            //             break
-            //         }
-            //     }
-            //     if (!hitWall) {
-            //         possibleNextCells.push(nextState)
-            //     }
-            //     continue
-            // }
+            const deltaX = nextState.x - currState.x
+let hitWall = false
+if (deltaX == 0) {
+    //if deltaX is 0, then the slope is undefined, so we have to handle this case separately
+    for (let y = currState.y + 1; y <= nextState.y; y++) {
+        if (grid.get(currState.x, y) == MouseState.WALL) {
+            hitWall = true
+            break
+        }
+    }
+    if (!hitWall) {
+        possibleNextCells.push(nextState)
+    }
+    continue
+}
 
-            // const deltaY = nextState.y - currState.y
-            // const slope = deltaY / deltaX
-            // const lineThicknessRadius = carSize / 2
-            // const yIntercept =
-            //     currState.y * cellSize - slope * currState.x * cellSize
+const deltaY = nextState.y - currState.y
+const slope = deltaY / deltaX
+const lineThicknessRadius = carSize / 2
+const yIntercept =
+    currState.y * cellSize - slope * currState.x * cellSize
 
-            // for (let x = nextState.x; x > currState.x; x++) {
-            //     const y = slope * x + yIntercept //y = mx + b
-            //     const offset = {
-            //         x:
-            //             (lineThicknessRadius * Math.sqrt(slope * slope + 1)) /
-            //             slope,
-            //         y: lineThicknessRadius * Math.sqrt(slope * slope + 1),
-            //     }
+for (let x = nextState.x; x > currState.x; x--) {
+    const y = slope * x + yIntercept //y = mx + b
+    const offset = {
+        x:
+            (lineThicknessRadius * Math.sqrt(slope * slope + 1)) /
+            slope,
+        y: lineThicknessRadius * Math.sqrt(slope * slope + 1),
+    }
 
-            //     const edge1 = { x: x + offset.x, y: y + offset.y }
-            //     const edge2 = { x: x - offset.x, y: y - offset.y }
-            //     const cell1 = {
-            //         x: Math.floor(edge1.x / cellSize),
-            //         y: Math.floor(edge1.y / cellSize),
-            //     }
-            //     const cell2 = {
-            //         x: Math.floor(edge2.x / cellSize),
-            //         y: Math.floor(edge2.y / cellSize),
-            //     }
+    const edge1 = { x: x + offset.x, y: y + offset.y }
+    const edge2 = { x: x - offset.x, y: y - offset.y }
+    const cell1 = {
+        x: Math.floor(edge1.x / cellSize),
+        y: Math.floor(edge1.y / cellSize),
+    }
+    const cell2 = {
+        x: Math.floor(edge2.x / cellSize),
+        y: Math.floor(edge2.y / cellSize),
+    }
 
-            //     if (
-            //         grid.get(cell1.x, cell1.y) == MouseState.WALL ||
-            //         grid.get(cell2.x, cell2.y) == MouseState.WALL
-            //     ) {
-            //         hitWall = true
-            //         break
-            //     }
-            // }
+    if (
+        grid.get(cell1.x, cell1.y) == MouseState.WALL ||
+        grid.get(cell2.x, cell2.y) == MouseState.WALL
+    ) {
+        hitWall = true
+        break
+    }
+}
 
-            possibleNextCells.push(nextState)
+        if(!hitWall) possibleNextCells.push(nextState)
         }
     }
     return possibleNextCells
