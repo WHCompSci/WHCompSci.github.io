@@ -1,0 +1,42 @@
+    html, body {
+      margin: 0;
+      padding: 0;
+      
+    }
+    * {
+      font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+    }
+    
+/* disable scrolling */
+    body {
+      overflow: hidden;
+    }
+
+/* nice looking dropdowns,*/ 
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  box-shadow: none;
+  padding: 0.5em;
+  background-image: #c7c7dd;
+  background-color: transparent;
+  cursor: pointer;
+  text-align-last:center;
+  font-size: 1em;
+}
+
+.toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
