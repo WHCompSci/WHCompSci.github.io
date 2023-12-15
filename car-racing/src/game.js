@@ -334,9 +334,9 @@ function bfs(startCell) {
     const cantorStartState = cantor4(startState)
     parents.set(startState, null)
     const queue = [startState]
-
+    console.log("I'm goona the")
     while (queue.length > 0) {
-        console.log(queue.length)
+        console.log("This is the length of the Q: "+queue.length)
         // if(queue.length >  1000) return;
         let currState = queue.shift()
         //sort the possible next states by descending distance from the current state, filtering out any states that have already been visited
@@ -366,10 +366,11 @@ function bfs(startCell) {
 }
 
 function cantor4(state) {
-    function cantor2(k1, k2) {
-        return ((k1 + k2) * (k1 + k2 + 1)) / 2 + k2
-    }
-    return cantor2(cantor2(state.x, state.y), cantor2(state.vx, state.vy))
+    return `${state.x} ${state.y} ${state.vx} ${state.vy}`
+    // function cantor2(k1, k2) {
+    //     return ((k1 + k2) * (k1 + k2 + 1)) / 2 + k2
+    // }
+    // return cantor2(cantor2(state.x, state.y), cantor2(state.vx, state.vy))
 }
 
 //chebyshev distance
@@ -384,7 +385,7 @@ function distance(state1, state2) {
 //when the user clicks "S" on the keyboard, run the bfs algorithm
 document.addEventListener("keydown", (event) => {
     if (event.key == "s") {
-        const z = bfs({ x: 5, y: 5, v: 0, v: 0})
+        const z = bfs({ x: 5, y: 5, vx: 0, vy: 0})
         console.log(z)
         if(z === undefined) return;
         
@@ -398,6 +399,7 @@ document.addEventListener("keydown", (event) => {
             context.strokeStyle = "red"
             context.lineWidth = 2
             context.stroke()
+            context.fillRect(nextState.x * cellSize, nextState.y * cellSize, cellSize/2, cellSize/2)
             //draw a point at the next state
 
         }
@@ -406,16 +408,18 @@ document.addEventListener("keydown", (event) => {
 })
 
 function inverseCantor4(z) {
-    function inverseCantor2(z) {
-        const t = Math.floor((-1 + Math.sqrt(1 + 8 * z)) / 2)
-        const x = (t * (t + 3)) / 2 - z
-        const y = z - (t * (t + 1)) / 2
-        return [x, y]
-    }
-    const [x, y] = inverseCantor2(z)
-    const [a, b] = inverseCantor2(x)
-    const [c, d] = inverseCantor2(y)
-    return { x: a, y: b, vx: c, vy: d }
+    let x = z.split(" ")
+    return {x: x[0], y: x[1], vx: x[2], vy: x[3]}
+    // function inverseCantor2(z) {
+    //     const t = Math.floor((-1 + Math.sqrt(1 + 8 * z)) / 2)
+    //     const x = (t * (t + 3)) / 2 - z
+    //     const y = z - (t * (t + 1)) / 2
+    //     return [x, y]
+    // }
+    // const [x, y] = inverseCantor2(z)
+    // const [a, b] = inverseCantor2(x)
+    // const [c, d] = inverseCantor2(y)
+    // return { x: a, y: b, vx: c, vy: d }
 }
 
 // function tuplehash(v) {
