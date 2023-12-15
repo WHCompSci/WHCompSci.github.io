@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Full Page Canvas</title>
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <div id="toolbar">
+    <!-- Selector for gamemode - create map or play game -->
+    <label for="gameMode">Game Mode:</label>
+  <select id="gameMode">
+    <option value="create">Create Map</option>
+    <option value="play">Play Game</option>
+  </select>
+  <!-- Selector for which kind of block to place (start, end. or wall) -->
+  <label for="blockType">Block Type:</label>
+  <select id="blockType">
+    <option value="wall">Wall</option>
+    <option value="start">Start Line</option>
+  </select> 
+  </div>
+  
+   
+
+  <canvas id="canvas"></canvas>
+
+  <script src="src/game.js"></script>
+</body>
+</html>
