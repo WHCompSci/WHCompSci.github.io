@@ -4,21 +4,24 @@ This is a website where students in Mr. Detrick's Honors Advanced Topics CS clas
 
 ## How to add a project to the site
 1. Create a Github account if you havent already.
-2. Download [VSCode](https://code.visualstudio.com/download) and if you havent already.
-3. Clone the repository to your computer. You can do this by clicking the green "Code" button on the top right of the repository page and copying the link. Then, in VSCode, press `Ctrl+Shift+P` and type in "Git: Clone" and paste the link. Then, choose a location to save the repository. 
+2. Install [Git](https://git-scm.com/downloads) if you havent already.
+3. Download [VSCode](https://code.visualstudio.com/download) and if you havent already.
+
+4. Clone the repository to your computer. You can do this by clicking the green "Code" button on the top right of the repository page and copying the link. Then, in VSCode, press `Ctrl+Shift+P` and type in "Git: Clone" and paste the link. Then, choose a location to save the repository. 
     - Tip: make a folder for all your repositories so you can find them easily.
-4. Open VSCode and open the folder you just cloned. (File -> Open Folder or `Ctrl+Shift+O`)
+5. Open VSCode and open the folder you just cloned. (File -> Open Folder or `Ctrl+Shift+O`)
 
-5. Create a new branch. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Create Branch" and then typing in a name for your branch. I'd recommend using your name. You can use this branch for all your changes.
+6. Create a new branch. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Create Branch" and then typing in a name for your branch. I'd recommend using your name. You can use this branch for all your changes.
 
-6. 
-6. Create a new folder in the `projects` folder. Name it whatever you want your project to be called.
+7. Before you do anything else, make sure you're on your branch. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Checkout to" and then typing in your branch name. You can also see what branch you're on in the bottom left of your screen. It's also a good idea to pull from the repository before you make any changes. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Pull".
 
-7. If you've never written HTML before, I'd recommend looking at [this tutorial](https://www.tutorialspoint.com/html/index.htm) to get a basic understanding of how it works. You can also look at the other projects in the `projects` folder to see how they work. 
+8. Create a new folder in the `projects` folder. Name it whatever you want your project to be called.
 
-8. Create an `index.html` file in your project folder. This is the file that will be displayed when someone goes to your project.
+9. If you've never written HTML before, I'd recommend looking at [this tutorial](https://www.tutorialspoint.com/html/index.htm) to get a basic understanding of how it works. You can also look at the other projects in the `projects` folder to see how they work. 
 
-9. Add your project to the `index.html` file in the root folder  (not in a folder). You can do this by adding a new `<a>` tag to the list of projects. The `<a>` tag should look like this: 
+10. Create an `index.html` file in your project folder. This is the file that will be displayed when someone goes to your project.
+
+11. Add your project to the `index.html` file in the root folder  (not in a folder). You can do this by adding a new `<a>` tag to the list of projects. The `<a>` tag should look like this: 
 ```html
 <a href="projects/your-project-folder-name/index.html">Your Project Name</a>
 ``` 
@@ -37,6 +40,12 @@ your-project-folder-name
     ├── style.css
     └── script.js
 ```
+## How to commit your changes
+
+Committing your changes is how you save your changes to the repository. You can do this by pressing `Ctrl+Shift+G` or clicking the "Source Control" button on the left side of your screen. Then, type in a commit message and press the checkmark button. Then, press the three dots button and click "Push". This will push your changes to your branch on the repository.
+
+- Tip: You have to put in a commit message or it won't work, if you accidentally press the checkmark button without typing in a commit message, you will have to close out of the 
+
 ## How to test your project
 So you've added your project to the site, but how do you test it? 
 
@@ -49,9 +58,7 @@ This works, but it's not very convenient. You have to open your file explorer ev
 
 Now, whenever you make a change to your project, it should automatically reload in your browser. This makes it much easier to test your project.
 
-## How to commit your changes
-Committing your changes is how you save your changes to the repository. You can do this by pressing `Ctrl+Shift+G` or clicking the "Source Control" button on the left side of your screen. Then, type in a commit message and press the checkmark button. Then, press the three dots button and click "Push". This will push your changes to the repository. 
-- Tip: You have to put in a commit message or it won't work.
+
 
 
 
