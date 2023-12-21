@@ -25,6 +25,8 @@ This is a website where students in Mr. Detrick's Honors Advanced Topics CS clas
 ```html
 <a href="projects/your-project-folder-name/index.html">Your Project Name</a>
 ``` 
+12. To save, press `Ctrl+S`. I would reccomend turning on autosave so you don't have to do this every time you make a change. You can do this by going to File -> Preferences -> Settings and searching for "Auto Save". Then, click "Auto Save" and choose "After delay".
+
 Make sure to replace `your-project-folder-name` with the name of your project folder and `Your Project Name` with the name of your project.
 
 Congratulations! You've added your project to the site! Now you can add whatever you want to your project folder. You can add images, CSS files, Javascript files, etc.
@@ -44,19 +46,44 @@ your-project-folder-name
 
 Committing your changes is how you save your changes to the repository. You can do this by pressing `Ctrl+Shift+G` or clicking the "Source Control" button on the left side of your screen. Then, type in a commit message and press the checkmark button. Then, press the three dots button and click "Push". This will push your changes to your branch on the repository.
 
-- Tip: You have to put in a commit message or it won't work, if you accidentally press the checkmark button without typing in a commit message, you will have to close out of the 
+- Tip: You have to put in a commit message or it won't work. If you don't know what to put, just put "Update" or something like that.
 
-## How to test your project
-So you've added your project to the site, but how do you test it? 
+## How to see your website
+So you've added your project to the site, but how do you see what it looks like? 
 
-All you have to do is open the `index.html` file in your file explorer. It should open in your browser and you should be able to see your project.
+All you have to do is open your `index.html` file in your file explorer. It should open in your browser and you should be able to see your project.
 
-This works, but it's not very convenient. You have to open your file explorer every time you want to test your project- and you have to reload it every time you want to change the site. Luckily, there's a better way.
+This works, but it's annoying. You have to open your file explorer every time you want to test your project- and you have to reload it every time you want to change the site. Luckily, there's a better way.
 
 1. Install the [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) extension for VSCode. You can do this by pressing `Ctrl+Shift+X` and searching for "Live Server". Then, click "Install".
 2. Open your project folder in VSCode. Then, right click on the `index.html` file and click "Open with Live Server". This should open your project in your browser. (Or there should be a button in the bottom right of your screen that says "Go Live". Click that.)
 
 Now, whenever you make a change to your project, it should automatically reload in your browser. This makes it much easier to test your project.
+
+## How to submit your project
+
+When your done with your project, or whenever you want your changes to be on the public site, you can submit a pull request. This will merge your branch with the main branch. 
+
+Login to GitHub with the whcompsci account.
+1. Go to the repository page and click the "Pull requests" tab. 
+
+2. Click "New pull request". 
+
+3. Click "compare across forks". 
+
+4. Then, change the "head repository" to your repository and the "head branch" to your branch. 
+
+5. Then, click "Create pull request". 
+
+6. Type in a title and description for your pull request and click "Create pull request". 
+
+7. Then, click "Merge pull request" and "Confirm merge". This will merge your branch with the main branch. 
+
+8. If your project is done, you can delete your branch. You can do this by going to the "Branches" tab and clicking the trash can next to your branch.
+
+## How to update your project
+
+Whenever you want to update your project, you can just make changes to your project folder and commit them. Then, submit a pull request to merge your branch with the main branch.
 
 
 
