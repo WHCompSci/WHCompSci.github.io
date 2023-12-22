@@ -14,7 +14,7 @@
    - Tip: make a folder for all your repositories so you can find them easily.
 5. Open VSCode and open the folder you just cloned. (File -> Open Folder or `Ctrl+Shift+O`)
 
-6. Create a new branch. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Create Branch" and then typing in a name for your branch. I'd recommend using your name. You can use this branch for all your changes.
+6. Create a new branch. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Create Branch" and then typing in a name for your branch. I'd recommend using your project's name. You can use this branch for all your changes.
 
 7. Before you do anything else, make sure you're on your branch. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Checkout to" and then typing in your branch name. You can also see what branch you're on in the bottom left of your screen. It's also a good idea to pull from the repository before you make any changes. You can do this by pressing `Ctrl+Shift+P` and typing in "Git: Pull".
 
