@@ -530,7 +530,7 @@ function buildDropDownMenu() {
     let isquerry = true;
     if (query.length == 0) {
         isquerry = false;
-        query = "a";
+        query = " "; // matches every school
     }
     const response = [...collegeData.entries()]
         .map(([name, data]) => {
