@@ -17,6 +17,7 @@ function update(){
     x += vxl;
     x += vxr;
     y += vy;
+    
 
     ctx.fillRect(x, y , 50 , 50)
     requestAnimationFrame(update)
