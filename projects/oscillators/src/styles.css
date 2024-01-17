@@ -1,0 +1,6 @@
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background-color: "#e4d5b7";
+    overflow-y: hidden;
+}
