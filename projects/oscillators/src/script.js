@@ -103,7 +103,7 @@ function addLevel(
         xHigh: xHigh,
         yHigh: yHigh,
     });
-    console.log(levels);
+    // console.log(levels);
 }
 function checkForWin(level) {
     const EPSILON = 1;
@@ -130,8 +130,6 @@ class Oscillator {
         this.end2_idx = end2_idx;
 
         this.frequency = 1;
-        console.log(this.end1_idx + " : " + this.end2_idx);
-        console.log(e1dist + " " + e2dist);
         this.points_arr_idx = points.length;
 
         points[end1_idx].num_children++;
@@ -158,7 +156,6 @@ class Oscillator {
         // or 2pi/lcm([speeds])
 
         moving_points_idx.push(this.points_arr_idx);
-        console.log(points[this.points_arr_idx]);
     }
     draw(idx) {
         const end1 = points[this.end1_idx];
@@ -188,7 +185,6 @@ class Oscillator {
 
     set_starting_pos(starting_pos) {
         this.starting_pos = starting_pos;
-        console.log("Setting starting position to: " + starting_pos);
         this.t_init = Math.PI * 0.5 * starting_pos;
     }
 }
@@ -198,26 +194,26 @@ function getCombinedPeriod(point_idx, osc_list, points_list) {
         function _gcd(a, b) {
             return !b ? a : _gcd(b, a % b);
         }
-        if (nums.length == 1) {
-            return nums[0];
-        }
-        let g = 1;
-        for (const num of nums) g = _gcd(g, num);
-        return g;
+        let result = nums[0];  
+        for (let i = 1; i < nums.length; i++) {  
+            result = _gcd(nums[i], result);  
+            if(result == 1) return 1;  
+            
+        }  
+        return result;  
     }
     if(points_list[point_idx].parent_osc_idx == null) {
-        console.log("null parent idx")
         return 0;
     }
-    console.log(point_idx)
     const frequencies = new Set();
     const queue = [points_list[point_idx].parent_osc_idx];
-    console.log(queue[0])
     while (queue.length > 0) {
+        console.log(queue)
         const curr_osc = osc_list[queue.pop()];
         frequencies.add(curr_osc.frequency);
-        const end1 = points_list[curr_osc.end1_index];
-        const end2 = points_list[curr_osc.end2_index];
+        const end1 = points_list[curr_osc.end1_idx];
+        const end2 = points_list[curr_osc.end2_idx];
+        console.log(end1, end2)
         if (end1 != undefined && end1.parent_osc_idx != null) {
             queue.push(end1.parent_osc_idx);
         }
@@ -226,7 +222,8 @@ function getCombinedPeriod(point_idx, osc_list, points_list) {
         }
     }
     //FIXME
-    return (2 * Math.PI) / (FREQ_MULTIPLIER * gcd(Array.from(frequencies)));
+    console.log(Array.from(frequencies)+", gcd="+gcd(Array.from(frequencies)))
+    return 1.01 * (2 * Math.PI) / (FREQ_MULTIPLIER * gcd(Array.from(frequencies)));
 }
 
 function update_oscillator(osc, t, points) {
@@ -300,7 +297,6 @@ function start() {
     canvas.height = window.innerHeight;
     createGrid();
     ctx.lineWidth = 3;
-    console.log(oscillators);
     last_update_time = new Date().getTime();
     //add levels
     // addLevel(
@@ -475,21 +471,23 @@ function tracePath(point_idx) {
     if (currPoint == undefined) return;
     path_data.t_initial ??= t;
     path_data.t_period ??= getCombinedPeriod(point_idx, oscillators, points);
-    path_data.path.push({ x: currPoint.x, y: currPoint.y });
+    
 
     if (t > path_data.t_initial + path_data.t_period) {
-        path_data.path.shift();
-        console.log(path_data.t_period)
+        // console.log("clearing "+path_data.path.length)
+    } else {
+        path_data.path.push({ x: currPoint.x, y: currPoint.y });
+        //extends the bounds if currPoint goes outside of the previous bounding box
+        if (currPoint.x < path_data.bounds_x_low)
+            path_data.bounds_x_low = currPoint.x;
+        if (currPoint.y < path_data.bounds_y_low)
+            path_data.bounds_y_low = currPoint.y;
+        if (currPoint.x > path_data.bounds_x_hi)
+            path_data.bounds_x_hi = currPoint.x;
+        if (currPoint.y > path_data.bounds_y_hi)
+            path_data.bounds_y_hi = currPoint.y;
     }
-    //extends the bounds if currPoint goes outside of the previous bounding box
-    if (currPoint.x < path_data.bounds_x_low)
-        path_data.bounds_x_low = currPoint.x;
-    if (currPoint.y < path_data.bounds_y_low)
-        path_data.bounds_y_low = currPoint.y;
-    if (currPoint.x > path_data.bounds_x_hi)
-        path_data.bounds_x_hi = currPoint.x;
-    if (currPoint.y > path_data.bounds_y_hi)
-        path_data.bounds_y_hi = currPoint.y;
+    
     //we have to clear the path here because otherwise we get weird lines when we change speeds
     if (clear_path_flag) {
         path_data = default_path(); //clears path
