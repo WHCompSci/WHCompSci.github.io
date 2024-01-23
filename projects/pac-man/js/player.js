@@ -3,7 +3,7 @@ function Player(x,y){
     this.y = y;
     this.xspeed = 0;
     this.yspeed = 0;
-    this.friction = 0.7;
+    this.friction = 0.6; //friction increases as levels go up
     this.maxSpeed = 10;
     this.width = 40;
     this.height = 40; 
