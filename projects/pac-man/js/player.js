@@ -6,7 +6,7 @@ function Player(x,y){
     this.friction = 0.6;
     this.maxSpeed = 10;
     this.width = 50;
-    this.height = 100; 
+    this.height = 50; 
     this.active = true;
 
     this.step = function(){
@@ -18,6 +18,15 @@ function Player(x,y){
                 this.xspeed ++;
             } else if (leftKey){
                 this.xspeed --;
+            }
+
+            if(!downKey && !upKey || downKey && upKey )
+            {
+                this.yspeed *= this.friction;
+            } else if (downKey){
+                this.yspeed ++;
+            } else if (upKey){
+                this.yspeed --;
             }
 
 
@@ -35,6 +44,14 @@ function Player(x,y){
             } else if(this.xspeed < -this.maxSpeed)
             {
                 this.xspeed = -this.maxSpeed;
+            }
+
+            if(this.yspeed > this.maxSpeed)
+            {
+                this.yspeed = this.maxSpeed;
+            } else if(this.yspeed < -this.maxSpeed)
+            {
+                this.yspeed = -this.maxSpeed;
             }
 
             this.x += this.xspeed;
