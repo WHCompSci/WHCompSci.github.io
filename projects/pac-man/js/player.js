@@ -7,10 +7,39 @@ function Player(x,y){
     this.maxSpeed = 10;
     this.width = 50;
     this.height = 100; 
-    
+    this.active = true;
 
     this.step = function(){
+        if (this.active){
+            if(!leftKey && !rightKey || leftKey && rightKey )
+            {
+                this.xspeed *= this.friction;
+            } else if (rightKey){
+                this.xspeed ++;
+            } else if (leftKey){
+                this.xspeed --;
+            }
 
+
+
+
+
+
+
+
+
+
+            if(this.xspeed > this.maxSpeed)
+            {
+                this.xspeed = this.maxSpeed;
+            } else if(this.xspeed < -this.maxSpeed)
+            {
+                this.xspeed = -this.maxSpeed;
+            }
+
+            this.x += this.xspeed;
+            this.y += this.yspeed;
+        }
 
     }
 
