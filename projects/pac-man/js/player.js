@@ -60,7 +60,7 @@ function Player(x,y){
         var img = new Image();
         img.src = "orange_penguin (1).png";
         ctx.drawImage(img, this.x, this.y);
-        ctx.fillStyle = "rgba(255, 0, 0, 0.2)";
+        ctx.fillStyle = "rgba(255, 0, 0, 0.0)";// change last param to see fallbox
         ctx.fillRect(this.x,this.y,this.width,this.height);
         console.log(this.isAlive);
     }
