@@ -40,12 +40,14 @@ function Player(x,y){
             } 
 
 
+            
+            
+            
             if(this.x<260 || this.x> 1420||this.y<-60|| this.y > 1040){
                 this.isAlive = false;
             }
             this.x += this.xspeed;
             this.y += this.yspeed;
-
 
 
             //this.angle = Math.atan2(this.yspeed/this.xspeed);
