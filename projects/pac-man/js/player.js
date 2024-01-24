@@ -29,30 +29,12 @@ function Player(x,y){
                 this.yspeed --;
             }
 
-            // if(this.xspeed > this.maxSpeed)
-            // {
-            //     this.xspeed = this.maxSpeed;
-            // } else if(this.xspeed < -this.maxSpeed)
-            // {
-            //     this.xspeed = -this.maxSpeed;
-            // }
-
-            // if(this.yspeed > this.maxSpeed)
-            // {
-            //     this.yspeed = this.maxSpeed;
-            // } else if(this.yspeed < -this.maxSpeed)
-            // {
-            //     this.yspeed = -this.maxSpeed;
-            // }
             const magnitude = Math.sqrt(this.xspeed*this.xspeed + this.yspeed*this.yspeed);
             if(magnitude > this.maxSpeed)
             {
                 const scaleF = this.maxSpeed/magnitude;
                 this.xspeed *= scaleF;
                 this.yspeed *= scaleF;
-
-
-
             } 
 
         

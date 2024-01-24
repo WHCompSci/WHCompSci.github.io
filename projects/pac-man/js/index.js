@@ -35,10 +35,10 @@ function step(){
 
 function draw(){
     ctx.fillStyle = "blue";
-    ctx.fillRect(0,0,1280,720);
+    ctx.fillRect(0,0,1920,1080);
 
     ctx.fillStyle = "white";
-    ctx.fillRect(0,0,500,500);
+    ctx.fillRect(460,40,1000,1000);
     
     player.draw();
 
