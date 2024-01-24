@@ -3,10 +3,11 @@ function Player(x,y){
     this.y = y;
     this.xspeed = 0;
     this.yspeed = 0;
+    this.angle = 90;
     this.friction = .99; //friction increases as levels go up
     this.maxSpeed = 15;
-    this.width = 40;
-    this.height = 40; 
+    this.width = 200;
+    this.height = 200; 
     this.active = true;
 
     this.step = function(){
@@ -40,15 +41,21 @@ function Player(x,y){
         
             this.x += this.xspeed;
             this.y += this.yspeed;
+            //this.angle = Math.atan2(this.yspeed/this.xspeed);
+            
         }
 
     }
 
     this.draw = function(){
-        ctx.fillStyle = "red";
+        var img = new Image();
+        img.src = "orange_penguin.png";
+        ctx.drawImage(img, this.x, this.y);
+        ctx.fillStyle = lol;
         ctx.fillRect(this.x,this.y,this.width,this.height);
-
     }
 
+    
+    
     
 }

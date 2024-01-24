@@ -41,6 +41,7 @@ function draw(){
     ctx.fillRect(460,40,1000,1000);
     
     player.draw();
+    
 
 }
 
