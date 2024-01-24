@@ -31,12 +31,12 @@ window.onload = function(){
 
 function step(){
     resetCount ++;
-    console.log(resetCount);
+    //console.log(resetCount);
     player.step();
     if(resetCount === 20){
         ctx.clearRect(0,0,1920,1080);
         resetCount = 0;
-        console.log("reset");
+        //console.log("reset");
     }
     draw();
 }
