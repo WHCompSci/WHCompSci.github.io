@@ -3,8 +3,8 @@ function Player(x,y){
     this.y = y;
     this.xspeed = 0;
     this.yspeed = 0;
-    this.friction = 0.6; //friction increases as levels go up
-    this.maxSpeed = 10;
+    this.friction = .99; //friction increases as levels go up
+    this.maxSpeed = 15;
     this.width = 40;
     this.height = 40; 
     this.active = true;
@@ -29,31 +29,33 @@ function Player(x,y){
                 this.yspeed --;
             }
 
+            // if(this.xspeed > this.maxSpeed)
+            // {
+            //     this.xspeed = this.maxSpeed;
+            // } else if(this.xspeed < -this.maxSpeed)
+            // {
+            //     this.xspeed = -this.maxSpeed;
+            // }
 
-
-
-
-
-
-
-
-
-            if(this.xspeed > this.maxSpeed)
+            // if(this.yspeed > this.maxSpeed)
+            // {
+            //     this.yspeed = this.maxSpeed;
+            // } else if(this.yspeed < -this.maxSpeed)
+            // {
+            //     this.yspeed = -this.maxSpeed;
+            // }
+            const magnitude = Math.sqrt(this.xspeed*this.xspeed + this.yspeed*this.yspeed);
+            if(magnitude > this.maxSpeed)
             {
-                this.xspeed = this.maxSpeed;
-            } else if(this.xspeed < -this.maxSpeed)
-            {
-                this.xspeed = -this.maxSpeed;
-            }
+                const scaleF = this.maxSpeed/magnitude;
+                this.xspeed *= scaleF;
+                this.yspeed *= scaleF;
 
-            if(this.yspeed > this.maxSpeed)
-            {
-                this.yspeed = this.maxSpeed;
-            } else if(this.yspeed < -this.maxSpeed)
-            {
-                this.yspeed = -this.maxSpeed;
-            }
 
+
+            } 
+
+        
             this.x += this.xspeed;
             this.y += this.yspeed;
         }
