@@ -7,6 +7,8 @@ var rightKey;
 var downKey;
 var leftKey;
 
+var resetCount = 0;
+
 //Create game variables 
 var gameLoop;
 var player;
@@ -20,20 +22,27 @@ window.onload = function(){
 
     setupInputs();
 
-    player = new Player(100,400);
+    player = new Player(600,600);
     
     gameLoop = setInterval(step, 1000/30)
 
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,1280,720);
+    
 }
 
 function step(){
+    resetCount ++;
+    console.log(resetCount);
     player.step();
+    if(resetCount === 20){
+        ctx.clearRect(0,0,1920,1080);
+        resetCount = 0;
+        console.log("reset");
+    }
     draw();
 }
 
 function draw(){
+    
     ctx.fillStyle = "blue";
     ctx.fillRect(0,0,1920,1080);
 
@@ -41,8 +50,8 @@ function draw(){
     ctx.fillRect(460,40,1000,1000);
     
     player.draw();
-    
 
+    
 }
 
 function setupInputs(){
