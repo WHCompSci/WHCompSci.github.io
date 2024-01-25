@@ -22,8 +22,8 @@ window.onload = function(){
 
     setupInputs();
 
-    player = new Player(600,600);
-    enemy1 = new Enemy(2000,400,-10,0);
+    player = new Player(860,380);
+    enemy1 = new Enemy(2000,400,-20,0);
     
 
     
