@@ -23,9 +23,7 @@ window.onload = function(){
     setupInputs();
 
     player = new Player(860,380);
-    spawner = new Spawner()
-    spawner.spawnEnemy(100, 100, 1, 1);
-    spawner.spawnEnemy(200, 200, -1, -1);
+    
 
     
     
@@ -39,7 +37,7 @@ window.onload = function(){
 
 function step(){
     resetCount ++;
-    spawner.update();
+    
     player.step();
     if(resetCount === 20){
         ctx.clearRect(0,0,1920,1080);
@@ -57,7 +55,7 @@ function draw(){
     ctx.fillStyle = "white";
     ctx.fillRect(460,40,1000,1000);
     
-    spawner.draw();
+    
     player.draw();
     
     
