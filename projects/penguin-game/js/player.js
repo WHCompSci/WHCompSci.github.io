@@ -48,7 +48,7 @@ function Player(x,y){
             }
             this.x += this.xspeed;
             this.y += this.yspeed;
-            //console.log("("+this.x+","+this.y+")")
+            
         }
 
     }

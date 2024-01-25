@@ -23,6 +23,10 @@ window.onload = function(){
     setupInputs();
 
     player = new Player(600,600);
+    enemy1 = new Enemy(2000,400,-10,0);
+    
+
+    
     
     gameLoop = setInterval(step, 1000/30)
 
@@ -31,12 +35,12 @@ window.onload = function(){
 
 function step(){
     resetCount ++;
-    //console.log(resetCount);
+    enemy1.step();
     player.step();
     if(resetCount === 20){
         ctx.clearRect(0,0,1920,1080);
         resetCount = 0;
-        //console.log("reset");
+
     }
     draw();
 }
@@ -49,8 +53,9 @@ function draw(){
     ctx.fillStyle = "white";
     ctx.fillRect(460,40,1000,1000);
     
+    enemy1.draw();
     player.draw();
-
+    
     
 }
 
