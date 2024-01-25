@@ -43,12 +43,12 @@ function Player(x,y){
             
             
             
-            if(this.x<260 || this.x> 1420||this.y<-60|| this.y > 1040){
+            if(this.x<300 || this.x> 1460||this.y<-120|| this.y > 1040){
                 this.isAlive = false;
             }
             this.x += this.xspeed;
             this.y += this.yspeed;
-            
+            //console.log("("+this.x+","+this.y+")")
         }
 
     }
