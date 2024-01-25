@@ -48,9 +48,6 @@ function Player(x,y){
             }
             this.x += this.xspeed;
             this.y += this.yspeed;
-
-
-            //this.angle = Math.atan2(this.yspeed/this.xspeed);
             
         }
 
