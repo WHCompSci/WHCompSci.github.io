@@ -19,7 +19,6 @@ function Enemy(x,y,xspd,yspd)
 
     this.draw = function()
     {
-        
         ctx.fillStyle = "black";
         ctx.fillRect(this.x,this.y,this.width,this.height);
     }
