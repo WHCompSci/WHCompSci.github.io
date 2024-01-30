@@ -1,4 +1,4 @@
-function Player(x,y,width,height){
+function Player(x,y,width,height,canvaswidth,canvasheight){
     this.x = x;
     this.y = y;
     this.xspeed = 0;
@@ -11,8 +11,8 @@ function Player(x,y,width,height){
     this.isAlive = true;
     this.active = true;
 
-    this.cwidth = width / 1920;
-    this.cheight = height / 1080;
+    this.cwidth = canvaswidth;
+    this.cheight = canvasheight;
 
     this.step = function(){
 
@@ -24,19 +24,25 @@ function Player(x,y,width,height){
             {
                 this.xspeed *= this.friction;
             } else if (rightKey){
-                this.xspeed += 1*this.cwidth;
+                this.xspeed += 1;
             } else if (leftKey){
-                this.xspeed -= 1*this.cwidth;
+                this.xspeed -= 1;
             }
             
             if(!downKey && !upKey || downKey && upKey )
             {
                 this.yspeed *= this.friction;
             } else if (downKey){
-                this.yspeed += 1*((this.height/this.cheight));
+                this.yspeed += 1;
             } else if (upKey){
-                this.yspeed -= 1*((this.height/this.cheight));
+                this.yspeed -= 1;
             }
+
+
+            const widthScale = this.width / (this.cwidth * (160 / 1920));
+            const heightScale = this.height / (this.cheight * (188 / 1080));
+            this.xspeed *= widthScale;
+            this.yspeed *= heightScale;
 
             const magnitude = Math.sqrt(this.xspeed*this.xspeed + this.yspeed*this.yspeed);
             if(magnitude > this.maxSpeed)
