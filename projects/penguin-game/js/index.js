@@ -61,7 +61,12 @@ function draw() {
     const centerY = canvas.height / 2;
 
 
+
     ctx.fillRect(centerX - sideLen * 0.5, centerY - 0.5 * sideLen, sideLen, sideLen);
+
+    ctx.fillStyle = "Black";
+    ctx.font = "30px Arial";
+    ctx.fillText("Score:",30,30);
 
     enemy.draw();
     player.draw();
@@ -73,7 +78,7 @@ function draw() {
     ctx.font = "100px Arial";
     ctx.fillText("Penguin Game", (canvas.width/2)-500, canvas.height/2);
     ctx.font = "30px Arial";
-    ctx.fillText("By: Nick Staada", (canvas.width/2)-500, (canvas.height/2)+100);
+    ctx.fillText("By: Nick Staada                    Press enter to start", (canvas.width/2)-500, (canvas.height/2)+100);
     }
 }
 
@@ -90,7 +95,6 @@ function setupInputs() {
         }
         if (event.key === "Enter") {
             enterKey = false;
-            console.log("bob");
         }
 
     });
