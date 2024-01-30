@@ -5,7 +5,7 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
     this.yspeed = 0;
     this.angle = 90;
     this.friction = .99; //friction increases as levels go up
-    this.maxSpeed = 15;
+    this.maxSpeed = 0.001*this.cheight;
     this.width = width; //160 actual penguin dimensions
     this.height = height; //188
     this.isAlive = true;
@@ -24,18 +24,18 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
             {
                 this.xspeed *= this.friction;
             } else if (rightKey){
-                this.xspeed += 1;
+                this.xspeed += .001*this.cheight;
             } else if (leftKey){
-                this.xspeed -= 1;
+                this.xspeed -= .001*this.cheight;
             }
             
             if(!downKey && !upKey || downKey && upKey )
             {
                 this.yspeed *= this.friction;
             } else if (downKey){
-                this.yspeed += 1;
+                this.yspeed += .001*this.cheight;
             } else if (upKey){
-                this.yspeed -= 1;
+                this.yspeed -= .001*this.cheight;
             }
 
 
