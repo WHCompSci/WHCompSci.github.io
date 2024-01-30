@@ -25,7 +25,7 @@ function Player(x,y,width,height){
             } else if (leftKey){
                 this.xspeed --;
             }
-
+            
             if(!downKey && !upKey || downKey && upKey )
             {
                 this.yspeed *= this.friction;
