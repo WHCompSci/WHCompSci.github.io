@@ -1,4 +1,4 @@
-function Player(x,y){
+function Player(x,y,width,height){
     this.x = x;
     this.y = y;
     this.xspeed = 0;
@@ -6,8 +6,8 @@ function Player(x,y){
     this.angle = 90;
     this.friction = .99; //friction increases as levels go up
     this.maxSpeed = 15;
-    this.width = 160; //160 actual penguin dimensions
-    this.height = 188; //188
+    this.width = width; //160 actual penguin dimensions
+    this.height = height; //188
     this.isAlive = true;
     this.active = true;
 
@@ -60,8 +60,8 @@ function Player(x,y){
     this.draw = function(){
         var img = new Image();
         img.src = "orange_penguin (1).png";
-        ctx.drawImage(img, this.x, this.y);
-        ctx.fillStyle = "rgba(255, 0, 0, 0.7)";// change last param to see fallbox
+        ctx.drawImage(img, this.x, this.y,this.width,this.height);
+        ctx.fillStyle = "rgba(255, 0, 0, 0.0)";// change last param to see fallbox
         ctx.fillRect(this.x,this.y,this.width,this.height);
         console.log(this.isAlive);
     }

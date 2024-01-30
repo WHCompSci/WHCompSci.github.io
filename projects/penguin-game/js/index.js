@@ -25,7 +25,7 @@ window.onload = function () {
 
     setupInputs();
 
-    player = new Player((canvas.width/2)-(canvas.width * 160/1920), (canvas.height/2)-(canvas.height * 188/1080), canvas.width * 160/1920, canvas.height * 188/1080);
+    player = new Player((canvas.width/2)-(canvas.width * 160/1920), (canvas.height/2)-(canvas.height * 188/1080), (canvas.width * 160/1920)-20, (canvas.height * 188/1080)-10);
     enemy = new Enemy(0, 500, 10, 0);
 
 
