@@ -6,6 +6,7 @@ var upKey;
 var rightKey;
 var downKey;
 var leftKey;
+var enterKey = true;
 
 var resetCount = 0;
 
@@ -24,8 +25,8 @@ window.onload = function () {
 
     setupInputs();
 
-    player = new Player(860, 380, canvas.width * 160/1920, canvas.height * 188/1080);
-    enemy = new Enemy(0, 500, 1, 0);
+    player = new Player((canvas.width/2)-(canvas.width * 160/1920), (canvas.height/2)-(canvas.height * 188/1080), canvas.width * 160/1920, canvas.height * 188/1080);
+    enemy = new Enemy(0, 500, 10, 0);
 
 
 
@@ -65,7 +66,15 @@ function draw() {
     enemy.draw();
     player.draw();
 
-
+    if(enterKey){
+    ctx.fillStyle = "rgb(177, 216, 224)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "Black";
+    ctx.font = "100px Arial";
+    ctx.fillText("Penguin Game", (canvas.width/2)-500, canvas.height/2);
+    ctx.font = "30px Arial";
+    ctx.fillText("By: Nick Staada", (canvas.width/2)-500, (canvas.height/2)+100);
+    }
 }
 
 function setupInputs() {
@@ -79,8 +88,13 @@ function setupInputs() {
         } else if (event.key === "d" || event.key === "ArrowRight") {
             rightKey = true;
         }
+        if (event.key === "Enter") {
+            enterKey = false;
+            console.log("bob");
+        }
 
     });
+
     document.addEventListener("keyup", function (event) {
         if (event.key === "w" || event.key === "ArrowUp") {
             upKey = false;
