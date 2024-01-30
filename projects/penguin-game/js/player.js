@@ -11,6 +11,9 @@ function Player(x,y,width,height){
     this.isAlive = true;
     this.active = true;
 
+    this.cwidth = width / 1920;
+    this.cheight = height / 1080;
+
     this.step = function(){
 
 
@@ -21,18 +24,18 @@ function Player(x,y,width,height){
             {
                 this.xspeed *= this.friction;
             } else if (rightKey){
-                this.xspeed += 1;
+                this.xspeed += 1*this.cwidth;
             } else if (leftKey){
-                this.xspeed -= 1;
+                this.xspeed -= 1*this.cwidth;
             }
             
             if(!downKey && !upKey || downKey && upKey )
             {
                 this.yspeed *= this.friction;
             } else if (downKey){
-                this.yspeed ++;
+                this.yspeed += 1*((this.height/this.cheight));
             } else if (upKey){
-                this.yspeed --;
+                this.yspeed -= 1*((this.height/this.cheight));
             }
 
             const magnitude = Math.sqrt(this.xspeed*this.xspeed + this.yspeed*this.yspeed);
@@ -64,6 +67,7 @@ function Player(x,y,width,height){
         ctx.fillStyle = "rgba(255, 0, 0, 0.0)";// change last param to see fallbox
         ctx.fillRect(this.x,this.y,this.width,this.height);
         console.log(this.isAlive);
+        
     }
 
 
