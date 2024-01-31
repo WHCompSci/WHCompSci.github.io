@@ -95,6 +95,21 @@ function draw() {
     }
 }
 
+function isColliding(gameObject1,gameObject2)
+{
+    const gameObject1top = gameObject1.y;
+    const gameObject1bottom = gameObject1.y+gameObject1.height;
+    const gameObject1left = gameObject1.x;
+    const gameObject1right = gameObject1.x+gameObject1.width;
+    const gameObject2top = gameObject2.y;
+    const gameObject2bottom = gameObject2.y+gameObject2.height;
+    const gameObject2left = gameObject2.x;
+    const gameObject2right = gameObject2.x+gameObject2.width;
+    
+
+
+}
+
 function setupInputs() {
     document.addEventListener("keydown", function (event) {
         if (event.key === "w" || event.key === "ArrowUp") {
