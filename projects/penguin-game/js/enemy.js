@@ -37,7 +37,7 @@ function Enemy(x,y,xspd,yspd)
             this.x = canvas.width;
             this.width = (canvas.width * (Math.random()*200)/1920);
             this.height = (canvas.height * (Math.random()*200)/1080);
-            this.xspeed = -(Math.random()*10)+1;
+            this.xspeed = -((Math.random()*10)+1);
         }
         if (this.y < -canvas.height)
         {
@@ -45,7 +45,7 @@ function Enemy(x,y,xspd,yspd)
             this.x = Math.random()*canvas.width;
             this.width = (canvas.width * (Math.random()*200)/1920);
             this.height = (canvas.height * (Math.random()*200)/1080);
-            this.yspeed = -(Math.random()*10)+1;
+            this.yspeed = -((Math.random()*10)+1);
         }
     }
 
