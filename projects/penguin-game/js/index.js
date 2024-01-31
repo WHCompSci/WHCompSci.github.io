@@ -105,7 +105,7 @@ function isColliding(gameObject1,gameObject2)
     const gameObject2bottom = gameObject2.y+gameObject2.height;
     const gameObject2left = gameObject2.x;
     const gameObject2right = gameObject2.x+gameObject2.width;
-    return(gameObject1left<gameObject2right&&gameObject1right>gameObject2left&& gameObject1top<gameObject2bottom&&gameObject1bottom>gameObject2top);
+    return(gameObject1left<gameObject2right&&gameObject1right>gameObject2left && gameObject1top<gameObject2bottom&&gameObject1bottom>gameObject2top);
     
  
 
