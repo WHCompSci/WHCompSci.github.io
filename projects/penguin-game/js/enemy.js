@@ -4,8 +4,8 @@ function Enemy(x,y,xspd,yspd)
     this.y = y;
     this.xspeed = xspd;
     this.yspeed = yspd;
-    this.width = 300;
-    this.height = 150; 
+    this.width = (canvas.width * (Math.random()*200)/1920);
+    this.height = (canvas.height * (Math.random()*200)/1080); 
     this.active = true;
 
     this.step = function()

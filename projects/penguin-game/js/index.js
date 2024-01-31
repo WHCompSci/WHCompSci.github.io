@@ -27,7 +27,7 @@ window.onload = function () {
 
     player = new Player((canvas.width/2)-(canvas.width * 160/1920), (canvas.height/2)-(canvas.height * 188/1080), (canvas.width * 160/1920)/*-20*/, (canvas.height * 188/1080), canvas.width, canvas.height);
     player.setActive(false);
-    enemy = new Enemy(0, 500, 10, 0);
+    enemy = new Enemy(Math.random()*canvas.width, 0, 0,(Math.random()*10)+10 );
 
 
 
