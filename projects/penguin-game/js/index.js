@@ -27,7 +27,12 @@ window.onload = function () {
 
     player = new Player((canvas.width/2)-(canvas.width * 160/1920), (canvas.height/2)-(canvas.height * 188/1080), (canvas.width * 160/1920)/*-20*/, (canvas.height * 188/1080), canvas.width, canvas.height);
     player.setActive(false);
-    enemy = new Enemy(Math.random()*canvas.width, 0, 0,(Math.random()*10)+10 );
+    
+    
+    enemy = new Enemy(Math.random()*canvas.width, 0, 0,(Math.random()*10)+1 );
+    enemy2 = new Enemy(0, Math.random()*canvas.height, (Math.random()*10)+1,0);
+    enemy3 = new Enemy(Math.random()*canvas.width, canvas.height, 0,-((Math.random()*10)+1) );
+    enemy4 = new Enemy(canvas.width, Math.random()*canvas.height, -(Math.random()*10)+1,0 );
 
 
 
@@ -42,6 +47,9 @@ window.onload = function () {
 function step() {
     resetCount++;
     enemy.step();
+    enemy2.step();
+    enemy3.step();
+    enemy4.step();
     player.step();
     if (resetCount === 20) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -70,6 +78,10 @@ function draw() {
     ctx.fillText("Score:",30,30);
 
     enemy.draw();
+    enemy2.draw();
+    enemy3.draw();
+    enemy4.draw();
+
     player.draw();
 
     if(enterKey){
