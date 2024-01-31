@@ -23,7 +23,7 @@ function Enemy(x,y,xspd,yspd)
             this.x = Math.random()*canvas.width;
             this.width = (canvas.width * (Math.random()*200)/1920);
             this.height = (canvas.height * (Math.random()*200)/1080);
-            this.yspeed = (Math.random()*10)+(1*this.numrespawns);
+            this.yspeed = (Math.random()*10)+(1*(this.numrespawns/2));
         }
         if (this.x > canvas.width)
         {
@@ -32,7 +32,7 @@ function Enemy(x,y,xspd,yspd)
             this.x = 0;
             this.width = (canvas.width * (Math.random()*200)/1920);
             this.height = (canvas.height * (Math.random()*200)/1080);
-            this.xspeed = (Math.random()*10)+(1*this.numrespawns);
+            this.xspeed = (Math.random()*10)+(1*(this.numrespawns/2));
         }
         if (this.x < -this.width)
         {
@@ -41,7 +41,7 @@ function Enemy(x,y,xspd,yspd)
             this.x = canvas.width;
             this.width = (canvas.width * (Math.random()*200)/1920);
             this.height = (canvas.height * (Math.random()*200)/1080);
-            this.xspeed = -((Math.random()*10)+(1*this.numrespawns));
+            this.xspeed = -((Math.random()*10)+(1*(this.numrespawns/2)));
         }
 
         if (this.y < -canvas.height)
@@ -51,7 +51,7 @@ function Enemy(x,y,xspd,yspd)
             this.x = Math.random()*canvas.width;
             this.width = (canvas.width * (Math.random()*200)/1920);
             this.height = (canvas.height * (Math.random()*200)/1080);
-            this.yspeed = -((Math.random()*10)+(1*this.numrespawns));
+            this.yspeed = -((Math.random()*10)+(1*(this.numrespawns/2)));
         }
     }
 

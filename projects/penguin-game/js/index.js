@@ -15,6 +15,7 @@ var gameLoop
 var player
 let enemies
 
+
 //runs on page load
 window.onload = function () {
     canvas = document.getElementById("game-canvas")
@@ -84,6 +85,7 @@ function step() {
             player.yspeed += e.yspeed
 
         }
+        
     }
 
     if (resetCount === 20) {
