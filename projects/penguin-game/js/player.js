@@ -16,6 +16,10 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
     this.cheight = canvasheight;
 
     this.maxSpeed = .015*this.cheight;
+
+    this.sideLen = this.cheight * 0.8;
+    this.centerX = this.cwidth / 2;
+    this.centerY = this.cheight / 2;
    
     this.step = function(){
 
@@ -42,10 +46,6 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
             }
 
 
-            //const widthScale = this.width / (this.cwidth * (160 / 1920));
-            //const heightScale = this.height / (this.cheight * (188 / 1080));
-            //this.xspeed *= widthScale;
-            //this.yspeed *= heightScale;
 
             const magnitude = Math.sqrt(this.xspeed*this.xspeed + this.yspeed*this.yspeed);
             if(magnitude > this.maxSpeed)
@@ -59,12 +59,14 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
             
             
             
-            if(this.x<300 || this.x> 1460||this.y<-120|| this.y > canvas.width){
+            if(this.x<(this.centerX - this.sideLen * 0.5)-this.width ||this.y< (this.centerY - 0.5 * this.sideLen)-this.height /*||  this.x>||this.y<|| this.y >*/){
                 this.isAlive = false;
             }
-            this.x += this.xspeed;
-            this.y += this.yspeed;
-            
+            if (this.isAlive)
+            {
+                this.x += this.xspeed;
+                this.y += this.yspeed;
+            }
         }
 
     }
