@@ -59,7 +59,7 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
             
             
             
-            if(this.x<(this.centerX - this.sideLen * 0.5)-this.width ||this.y< (this.centerY - 0.5 * this.sideLen)-this.height /*||  this.x>||this.y<|| this.y >*/){
+            if(this.x<(this.centerX - this.sideLen * 0.5)-this.width ||this.y< (this.centerY - 0.5 * this.sideLen)-this.height ||  this.x> (this.centerX - this.sideLen * 0.5)+this.sideLen||this.y>(this.centerY - 0.5 * this.sideLen)+this.sideLen){
                 this.isAlive = false;
             }
             if (this.isAlive)
