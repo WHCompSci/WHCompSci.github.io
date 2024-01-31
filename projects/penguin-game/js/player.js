@@ -5,7 +5,8 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
     this.yspeed = 0;
     this.angle = 90;
     this.friction = .99; //friction increases as levels go up
-    this.maxSpeed = 0.001*this.cheight;
+    
+    console.log(this.maxSpeed);
     this.width = width; //160 actual penguin dimensions
     this.height = height; //188
     this.isAlive = true;
@@ -14,6 +15,8 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
     this.cwidth = canvaswidth;
     this.cheight = canvasheight;
 
+    this.maxSpeed = .015*this.cheight;
+   
     this.step = function(){
 
 
@@ -24,25 +27,25 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
             {
                 this.xspeed *= this.friction;
             } else if (rightKey){
-                this.xspeed += .001*this.cheight;
+                this.xspeed += .00082*this.cheight;
             } else if (leftKey){
-                this.xspeed -= .001*this.cheight;
+                this.xspeed -= .00082*this.cheight;
             }
             
             if(!downKey && !upKey || downKey && upKey )
             {
                 this.yspeed *= this.friction;
             } else if (downKey){
-                this.yspeed += .001*this.cheight;
+                this.yspeed += .00082*this.cheight;
             } else if (upKey){
-                this.yspeed -= .001*this.cheight;
+                this.yspeed -= .00082*this.cheight;
             }
 
 
-            const widthScale = this.width / (this.cwidth * (160 / 1920));
-            const heightScale = this.height / (this.cheight * (188 / 1080));
-            this.xspeed *= widthScale;
-            this.yspeed *= heightScale;
+            //const widthScale = this.width / (this.cwidth * (160 / 1920));
+            //const heightScale = this.height / (this.cheight * (188 / 1080));
+            //this.xspeed *= widthScale;
+            //this.yspeed *= heightScale;
 
             const magnitude = Math.sqrt(this.xspeed*this.xspeed + this.yspeed*this.yspeed);
             if(magnitude > this.maxSpeed)
