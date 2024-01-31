@@ -13,6 +13,7 @@ var resetCount = 0
 //Create game variables
 var gameLoop
 var player
+let enemies
 
 //runs on page load
 window.onload = function () {
@@ -57,6 +58,7 @@ window.onload = function () {
         -(Math.random() * 10) + 1,
         0
     )
+    enemies = [enemy, enemy2, enemy3, enemy4];
 
     gameLoop = setInterval(step, 1000 / 30)
 }
@@ -68,6 +70,22 @@ function step() {
     enemy3.step()
     enemy4.step()
     player.step()
+
+
+
+    for (const e of enemies) {
+        if (isColliding(player, e)) {
+
+            //if (e.xspeed !== 0) { player.xspeed = e.xspeed } 
+            //else{player.yspeed=0}
+            //if (e.yspeed !== 0) { player.yspeed = e.yspeed }
+            //else{player.xspeed=0}
+            player.xspeed += e.xspeed
+            player.yspeed += e.yspeed
+
+        }
+    }
+
     if (resetCount === 20) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         resetCount = 0

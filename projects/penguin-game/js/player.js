@@ -78,7 +78,7 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
         ctx.drawImage(img, this.x, this.y,this.width,this.height);
         ctx.fillStyle = "rgba(255, 0, 0, 0.0)";// change last param to see fallbox
         ctx.fillRect(this.x,this.y,this.width,this.height);
-        console.log(this.isAlive);
+        //console.log(this.isAlive);
         
     }
 
