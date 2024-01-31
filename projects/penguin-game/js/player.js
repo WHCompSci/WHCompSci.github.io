@@ -10,8 +10,9 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
     this.width = width; //160 actual penguin dimensions
     this.height = height; //188
     this.isAlive = true;
-    this.active = true;
-
+    this.setActive = function(active) {
+        this.active = active;
+      };
     this.cwidth = canvaswidth;
     this.cheight = canvasheight;
 

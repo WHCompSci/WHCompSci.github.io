@@ -26,6 +26,7 @@ window.onload = function () {
     setupInputs();
 
     player = new Player((canvas.width/2)-(canvas.width * 160/1920), (canvas.height/2)-(canvas.height * 188/1080), (canvas.width * 160/1920)/*-20*/, (canvas.height * 188/1080), canvas.width, canvas.height);
+    player.setActive(false);
     enemy = new Enemy(0, 500, 10, 0);
 
 
@@ -95,6 +96,7 @@ function setupInputs() {
         }
         if (event.key === "Enter") {
             enterKey = false;
+            player.setActive(true);
         }
 
     });
