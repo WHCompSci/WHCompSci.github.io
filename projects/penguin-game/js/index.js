@@ -13,6 +13,7 @@ var resetCount = 0
 //Create game variables
 var gameLoop
 var player
+var score = 0;
 let enemies
 
 
@@ -72,6 +73,10 @@ function step() {
     enemy4.step()
     player.step()
 
+    if (player.isAlive){
+    score = enemy.numrespawns + enemy2.numrespawns +enemy3.numrespawns+enemy4.numrespawns;
+    console.log(score);}
+
 
 
     for (const e of enemies) {
@@ -83,10 +88,10 @@ function step() {
             //else{player.xspeed=0}
             player.xspeed += e.xspeed
             player.yspeed += e.yspeed
-
         }
         
     }
+    
 
     if (resetCount === 20) {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -113,7 +118,7 @@ function draw() {
 
     ctx.fillStyle = "Black"
     ctx.font = "30px Arial"
-    ctx.fillText("Score:", 30, 30)
+    ctx.fillText("Score: "+score, 30, 30)
 
     enemy.draw()
     enemy2.draw()

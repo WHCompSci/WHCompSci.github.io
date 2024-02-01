@@ -28,6 +28,7 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
 
 
         if (this.active){
+
             if(!leftKey && !rightKey || leftKey && rightKey )
             {
                 this.xspeed *= this.friction;
@@ -68,6 +69,8 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
                 this.x += this.xspeed;
                 this.y += this.yspeed;
             }
+
+            
         }
 
     }
@@ -76,8 +79,8 @@ function Player(x,y,width,height,canvaswidth,canvasheight){
         var img = new Image();
         img.src = "orange_penguin (1).png";
         ctx.drawImage(img, this.x, this.y,this.width,this.height);
-        ctx.fillStyle = "rgba(255, 0, 0, 0.4)";// change last param to see fallbox
-        ctx.fillRect(this.x,this.y+.05*this.cheight,this.width,this.height-.05*this.cheight);
+        ctx.fillStyle = "rgba(255, 0, 0, 0.0)";// change last param to see fallbox
+        ctx.fillRect(this.x,this.y,this.width,this.height);//+.05*this.cheight,-.05*this.cheight
         //console.log(this.isAlive);
         
     }
