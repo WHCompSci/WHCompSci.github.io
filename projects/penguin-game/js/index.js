@@ -135,11 +135,11 @@ function draw() {
         ctx.fillRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = "Black"
         ctx.font = "100px Arial"
-        ctx.fillText("Penguin Game", canvas.width / 2 - 500, canvas.height / 2)
+        ctx.fillText("Penguin Game", canvas.width / 2 - 300, canvas.height / 2)
         ctx.font = "30px Arial"
         ctx.fillText(
             "By: Nick Staada                    Press enter to start",
-            canvas.width / 2 - 500,
+            canvas.width / 2 - 300,
             canvas.height / 2 + 100
         )
     }
