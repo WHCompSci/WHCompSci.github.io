@@ -119,6 +119,9 @@ function draw() {
     ctx.fillStyle = "Black"
     ctx.font = "30px Arial"
     ctx.fillText("Score: "+score, 30, 30)
+    
+    if(!player.isAlive){ctx.font = "50px Arial"
+    ctx.fillText("You Lose! press 'r' to retry", canvas.width / 2 - 300, canvas.height / 2)}
 
     enemy.draw()
     enemy2.draw()
@@ -140,6 +143,8 @@ function draw() {
             canvas.height / 2 + 100
         )
     }
+
+    
 }
 
 function isColliding(gameObject1, gameObject2) {
@@ -173,6 +178,9 @@ function setupInputs() {
         if (event.key === "Enter") {
             enterKey = false
             player.setActive(true)
+        }
+        if (event.key === "r") {
+            location.reload();
         }
     })
 

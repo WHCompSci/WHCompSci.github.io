@@ -59,8 +59,9 @@ function Enemy(x,y,xspd,yspd)
     {
         if(this.active)
         {
+            if(player.isAlive){
             ctx.fillStyle = "black";
-            ctx.fillRect(this.x,this.y,this.width,this.height);
+            ctx.fillRect(this.x,this.y,this.width,this.height);}
         }
     }
 }
