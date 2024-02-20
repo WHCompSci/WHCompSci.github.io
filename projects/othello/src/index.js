@@ -10,3 +10,8 @@ window.onload = function () {
     ctx.font = "100px Arial"
     ctx.fillText("Othello Game",0,0)
 }
+
+window.onresize = function () {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+}
