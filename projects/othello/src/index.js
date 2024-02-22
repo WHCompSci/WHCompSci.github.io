@@ -1,6 +1,6 @@
 var canvas;
 var ctx;
-const board = Array.from({ length: 8 }, _ => Array(8).fill(2));
+const board = Array.from({ length: 8 }, _ => Array(8).fill(1));
 console.log("runningjavcas");
 window.onload = () => {
     console.log("runningjavcas");
@@ -18,36 +18,48 @@ window.onload = () => {
 
 
 function update() {
+    
     drawBoard(board, ctx);
 }
 
 function drawBoard(board, context) {
-    const sideLen = 40;
+    const sideLen = 50;
     const tileR = sideLen * .4;
     const offSetX = canvas.width / 2 - 4 * sideLen;
     const offSetY = canvas.height / 2 - 4 * sideLen;
     context.fillStyle = "rgba(255, 0, 0, 0.0)";
+
+    const minX = offSetX - sideLen * 0.5;
+    const minY = offSetY - sideLen * 0.5;
+    const maxX = 7.52 * sideLen + offSetX;
+    const maxY = 7.51 * sideLen + offSetY;
+
+    ctx.fillStyle = "brown";
+    ctx.fillRect(minX - sideLen / 4, minY - sideLen / 4, sideLen * 8 + sideLen / 2, sideLen * 8 + sideLen / 2);
+    //.ctx.fillRect(minX-(sideLen/4),minY-(sideLen/4),(sideLen*8),(sidelen*8))
+
+
+    ctx.fillStyle = "green";
+    ctx.fillRect(minX, minY, sideLen * 8, sideLen * 8);
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
 
             if (board[y][x] == 0) continue;
 
-            context.fillStyle = board[y][x] == 1 ? "white" : "black";
+            context.fillStyle = board[y][x] == 1 ? "cornsilk" : "black";
             drawCircle(context, x * sideLen + offSetX, y * sideLen + offSetY, tileR);
             console.log("draw");
 
         }
     }
-    const minX = offSetX- sideLen*0.5;
-    const minY = offSetY- sideLen*0.5;
-    const maxX = 7.52* sideLen + offSetX;
-    const maxY = 7.51 * sideLen + offSetY;
+
+
     for (let x = minX; x < maxX; x += sideLen) {
-        drawLine(context,x,minY,x,maxY);
+        drawLine(context, x, minY, x, maxY);
     }
     for (let y = minY; y < maxY; y += sideLen) {
-        drawLine(context,minX,y,maxX,y);
+        drawLine(context, minX, y, maxX, y);
     }
 
 
