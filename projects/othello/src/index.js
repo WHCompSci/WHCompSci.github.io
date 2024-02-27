@@ -12,7 +12,7 @@ const maxY = 7.51 * sideLen + offSetY;
 
 var canvas;
 var ctx;
-const board = Array.from({ length: 8 }, _ => Array(8).fill(1));
+let board = Array.from({ length: 8 }, _ => Array(8).fill(0));
 console.log("runningjavcas");
 window.onload = () => {
     console.log("runningjavcas");
@@ -29,23 +29,64 @@ window.onload = () => {
 
 addEventListener("click", (ev) => {
     const x = ev.clientX;
-    const y = ev.clientY; 
-    if( x <minX || y< minY || x> maxX || y>maxY)
-    {
+    const y = ev.clientY;
+    if (x < minX || y < minY || x > maxX || y > maxY) {
         return;
     }
     console.log("inside");
-    console.log(Math.floor((x-minX)/sideLen));
-    console.log(Math.floor((y-minY)/sideLen));
+
+    const gridY = Math.floor((x - minX) / sideLen);
+    const gridX = Math.floor((y - minY) / sideLen);
+    console.log(gridX);
+    console.log(gridY);
+    playingTurn();
+    if(isTrue)
+    {
+        board[gridX][gridY] = 2;
+    }
+    else{
+        board[gridX][gridY] = 1;
+    }
+    // board[gridX][gridY] = 2;
+    // for(let turn = 0; turn<64;turn++)
+    // {
+    //     if(turn%2==0)
+    //     {
+    //         board[gridX][gridY] = 2;
+    //     }
+    //     if(turn%2!==0)
+    //     {
+    //         board[gridX][gridY] = 1;
+    //     }
+
+    // }
+    
+
 
 
 });
+let turn = 0;
 
+let isTrue;
+function playingTurn(){
+    
+    if(turn%2==0)
+    {
+        isTrue = false;
+    }
+    else{
+        isTrue = true;
+    }
+    turn++;
+    console.log(turn);
+    console.log(isTrue);
+
+}
 
 function update() {
-    
+
     drawBoard(board, ctx);
-    
+
 }
 
 function drawBoard(board, context) {
