@@ -40,11 +40,10 @@ addEventListener("click", (ev) => {
     console.log(gridX);
     console.log(gridY);
     playingTurn();
-    if(isTrue)
-    {
+    if (isTrue) {
         board[gridX][gridY] = 2;
     }
-    else{
+    else {
         board[gridX][gridY] = 1;
     }
     // board[gridX][gridY] = 2;
@@ -60,7 +59,7 @@ addEventListener("click", (ev) => {
     //     }
 
     // }
-    
+
 
 
 
@@ -68,13 +67,12 @@ addEventListener("click", (ev) => {
 let turn = 0;
 
 let isTrue;
-function playingTurn(){
-    
-    if(turn%2==0)
-    {
+function playingTurn() {
+
+    if (turn % 2 == 0) {
         isTrue = false;
     }
-    else{
+    else {
         isTrue = true;
     }
     turn++;
