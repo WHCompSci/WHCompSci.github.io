@@ -12,9 +12,14 @@ const maxY = 7.51 * sideLen + offSetY;
 
 var canvas;
 var ctx;
-let board = Array.from({ length: 8 }, _ => Array(8).fill(0));
+let board;
 console.log("runningjavcas");
 window.onload = () => {
+    board = Array.from({ length: 8 }, _ => Array(8).fill(0));
+    board[3][3] = 2;
+    board[3][4] = 1;
+    board[4][3] = 1;
+    board[4][4] = 2;
     console.log("runningjavcas");
     canvas = document.getElementById("game-canvas");
     canvas.width = window.innerWidth;
@@ -39,13 +44,12 @@ addEventListener("click", (ev) => {
     const gridX = Math.floor((y - minY) / sideLen);
     console.log(gridX);
     console.log(gridY);
-    playingTurn();
-    if (isTrue) {
-        board[gridX][gridY] = 2;
+    if (!isLegal(gridX, gridY)) {
+        return;
     }
-    else {
-        board[gridX][gridY] = 1;
-    }
+
+    playingTurn(gridX, gridY);
+
     // board[gridX][gridY] = 2;
     // for(let turn = 0; turn<64;turn++)
     // {
@@ -65,21 +69,49 @@ addEventListener("click", (ev) => {
 
 });
 let turn = 0;
+let currentColor = 2;
 
-let isTrue;
-function playingTurn() {
+let isBlack;
+const dirs = [
+    [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
 
-    if (turn % 2 == 0) {
-        isTrue = false;
+];
+function isLegal(moveX, moveY) {
+    let oppositeColor = turn % 2 + 1;
+    for (const [dx, dy] of dirs) {
+        let currentX = moveX + dx;
+        let currentY = moveY + dy;
+        //check if the current x and y pos is the oppisite color, if not then continue
+        if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0 || board[currentY][currentX] != oppositeColor) {
+            continue;
+        }
+        while (true) {
+            currentX += dx;
+            currentY += dy;
+            if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0||board[currentY][currentX]==0) {
+                break;
+            }
+            //check if off the board, if so break
+            //check if we hit a same color peice, if so return true
+            if(board[currentY][currentX] == currentColor)
+            {
+                return true;
+            }
+        }
     }
-    else {
-        isTrue = true;
-    }
+    return false;
+}
+function playingTurn(gridX, gridY) {
+
     turn++;
+    currentColor = turn % 2 + 1;
+
     console.log(turn);
-    console.log(isTrue);
+    console.log(isBlack);
+    board[gridX][gridY] = currentColor;
 
 }
+
 
 function update() {
 
@@ -106,6 +138,7 @@ function drawBoard(board, context) {
 
         }
     }
+
 
 
     for (let x = minX; x < maxX; x += sideLen) {
