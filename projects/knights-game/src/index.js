@@ -1,5 +1,5 @@
 // board constants 
-const sideLen = 60;
+const sideLen = 80;
 const BOARD_SIZE = 5;
 const tileR = sideLen * .4;
 const offSetX = window.innerWidth / 2 - BOARD_SIZE * sideLen * 0.5;
@@ -59,6 +59,10 @@ function doTurn(gridX, gridY) {
     if(gridY > 0) board[gridX][gridY - 1] = ~board[gridX][gridY - 1];
     if(gridX < BOARD_SIZE - 1) board[gridX + 1][gridY] = ~board[gridX + 1][gridY];
     if(gridY < BOARD_SIZE - 1) board[gridX][gridY + 1] = ~board[gridX][gridY + 1];
+
+    turn++;
+    
+
 }
 
 function update() {
