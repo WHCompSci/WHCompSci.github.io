@@ -15,10 +15,10 @@ class PixelRow {
             this.includedRanges.push({ start: edges[i - 1], end: edges[i] });
         }
     }
-    inBounds = x => this.includedRanges.some(({start, end}) => x >= start && x < end);
-        //checks whether a given proportion is part of the foreground
-    
-    
+    inBounds = x => this.includedRanges.some(({ start, end }) => x >= start && x < end);
+    //checks whether a given proportion is part of the foreground
+
+
 }
 function isWhiteOrTransparent(data, pixelIndex) {
     // Extract the RGBA values from the pixel
@@ -42,7 +42,7 @@ function get_bounds_arr(image, fontSize, lineHeight) {
     canvas.width = Math.round(clientWidthPX);
     canvas.height = Math.round(clientHeightPX / clientRowHeightPX) * 2;
     console.log(
-        canvas.width + " x " + canvas.height + ". fs=" + fontSize + " lh="+lineHeight
+        canvas.width + " x " + canvas.height + ". fs=" + fontSize + " lh=" + lineHeight
     );
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
