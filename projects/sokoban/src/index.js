@@ -1,5 +1,7 @@
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 let currBoard,
     boxes,
     currRow = 0,
@@ -18,7 +20,7 @@ const levels = [
      "#####_"],
 
     
-    ["_#####_", "_#...#_", "##...##", "#.....#", "#.BLB.#", "#..#..#", "#SLBL.#", "#######"],
+    ["_#####_", "##...##", "#.LLB.#", "#.B#..#", "#..#..#", "#SLB.##", "######_"],
 ]
 
 function loadBoard(index) {
@@ -46,10 +48,10 @@ function drawBoard(board, boxes, playerRow, playerCol) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     // console.log("wefh")
     const tileSize = 30
-    // const offsetX = canvas.width - tileSize * board[0].length * 0.5
-    // const offsetY = canvas.height - tileSize * board.length * 0.5
-    const offsetX = 200
-    const offsetY = 75
+    const offsetX = canvas.width * .5 - (tileSize * board.length)
+    const offsetY = canvas.height * .5 - (tileSize * board.length)
+    // const offsetX = 200
+    // const offsetY = 75
     for (let row = 0; row < board.length; row++) {
         for (let col = 0; col < board[0].length; col++) {
             if (board[row][col] == "_") {
