@@ -35,6 +35,7 @@ window.onload = () => {
 addEventListener("click", (ev) => {
     const x = ev.clientX;
     const y = ev.clientY;
+
     if (x < minX || y < minY || x > maxX || y > maxY) {
         return;
     }
@@ -47,7 +48,6 @@ addEventListener("click", (ev) => {
     if (!isLegal(gridX, gridY)) {
         return;
     }
-
     playingTurn(gridX, gridY);
 
     // board[gridX][gridY] = 2;
@@ -69,45 +69,58 @@ addEventListener("click", (ev) => {
 
 });
 let turn = 0;
-let currentColor = 2;
+let currentColor = 1;
 
 let isBlack;
 const dirs = [
-    [-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
-
+    // TL[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
+    [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]
 ];
 function isLegal(moveX, moveY) {
-    let oppositeColor = turn % 2 + 1;
+    turn++;
+    currentColor = turn % 2 + 1
+    let oppositeColor = currentColor==1 ? 2 : 1;
+    //Mr. D code 
+    // 
+    //going through dirs array 
+    console.log(moveX + ", " + moveY)
+    console.log(currentColor, oppositeColor)
     for (const [dx, dy] of dirs) {
+        //adding direction to current spot  
         let currentX = moveX + dx;
         let currentY = moveY + dy;
+        console.log(currentX + ", " + currentY)
         //check if the current x and y pos is the oppisite color, if not then continue
         if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0 || board[currentY][currentX] != oppositeColor) {
+            console.log("ajacent tile is either off the board or not the oppisite color")
+            console.log("This is the board state: "+board[currentY][currentX] )
+            console.log(board)
+            console.log("This is the oppisite color: "+oppositeColor)
             continue;
         }
         while (true) {
             currentX += dx;
             currentY += dy;
-            if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0||board[currentY][currentX]==0) {
+            // turn++;
+            // currentColor = turn % 2 + 1;
+            if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0 || board[currentY][currentX] == 0) {
+                console.log("Checked in a line and I went off the board or I hit an empty")
                 break;
             }
             //check if off the board, if so break
             //check if we hit a same color peice, if so return true
-            if(board[currentY][currentX] == currentColor)
-            {
+            if (board[currentY][currentX] == currentColor) {
+                console.log("Found my same color")
                 return true;
             }
+
         }
     }
+    turn--;
     return false;
 }
 function playingTurn(gridX, gridY) {
 
-    turn++;
-    currentColor = turn % 2 + 1;
-
-    console.log(turn);
-    console.log(isBlack);
     board[gridX][gridY] = currentColor;
 
 }
