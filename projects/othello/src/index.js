@@ -13,21 +13,34 @@ const maxY = 7.51 * sideLen + offSetY;
 var canvas;
 var ctx;
 let board;
+let legalMoves; 
 console.log("runningjavcas");
 window.onload = () => {
     board = Array.from({ length: 8 }, _ => Array(8).fill(0));
+    legalMoves = Array.from({ length: 8 }, _ => Array(8).fill(0));
     board[3][3] = 2;
     board[3][4] = 1;
     board[4][3] = 1;
     board[4][4] = 2;
+    //legal white starting moves
+    legalMoves[4][5] = 1;
+    legalMoves[5][4] = 1;
+    legalMoves[2][3] = 1;
+    legalMoves[3][2] = 1;
+
+    legalMoves[5][3] = 2;
+    legalMoves[3][5] = 2;
+    legalMoves[4][2] = 2;
+    legalMoves[2][4] = 2;
+
+    
     console.log("runningjavcas");
     canvas = document.getElementById("game-canvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     ctx = canvas.getContext("2d");
     console.log(ctx);
-    // ctx.font = "100px Arial";
-    // ctx.fillText("Othello Game", 0, 0);
+    
     console.log(board);
     const gameLoop = setInterval(update, 1000 / 30);
 };
@@ -45,84 +58,146 @@ addEventListener("click", (ev) => {
     const gridX = Math.floor((y - minY) / sideLen);
     console.log(gridX);
     console.log(gridY);
-    if (!isLegal(gridX, gridY)) {
-        return;
+    //get the possible tiles to flip
+    [tilesToFlip, currentColor] = getPossibleFlips(gridX, gridY); 
+    
+    if(tilesToFlip.length > 1) {
+        for(const [cx, cy] of tilesToFlip) {
+            board[cx][cy] = currentColor;
+        }
+        turn++;
     }
-    playingTurn(gridX, gridY);
-
-    // board[gridX][gridY] = 2;
-    // for(let turn = 0; turn<64;turn++)
-    // {
-    //     if(turn%2==0)
-    //     {
-    //         board[gridX][gridY] = 2;
-    //     }
-    //     if(turn%2!==0)
-    //     {
-    //         board[gridX][gridY] = 1;
-    //     }
-
-    // }
-
-
-
+    
+   
+    
+    
+    //if we actually flipped any 
+    
 
 });
-let turn = 0;
-let currentColor = 1;
+let turn = 1;
+// let currentColor = 1;
 
 let isBlack;
 const dirs = [
-    // TL[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]
+    //starts at top left goes clockwise
     [-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]
 ];
-function isLegal(moveX, moveY) {
-    turn++;
-    currentColor = turn % 2 + 1
-    let oppositeColor = currentColor==1 ? 2 : 1;
-    //Mr. D code 
-    // 
-    //going through dirs array 
-    console.log(moveX + ", " + moveY)
-    console.log(currentColor, oppositeColor)
-    for (const [dx, dy] of dirs) {
-        //adding direction to current spot  
-        let currentX = moveX + dx;
-        let currentY = moveY + dy;
-        console.log(currentX + ", " + currentY)
-        //check if the current x and y pos is the oppisite color, if not then continue
-        if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0 || board[currentY][currentX] != oppositeColor) {
-            console.log("ajacent tile is either off the board or not the oppisite color")
-            console.log("This is the board state: "+board[currentY][currentX] )
-            console.log(board)
-            console.log("This is the oppisite color: "+oppositeColor)
+// function isLegal(moveX, moveY) {
+//     turn++;
+//     currentColor = turn % 2 + 1
+//     let oppositeColor = currentColor==1 ? 2 : 1;
+    
+//     console.log("CURRENTlOCATION "+moveX + ", " + moveY)
+    
+//     for (const [dx, dy] of dirs) {
+//         //adding direction to current spot  
+        
+//         let changeX = moveX + dx;
+//         let changeY = moveY + dy;
+
+        
+
+//         console.log("The direction i'm going in right now is ("+dx+", "+dy+")")
+//         //check if the current x and y pos is the oppisite color, if not then continue
+//         if (changeX > 7 || changeY > 7 || changeX < 0 || changeY < 0) {
+//             console.log("ajacent tile is off the board")
+           
+//            // console.log(board)
+//             continue;
+//         }
+
+//         if(board[changeX][changeY] != oppositeColor){
+            
+//             console.log("not oppositeColor")
+//             //console.log(board)
+//             continue;
+//         }
+//         while (true) {
+//             changeX += dx;
+//             changeY += dy;
+//             //add current position to array
+//             if (changeX > 7 || changeY > 7 || changeX < 0 || changeY < 0 || board[changeX][changeY] == 0) {
+//                 console.log("Checked in a line and I went off the board or I hit an empty")
+               
+//                 break;
+//             }
+//             //check if off the board, if so break
+//             //check if we hit a same color peice, if so return true
+//             if (board[changeX][changeY] == currentColor) {
+//                 console.log("Found my same color")
+                
+//                 //flip
+
+//                 return true;
+//             }
+
+//         }
+//     }
+//     turn--;
+//     return false;
+// }
+// function playingTurn(gridX, gridY) {
+
+//     board[gridX][gridY] = currentColor;
+
+// }
+function getPossibleFlips(moveX,moveY)
+{
+    //create 2D array for available options 
+    //create another 2D array to add all optionand then change color for this array
+    let currentColor = turn % 2 + 1
+    let oppositeColor = currentColor== 1 ? 2 : 1; 
+    let allFlips = [[moveX, moveY]]
+    if(board[moveX][moveY]==0)
+    {
+        for (const [dx, dy] of dirs) 
+        {
+            let changeX = moveX + dx;
+         let changeY = moveY + dy;
+
+         //check if the current x and y pos is the oppisite color, if not then continue
+            if (changeX > 7 || changeY > 7 || changeX < 0 || changeY < 0) 
+            {
             continue;
-        }
-        while (true) {
-            currentX += dx;
-            currentY += dy;
-            // turn++;
-            // currentColor = turn % 2 + 1;
-            if (currentX > 7 || currentY > 7 || currentX < 0 || currentY < 0 || board[currentY][currentX] == 0) {
-                console.log("Checked in a line and I went off the board or I hit an empty")
-                break;
             }
+
+            if(board[changeX][changeY] != oppositeColor)
+            {
+                continue;
+            
+            }
+            const tilesToFlip = []
+            tilesToFlip.push([changeX,changeY]);
+            console.log("got to while loop")
+            while (true) {
+                changeX += dx;
+                changeY += dy;
+                //add current position to array
+                if (changeX > 7 || changeY > 7 || changeX < 0 || changeY < 0 || board[changeX][changeY] == 0) 
+                {
+                    break;
+                }
             //check if off the board, if so break
             //check if we hit a same color peice, if so return true
-            if (board[currentY][currentX] == currentColor) {
-                console.log("Found my same color")
-                return true;
+                if (board[changeX][changeY] == currentColor) {
+                    console.log("Found my same color")
+                    console.log("Found my same color")
+                    allFlips = [...allFlips, ...tilesToFlip]
+                    break;
+              
             }
-
+                console.log("flipping tile")
+                tilesToFlip.push([changeX,changeY]);
+            // board[changeX][changeY] = currentColor;
+            // totalFlips++;     
+            }
         }
     }
-    turn--;
-    return false;
-}
-function playingTurn(gridX, gridY) {
+    
 
-    board[gridX][gridY] = currentColor;
-
+    console.log("this is the turn "+turn+" ");
+    return [allFlips, currentColor]
 }
 
 
