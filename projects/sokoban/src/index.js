@@ -197,45 +197,70 @@ function checkForWin(board, boxes) {
     return true
 }
 
-// function generatePuzzle(height = 1, width = 2, numBoxes = 2) {
-//     //https://ianparberry.com/techreports/LARC-2011-01.pdf
-//     //build an empty room
-//     const templetes = [
-//         ["_____", "_..._", "_..._", "_..._", "_____"],
+function generatePuzzle(height = 1, width = 2, numBoxes = 2) {
+    //https://ianparberry.com/techreports/LARC-2011-01.pdf
+    //build an empty room
+    const templetes = [
+        ["_____", "_..._", "_..._", "_..._", "_____"],
 
-//         ["_____", "_#.._", "_..._", "_..._", "_____"],
-//         ["___..", "_##..", "_..._", "_..._", "_____"],
-//         ["_____", "_###_", "_..._", "_..._", "_____"],
-//         ["_____", "_###_", "_#.._", "_#.._", "_____"],
-//         ["__.__", "_#.._", "...._", "_..#_", "_____"],
-//         ["_____", "_#.._", "...._", "_#.._", "_____"],
-//         ["__.__", "_#.._", "...._", "_#.#_", "__.__"],
-//         ["__.__", "_#.#_", ".....", "_#.#_", "__.__"],
-//         ["__.__", "_#.#_", "_#,..", "_###_", "_____"],
-//         ["_____", "_###_", ".....", "_###_", "_____"],
-//         ["_____", "_....", "_.#..", "_..._", "_____"],
-//         ["_____", "_###_", "_###_", "_###_", "_____"],
-//         ["_____", "_###_", "_#.._", "...._", "..___"],
-//         ["_._._", "_..._", "_#.#_", "_..._", "_._._"],
-//         ["_____", "_###_", "_###_", "_..._", "_..._"],
-//         ["_____", "_###_", "..#..", "_..._", "_..__"],
-//     ]
-//     // _ is a blank
-//     // # is a wall
-//     // . is a passage
-//     // , is a passage (that only allows player to get through without block) Only exists on one templete. Checked as if a wall
-//     for (let t of templetes) {
-//         console.log(allSymetries(t))
-//     }
-//     // const board = [];
-//     // while (true) {
-//     //   // choose N random templetes, where N := H x W
-//     //   const temps = [];
-//     //   for (let n = 0; n < height * width; n++) {
-//     //     temps.push(Math.floor(Math.random() * templetes.length));
-//     //   }
-//     // }
-// }
+        ["_____", "_#.._", "_..._", "_..._", "_____"],
+        ["___..", "_##..", "_..._", "_..._", "_____"],
+        ["_____", "_###_", "_..._", "_..._", "_____"],
+        ["_____", "_###_", "_#.._", "_#.._", "_____"],
+        ["__.__", "_#.._", "...._", "_..#_", "_____"],
+        ["_____", "_#.._", "...._", "_#.._", "_____"],
+        ["__.__", "_#.._", "...._", "_#.#_", "__.__"],
+        ["__.__", "_#.#_", ".....", "_#.#_", "__.__"],
+        ["__.__", "_#.#_", "_#,..", "_###_", "_____"],
+        ["_____", "_###_", ".....", "_###_", "_____"],
+        ["_____", "_....", "_.#..", "_..._", "_____"],
+        ["_____", "_###_", "_###_", "_###_", "_____"],
+        ["_____", "_###_", "_#.._", "...._", "..___"],
+        ["_._._", "_..._", "_#.#_", "_..._", "_._._"],
+        ["_____", "_###_", "_###_", "_..._", "_..._"],
+        ["_____", "_###_", "..#..", "_..._", "_..__"],
+    ]
+    // _ is a blank
+    // # is a wall
+    // . is a passage
+    // , is a passage (that only allows player to get through without block) Only exists on one templete. Checked as if a wall
+    for (let t of templetes) {
+        console.log(allSymetries(t))
+    }
+    // const board = [];
+    
+    // choose N random templetes, where N := H x W
+    const layout = [];
+    for (let row = 0; row < height; row++) {
+        layout.push([])
+        for(let col = 0; col < width; col++) {
+            let t = Math.floor(Math.random() * templetes.length)
+            //check the templete needs to be rotated.
+            if(row > 0 && t[0] == )
+            layout[row].push();
+        }
+    }
+    
+    
+    
+    
+}
+
+    const rotate90 = (matrix) => {
+        const rows = matrix.length
+        const cols = matrix[0].length
+        const result = []
+
+        for (let j = 0; j < cols; j++) {
+            const newRow = []
+            for (let i = rows - 1; i >= 0; i--) {
+                newRow.push(matrix[i][j])
+            }
+            result.push(newRow)
+        }
+
+        return result
+    }
 // const allSymetries = (b) => {
 //     const ident = b
 //     const rot90 = r90(ident)
