@@ -161,7 +161,7 @@ function getPossibleFlips(moveX,moveY)
             {
             continue;
             }
-
+//you
             if(board[changeX][changeY] != oppositeColor)
             {
                 continue;
