@@ -264,7 +264,7 @@ document.onkeydown = (ev) => {
             ArrowDown: [1, 0],
             ArrowRight: [0, 1],
         }
-    } else if (ev.key == "w" || ev.key == "s" || ev.key == "a" || ev.key == "d")
+    } else if (ev.key == "w" || ev.key == "s" || ev.key == "a" || ev.key == "d") {
         dirs = {
             w: [-1, 0],
             a: [0, -1],
