@@ -1,5 +1,10 @@
+@font-face {
+    font-family: 'Madimi';
+    src: url('Madimi_One/MadimiOne-Regular.ttf') format('truetype');
+} 
 body {
   text-align: center;
+  background-color: #b46746;
 }
 
 
