@@ -98,7 +98,7 @@ function drawBoard() {
     ctx.textBaseline = "middle"
     ctx.textAlign = "center"
     const texts = [
-        "Use WASD to move. Push the box!",
+        "Use Arrow Keys to push the box!",
         "The goal is to push every box into a green tile.",
         "Press space to restart levels.",
         "Good luck!",
