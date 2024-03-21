@@ -1,5 +1,10 @@
 const canvas = document.getElementById("canvas")
 const ctx = canvas.getContext("2d")
+const U = "ArrowUp"
+const D = "ArrowDown"
+const L = "ArrowLeft"
+const R = "ArrowRight"
+
 let totalMoves = 0
 let totalResets = 0
 let totalBlockPushes = 0
@@ -11,8 +16,7 @@ let currBoard,
     currRow = 0,
     currCol = 0,
     currLevel = 0,
-    d
-lastPosOnScreen = null
+    lastPosOnScreen = null
 let gameMode = "title"
 let startTime = null
 const levels = [
@@ -231,10 +235,12 @@ function drawBoard() {
 }
 document.onkeydown = (ev) => {
     if (gameMode == "title") {
+        
         startGame()
         return
     }
     if (gameMode == "end") {
+        reload()
         drawTitleScreen()
         return
     }
@@ -250,14 +256,14 @@ document.onkeydown = (ev) => {
         // drawBoard(currBoard, boxes, currRow, currCol)
         return
     }
-    if (ev.key != "w" && ev.key != "a" && ev.key != "s" && ev.key != "d") {
+    if (ev.key != "ArrowUp" && ev.key != "ArrowDown" && ev.key != "ArrowLeft" && ev.key != "ArrowRight") {
         return
     }
     const dirs = {
-        w: [-1, 0],
-        a: [0, -1],
-        s: [1, 0],
-        d: [0, 1],
+        ArrowUp: [-1, 0],
+        ArrowLeft: [0, -1],
+        ArrowDown: [1, 0],
+        ArrowRight: [0, 1],
     }
     const d = dirs[ev.key]
     const nextRow = currRow + d[0]
