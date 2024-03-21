@@ -98,7 +98,7 @@ function drawBoard() {
     ctx.textBaseline = "middle"
     ctx.textAlign = "center"
     const texts = [
-        "Use Arrow Keys to push the box!",
+        "Use WASD or Arrow Keys to push the box!",
         "The goal is to push every box into a green tile.",
         "Press space to restart levels.",
         "Good luck!",
@@ -240,7 +240,6 @@ document.onkeydown = (ev) => {
         return
     }
     if (gameMode == "end") {
-        reload()
         drawTitleScreen()
         return
     }
@@ -256,15 +255,23 @@ document.onkeydown = (ev) => {
         // drawBoard(currBoard, boxes, currRow, currCol)
         return
     }
-    if (ev.key != "ArrowUp" && ev.key != "ArrowDown" && ev.key != "ArrowLeft" && ev.key != "ArrowRight") {
-        return
-    }
-    const dirs = {
-        ArrowUp: [-1, 0],
-        ArrowLeft: [0, -1],
-        ArrowDown: [1, 0],
-        ArrowRight: [0, 1],
-    }
+    let dirs
+
+    if (ev.key == "ArrowUp" || ev.key == "ArrowDown" || ev.key == "ArrowLeft" || ev.key == "ArrowRight") {
+        dirs = {
+            ArrowUp: [-1, 0],
+            ArrowLeft: [0, -1],
+            ArrowDown: [1, 0],
+            ArrowRight: [0, 1],
+        }
+    } else if (ev.key == "w" || ev.key == "s" || ev.key == "a" || ev.key == "d")
+        dirs = {
+            w: [-1, 0],
+            a: [0, -1],
+            s: [1, 0],
+            d: [0, 1],
+        }
+    } else { return }
     const d = dirs[ev.key]
     const nextRow = currRow + d[0]
     const nextCol = currCol + d[1]
