@@ -239,7 +239,11 @@ document.onkeydown = (ev) => {
         startGame()
         return
     }
-    if (gameMode == "end") {
+    if (gameMode == "end" && ev.key == " ") {
+        currLevel = 0
+        totalMoves = 0
+        totalResets = 0
+        totalBlockPushes = 0
         drawTitleScreen()
         return
     }
@@ -377,7 +381,7 @@ const drawEndScreen = () => {
         canvas.height * 0.75
     )
     ctx.fillText(
-        "Press any key to restart",
+        "Press space to restart",
         canvas.width / 2,
         canvas.height * 0.85
     )
@@ -452,7 +456,11 @@ const drawTitleScreen = () => {
 
     //This is a blocking title page that starts a timer once you press a key
 }
-drawTitleScreen()
+const FONT = new FontFace("Madimi", "url(src/Madimi_One/MadimiOne-Regular.ttf)")
+FONT.load().then((font) => {
+    document.fonts.add(font)
+    drawTitleScreen()
+})
 let gameLoop;
 function startGame() {
     ;[currBoard, boxes, currRow, currCol] = loadBoard(0)
