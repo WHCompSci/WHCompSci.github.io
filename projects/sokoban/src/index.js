@@ -1,10 +1,5 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
-const U = 'ArrowUp'
-const D = 'ArrowDown'
-const L = 'ArrowLeft'
-const R = 'ArrowRight'
-
 let totalMoves = 0
 let totalResets = 0
 let totalBlockPushes = 0
