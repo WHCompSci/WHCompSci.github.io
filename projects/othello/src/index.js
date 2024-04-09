@@ -10,13 +10,12 @@ const minY = offSetY - sideLen * 0.5;
 const maxX = 7.52 * sideLen + offSetX;
 const maxY = 7.51 * sideLen + offSetY;
 //
-var canvas;
-var ctx;
+let canvas;
+let ctx;
 let board;
 let legalMoves;
 
 let enterKey = true;
-console.log("runningjavcas");
 window.onload = () => {
     setupInputs();
     board = Array.from({ length: 8 }, _ => Array(8).fill(0));
@@ -36,14 +35,10 @@ window.onload = () => {
     legalMoves[4][2] = 2;
     legalMoves[2][4] = 2;
 
-    console.log("runningjavcas");
     canvas = document.getElementById("game-canvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     ctx = canvas.getContext("2d");
-    console.log(ctx);
-
-    console.log(board);
     const gameLoop = setInterval(update, 1000 / 30);
 };
 
@@ -63,12 +58,9 @@ addEventListener("click", (ev) => {
     if (x < minX || y < minY || x > maxX || y > maxY) {
         return;
     }
-    console.log("inside");
 
     const gridY = Math.floor((x - minX) / sideLen);
     const gridX = Math.floor((y - minY) / sideLen);
-    console.log(gridX);
-    console.log(gridY);
     //get the possible tiles to flip
     [tilesToFlip, currentColor] = getPossibleFlips(gridX, gridY);
 
@@ -111,7 +103,6 @@ function getPossibleFlips(moveX, moveY) {
             }
             const tilesToFlip = [];
             tilesToFlip.push([changeX, changeY]);
-            console.log("got to while loop");
             while (true) {
                 changeX += dx;
                 changeY += dy;
@@ -122,13 +113,10 @@ function getPossibleFlips(moveX, moveY) {
                 //check if off the board, if so break
                 //check if we hit a same color peice, if so return true
                 if (board[changeX][changeY] == currentColor) {
-                    console.log("Found my same color");
-                    console.log("Found my same color");
                     allFlips = [...allFlips, ...tilesToFlip];
                     break;
 
                 }
-                console.log("flipping tile");
                 tilesToFlip.push([changeX, changeY]);
                 // board[changeX][changeY] = currentColor;
                 // totalFlips++;     
