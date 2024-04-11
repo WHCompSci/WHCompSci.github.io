@@ -9,19 +9,22 @@ const minX = offSetX - sideLen * 0.5;
 const minY = offSetY - sideLen * 0.5;
 const maxX = 7.52 * sideLen + offSetX;
 const maxY = 7.51 * sideLen + offSetY;
-
+//
 var canvas;
 var ctx;
 let board;
 let legalMoves; 
+
+let enterKey = true;
 console.log("runningjavcas");
 window.onload = () => {
+    setupInputs() 
     board = Array.from({ length: 8 }, _ => Array(8).fill(0));
     legalMoves = Array.from({ length: 8 }, _ => Array(8).fill(0));
-    board[3][3] = 2;
-    board[3][4] = 1;
-    board[4][3] = 1;
-    board[4][4] = 2;
+    board[3][3] = 1;
+    board[3][4] = 2;
+    board[4][3] = 2;
+    board[4][4] = 1;
     //legal white starting moves
     legalMoves[4][5] = 1;
     legalMoves[5][4] = 1;
@@ -32,6 +35,9 @@ window.onload = () => {
     legalMoves[3][5] = 2;
     legalMoves[4][2] = 2;
     legalMoves[2][4] = 2;
+
+
+    
 
     
     console.log("runningjavcas");
@@ -44,6 +50,16 @@ window.onload = () => {
     console.log(board);
     const gameLoop = setInterval(update, 1000 / 30);
 };
+
+
+function setupInputs() 
+{
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            enterKey = false
+        }
+    })
+}
 
 addEventListener("click", (ev) => {
     const x = ev.clientX;
@@ -203,11 +219,51 @@ function getPossibleFlips(moveX,moveY)
 
 function update() {
 
+    
     drawBoard(board, ctx);
+    if(enterKey){
+        
+        ctx.fillStyle = "white";
+        ctx.fillRect(0,0,1000,1000)
+        ctx.fillStyle = "black";
+        ctx.font = "50px Arial";
+        ctx.fillText("Othello", 90, 90);
+        ctx.font = "20px Arial";
+        ctx.fillText("By: Nick S. and Alex S.", 90, 130);
+
+        ctx.font = "35px Arial";
+        ctx.fillText("Rules:", 700, 130);
+        ctx.font = "20px Arial";
+        ctx.fillText("Othello is a turn based game,", 700, 160);
+        ctx.fillText("in which two players take turns", 700, 180);
+        ctx.fillText("fighting for board control, by", 700, 200);
+        ctx.fillText("flipping your oppnents peices.", 700, 220);
+        ctx.fillText("The only way to place a peice,", 700, 240);
+        ctx.fillText("is by surrounding your opponents", 700, 260);
+        ctx.fillText("peices. You can capture peices, ", 700, 280);
+        ctx.fillText("As long as your color is on the",700,300);
+        ctx.fillText("opposite side of the peices you ", 700, 320);    
+        ctx.fillText("want to capture. There can be no", 700, 340); 
+        ctx.fillText("empty spaces in between.", 700, 360);
+        ctx.fillText("Whoever has more spaces by the ", 700, 380); 
+        ctx.fillText("end of the game wins!", 700, 400); 
+
+
+        ctx.font = "35px Arial";
+        ctx.fillText("Press 'enter' to begin", 200, 400); 
+    }
+
+
+
 
 }
-
+let color = "black";
 function drawBoard(board, context) {
+
+    context.fillStyle = "white";
+    context.fillRect(0,0,1000,1000)
+
+
     context.fillStyle = "brown";
     context.fillRect(minX - sideLen / 4, minY - sideLen / 4, sideLen * 8 + sideLen / 2, sideLen * 8 + sideLen / 2);
     //.ctx.fillRect(minX-(sideLen/4),minY-(sideLen/4),(sideLen*8),(sidelen*8))
@@ -235,8 +291,18 @@ function drawBoard(board, context) {
     for (let y = minY; y < maxY; y += sideLen) {
         drawLine(context, minX, y, maxX, y);
     }
-
-
+    
+    ctx.fillStyle = "Black"
+    ctx.font = "30px Arial"
+    if (turn % 2 === 1){
+        color = "black"
+    }
+    if (turn % 2 === 0)
+    {
+        color = "white"
+    }
+    ctx.fillText("It is "+color+"'s turn.", 30, 30)
+    //ctx.fillText("wincolor is winning by blank points")
 }
 
 function drawCircle(ctx, x, y, radius) {
