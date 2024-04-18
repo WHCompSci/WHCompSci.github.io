@@ -553,7 +553,7 @@ async function runAIGreedy(board, legal_moves, is_whites_turn) {
     return move;
 }
 
-
+//function is made to look one move ahead and try to make the move that is least beneficial for the opponent 
 async function miniMaxAI(board, legal_moves, is_whites_turn) {
     let move;
     let score = Number.POSITIVE_INFINITY;
