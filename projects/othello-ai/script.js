@@ -16,7 +16,7 @@ class Board {
     ]
     //rows:  legal move checkers types (16 total) I added more than were in the paper because It seemed less complicated than adding more reindexings
     //columns: R BR B BL L TL T TR
-    legalMoveCheckerTypes = [
+    legal_move_checker_types = [
         [6, 6, 6, 0, 0, 0, 0, 0],
         [5, 5, 6, 0, 0, 0, 0, 0],
         [4, 4, 6, 1, 1, 0, 0, 0],
@@ -34,7 +34,7 @@ class Board {
         [4, 3, 3, 1, 1, 1, 2, 2]
         // [3,3,3,2,2,2,2,2]  //J //not needed as (index 15) tiles are occupied from the start of the game
     ]
-    quadrantReindexings = [
+    quadrant_reindexings = [
         [0, 1, 2, 3, 4, 5, 6, 7], //TL
         [4, 3, 2, 1, 0, 7, 6, 5], //TR
         [0, 7, 6, 5, 4, 3, 2, 1], //BL
@@ -95,23 +95,23 @@ class Board {
         const my_chip = is_white ? this.WHITE_CHIP : this.BLACK_CHIP
         const enemy_chip = is_white ? this.BLACK_CHIP : this.WHITE_CHIP
         if (change_board) this.set_cell(x, y, is_white)
-        const LMCType = this.legal_move_checkers[y][x]
-        const numAndTermsInEachDirection = this.legalMoveCheckerTypes[LMCType]
+        const LMC_type = this.legal_move_checkers[y][x]
+        const num_tiles_in_each_dir = this.legal_move_checker_types[LMC_type]
         const quadrant = (x > 3) | ((y > 3) << 1) //0: TL, 1: TR, 2: BL, 3: BR
-        const reindexing = this.quadrantReindexings[quadrant]
+        const reindexing = this.quadrant_reindexings[quadrant]
         for (let i = 0; i < 8; i++) {
-            let numAndTerms = numAndTermsInEachDirection[i]
-            if (numAndTerms == 0) continue
+            let num_tiles = num_tiles_in_each_dir[i]
+            if (num_tiles == 0) continue
 
             let direction = this.directions[reindexing[i]]
 
-            console.log('Checking direction:', this.direction_names[reindexing[i]], 'for', numAndTerms, 'terms');
+            // console.log('Checking direction:', this.direction_names[reindexing[i]], 'for', num_tiles, 'terms');
             let [dx, dy] = direction
 
             if (this.get_cell(x + dx, y + dy) != enemy_chip) continue
 
-            for (let j = 1; j <= numAndTerms + 1; j++) {
-                console.log('Checking distance:', j)
+            for (let j = 1; j <= num_tiles + 1; j++) {
+                // console.log('Checking distance:', j)
                 let cell = this.get_cell(x + j * dx, y + j * dy)
                 if (cell == 0) break
                 if (cell == my_chip) {
@@ -135,44 +135,44 @@ class Board {
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 if (this.get_cell(x, y) != 0) continue
-                const LMCType = this.legal_move_checkers[y][x]
-                const numAndTermsInEachDirection = this.legalMoveCheckerTypes[LMCType]
+                const LMC_type = this.legal_move_checkers[y][x]
+                const num_tiles_in_each_dir = this.legal_move_checker_types[LMC_type]
                 const quadrant = (x > 3) | ((y > 3) << 1) //0: TL, 1: TR, 2: BL, 3: BR
-                const reindexing = this.quadrantReindexings[quadrant]
+                const reindexing = this.quadrant_reindexings[quadrant]
 
                 for (let i = 0; i < 8; i++) {
-                    let numAndTerms = numAndTermsInEachDirection[i]
-                    if (numAndTerms == 0) continue
+                    let num_tiles = num_tiles_in_each_dir[i]
+                    if (num_tiles == 0) continue
                     let direction = this.directions[reindexing[i]]
                     let [dx, dy] = direction
                     // ugly code, but it's fast apparently
-                    const isDirectionLegal =
-                        (numAndTerms >= 1 &&
+                    const is_dir_legal =
+                        (num_tiles >= 1 &&
                             this.get_cell(x + dx, y + dy) == enemy_chip &&
                             this.get_cell(x + 2 * dx, y + 2 * dy) == my_chip) ||
-                        (numAndTerms >= 2 &&
+                        (num_tiles >= 2 &&
                             this.get_cell(x + dx, y + dy) == enemy_chip &&
                             this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
                             this.get_cell(x + 3 * dx, y + 3 * dy) == my_chip) ||
-                        (numAndTerms >= 3 &&
+                        (num_tiles >= 3 &&
                             this.get_cell(x + dx, y + dy) == enemy_chip &&
                             this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
                             this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
                             this.get_cell(x + 4 * dx, y + 4 * dy) == my_chip) ||
-                        (numAndTerms >= 4 &&
+                        (num_tiles >= 4 &&
                             this.get_cell(x + dx, y + dy) == enemy_chip &&
                             this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
                             this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
                             this.get_cell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
                             this.get_cell(x + 5 * dx, y + 5 * dy) == my_chip) ||
-                        (numAndTerms >= 5 &&
+                        (num_tiles >= 5 &&
                             this.get_cell(x + dx, y + dy) == enemy_chip &&
                             this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
                             this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
                             this.get_cell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
                             this.get_cell(x + 5 * dx, y + 5 * dy) == enemy_chip &&
                             this.get_cell(x + 6 * dx, y + 6 * dy) == my_chip) ||
-                        (numAndTerms >= 6 &&
+                        (num_tiles >= 6 &&
                             this.get_cell(x + dx, y + dy) == enemy_chip &&
                             this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
                             this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
@@ -181,7 +181,7 @@ class Board {
                             this.get_cell(x + 6 * dx, y + 6 * dy) == enemy_chip &&
                             this.get_cell(x + 7 * dx, y + 7 * dy) == my_chip)
 
-                    if (isDirectionLegal) {
+                    if (is_dir_legal) {
                         legal_moves[y] |= 1 << x
                         break
                     }
@@ -195,58 +195,58 @@ class Board {
 const board = new Board()
 let is_whites_turn = false
 let move_number = 0
-let lastMoveLocation = null;
+let last_move = null; // location of last move for drawing red dot on the screen
 board.set_cell(3, 3, true)
 board.set_cell(4, 4, true)
 board.set_cell(3, 4, false)
 board.set_cell(4, 3, false)
 let legal_moves = board.find_legal_moves(is_whites_turn)
 board.log_board()
-logLegalMoves(legal_moves)
+log_legal_moves(legal_moves)
 
-function logLegalMoves(legal_moves) {
+function log_legal_moves(legal_moves) {
     let txt = ''
     for (let y = 0; y < 8; y++) {
         let row = ''
         for (let x = 0; x < 8; x++) {
-            row += isMoveLegal(x, y, legal_moves) ? 'L' : '.'
+            row += is_move_legal(x, y, legal_moves) ? 'L' : '.'
         }
         txt += row + '\n'
     }
     console.log(txt)
 }
-const coordinateOffset = 50
+const coordinate_offset = 50
 const canvas = document.getElementById('board')
-const statusIndicator = document.getElementById('status')
-const newGameButton = document.getElementById('newGame')
-const undoButton = document.getElementById('undo')
-const redoButton = document.getElementById('redo')
+const status_indicator = document.getElementById('status')
+const new_game_button = document.getElementById('newGame')
+const undo_button = document.getElementById('undo')
+const redo_button = document.getElementById('redo')
 
 const ctx = canvas.getContext('2d')
 const cell_size = Math.floor(
     Math.min(window.innerWidth, window.innerHeight) / 12
 )
 
-canvas.width = 8 * cell_size + coordinateOffset
-canvas.height = 8 * cell_size + coordinateOffset
+canvas.width = 8 * cell_size + coordinate_offset
+canvas.height = 8 * cell_size + coordinate_offset
 
 canvas.style.border = '0px solid #222222'
-function drawBoard(b, drawLegalMoves = true) {
+function draw_board(b, draw_legal_moves = true) {
     //draw green background #009067
     ctx.fillStyle = '#222222'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     ctx.fillStyle = '#009067'
-    ctx.fillRect(coordinateOffset, coordinateOffset, canvas.width, canvas.height)
+    ctx.fillRect(coordinate_offset, coordinate_offset, canvas.width, canvas.height)
     //draw grid lines
     ctx.strokeStyle = '#222222'
     ctx.lineWidth = 1
     ctx.beginPath()
     for (let i = 1; i <= 8; i++) {
-        ctx.moveTo(i * cell_size + coordinateOffset, coordinateOffset)
-        ctx.lineTo(i * cell_size + coordinateOffset, canvas.height)
-        ctx.moveTo(coordinateOffset, i * cell_size + coordinateOffset)
-        ctx.lineTo(canvas.width, i * cell_size + coordinateOffset)
+        ctx.moveTo(i * cell_size + coordinate_offset, coordinate_offset)
+        ctx.lineTo(i * cell_size + coordinate_offset, canvas.height)
+        ctx.moveTo(coordinate_offset, i * cell_size + coordinate_offset)
+        ctx.lineTo(canvas.width, i * cell_size + coordinate_offset)
     }
     ctx.stroke()
 
@@ -261,13 +261,13 @@ function drawBoard(b, drawLegalMoves = true) {
     for (let i = 0; i < 8; i++) {
         ctx.fillText(
             String.fromCharCode(65 + i),
-            (i + 0.5) * cell_size + coordinateOffset,
-            0.3 * coordinateOffset
+            (i + 0.5) * cell_size + coordinate_offset,
+            0.3 * coordinate_offset
         )
         ctx.fillText(
             i + 1,
-            0.3 * coordinateOffset,
-            (i + 0.5) * cell_size + coordinateOffset
+            0.3 * coordinate_offset,
+            (i + 0.5) * cell_size + coordinate_offset
         )
     }
 
@@ -275,8 +275,8 @@ function drawBoard(b, drawLegalMoves = true) {
     ctx.fillStyle = '#222222'
     ctx.beginPath()
     ctx.arc(
-        2 * cell_size + coordinateOffset,
-        2 * cell_size + coordinateOffset,
+        2 * cell_size + coordinate_offset,
+        2 * cell_size + coordinate_offset,
         5,
         0,
         2 * Math.PI
@@ -284,8 +284,8 @@ function drawBoard(b, drawLegalMoves = true) {
     ctx.fill()
     ctx.beginPath()
     ctx.arc(
-        2 * cell_size + coordinateOffset,
-        6 * cell_size + coordinateOffset,
+        2 * cell_size + coordinate_offset,
+        6 * cell_size + coordinate_offset,
         5,
         0,
         2 * Math.PI
@@ -293,8 +293,8 @@ function drawBoard(b, drawLegalMoves = true) {
     ctx.fill()
     ctx.beginPath()
     ctx.arc(
-        6 * cell_size + coordinateOffset,
-        2 * cell_size + coordinateOffset,
+        6 * cell_size + coordinate_offset,
+        2 * cell_size + coordinate_offset,
         5,
         0,
         2 * Math.PI
@@ -302,8 +302,8 @@ function drawBoard(b, drawLegalMoves = true) {
     ctx.fill()
     ctx.beginPath()
     ctx.arc(
-        6 * cell_size + coordinateOffset,
-        6 * cell_size + coordinateOffset,
+        6 * cell_size + coordinate_offset,
+        6 * cell_size + coordinate_offset,
         5,
         0,
         2 * Math.PI
@@ -325,56 +325,56 @@ function drawBoard(b, drawLegalMoves = true) {
             if (cell == b.BLACK_CHIP) {
                 ctx.fillStyle = '#424544'
                 drawCircle(
-                    (x + 0.5) * cell_size + coordinateOffset + 1,
-                    (y + 0.5) * cell_size + coordinateOffset + 1,
+                    (x + 0.5) * cell_size + coordinate_offset + 1,
+                    (y + 0.5) * cell_size + coordinate_offset + 1,
                     '#292b2b'
                 )
                 drawCircle(
-                    (x + 0.5) * cell_size + coordinateOffset - 1,
-                    (y + 0.5) * cell_size + coordinateOffset - 1,
+                    (x + 0.5) * cell_size + coordinate_offset - 1,
+                    (y + 0.5) * cell_size + coordinate_offset - 1,
                     '#424544'
                 )
             } else if (cell == b.WHITE_CHIP) {
                 ctx.fillStyle = '#f4fdfa'
                 drawCircle(
-                    (x + 0.5) * cell_size + coordinateOffset + 1,
-                    (y + 0.5) * cell_size + coordinateOffset + 1,
+                    (x + 0.5) * cell_size + coordinate_offset + 1,
+                    (y + 0.5) * cell_size + coordinate_offset + 1,
                     '#b0a7a7'
                 )
                 drawCircle(
-                    (x + 0.5) * cell_size + coordinateOffset - 1,
-                    (y + 0.5) * cell_size + coordinateOffset - 1,
+                    (x + 0.5) * cell_size + coordinate_offset - 1,
+                    (y + 0.5) * cell_size + coordinate_offset - 1,
                     '#f3fcf9'
                 )
             }
         }
     }
     //draw last move location (small red dot)
-    if (lastMoveLocation) {
-        const [x, y] = lastMoveLocation;
+    if (last_move) {
+        const [x, y] = last_move;
         ctx.fillStyle = '#ff0000'
         ctx.beginPath()
         ctx.arc(
-            (x + 0.5) * cell_size + coordinateOffset,
-            (y + 0.5) * cell_size + coordinateOffset,
+            (x + 0.5) * cell_size + coordinate_offset,
+            (y + 0.5) * cell_size + coordinate_offset,
             4,
             0,
             2 * Math.PI
         )
         ctx.fill()
     }
-    if (!drawLegalMoves) return;
+    if (!draw_legal_moves) return;
     //draw legal moves (chip outlines)
     ctx.strokeStyle = '#006B49'
     ctx.lineWidth = 2
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            if (isMoveLegal(x, y, legal_moves)) {
+            if (is_move_legal(x, y, legal_moves)) {
                 ctx.beginPath()
                 ctx.arc(
-                    (x + 0.5) * cell_size + coordinateOffset,
-                    (y + 0.5) * cell_size + coordinateOffset,
+                    (x + 0.5) * cell_size + coordinate_offset,
+                    (y + 0.5) * cell_size + coordinate_offset,
                     cell_size * 0.4,
                     0,
                     2 * Math.PI
@@ -385,20 +385,17 @@ function drawBoard(b, drawLegalMoves = true) {
     }
 }
 
-function updateStatus(is_whites_turn, move_number) {
-    statusIndicator.textContent =
+function update_status(is_whites_turn, move_number) {
+    status_indicator.textContent =
         'Move: ' +
         (move_number + 1) +
         ' | ' +
         (is_whites_turn ? "White's turn ⚪" : "Black's turn ⚫")
 }
 
-drawBoard(board)
-updateStatus(is_whites_turn, move_number)
-let isProcessing = false;
-let playerHasLegalMoves = true;
-let aiHasLegalMoves = true;
-
+draw_board(board)
+update_status(is_whites_turn, move_number)
+let is_processing = false;
 /**
  * Main game logic.
  * 
@@ -407,9 +404,9 @@ let aiHasLegalMoves = true;
  */
 async function handleClick(event) {
 
-    if (isProcessing) return;
-    const x = Math.floor((event.offsetX - coordinateOffset) / cell_size)
-    const y = Math.floor((event.offsetY - coordinateOffset) / cell_size)
+    if (is_processing) return;
+    const x = Math.floor((event.offsetX - coordinate_offset) / cell_size)
+    const y = Math.floor((event.offsetY - coordinate_offset) / cell_size)
 
     //LOGIC: When the player clicks, check if the move was legal. If it wasn't, return.
     //Check if the ai has legal moves. 
@@ -420,53 +417,53 @@ async function handleClick(event) {
     //if the ai has no legal moves,
     //then end the game.
 
-    let playerMoveIsLegal = isMoveLegal(x, y, legal_moves)
-    let playerHasLegalMoves = anyLegalMoves(legal_moves)
-    if (!playerMoveIsLegal) return;
+    let player_move_is_legal = is_move_legal(x, y, legal_moves)
+    let player_has_legal_moves = any_legal_moves(legal_moves)
+    if (!player_move_is_legal) return;
     //play move
     board.play_move(x, y, is_whites_turn)
-    lastMoveLocation = [x, y]
+    last_move = [x, y]
     move_number++
     is_whites_turn = !is_whites_turn
-    drawBoard(board, false)
-    isProcessing = true;
+    draw_board(board, false)
+    is_processing = true;
 
     do {
         legal_moves = board.find_legal_moves(is_whites_turn)
-        if (!anyLegalMoves(legal_moves)) break;
+        if (!any_legal_moves(legal_moves)) break;
         console.log("Prompting AI")
-        const [aiMoveX, aiMoveY] = await miniMaxAI(board, legal_moves, is_whites_turn);
-        board.play_move(aiMoveX, aiMoveY, is_whites_turn)
-        lastMoveLocation = [aiMoveX, aiMoveY]
+        const [ai_move_x, ai_move_y] = await minimax_ai(board, legal_moves, is_whites_turn);
+        board.play_move(ai_move_x, ai_move_y, is_whites_turn)
+        last_move = [ai_move_x, ai_move_y]
         move_number++
-        drawBoard(board, false)
-        updateStatus(is_whites_turn, move_number)
-        playerHasLegalMoves = anyLegalMoves(board.find_legal_moves(!is_whites_turn))
-    } while (!playerHasLegalMoves)
+        draw_board(board, false)
+        update_status(is_whites_turn, move_number)
+        player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn))
+    } while (!player_has_legal_moves)
 
     is_whites_turn = !is_whites_turn
     legal_moves = board.find_legal_moves(is_whites_turn)
-    drawBoard(board, true)
-    updateStatus(is_whites_turn, move_number)
-    if (!anyLegalMoves(legal_moves)) {
+    draw_board(board, true)
+    update_status(is_whites_turn, move_number)
+    if (!any_legal_moves(legal_moves)) {
         //no one has legal moves, end the game
-        handleGameEnd(board)
+        handle_game_end(board)
     }
-    isProcessing = false;
+    is_processing = false;
     return
 }
 
 canvas.addEventListener('click', handleClick)
 
-function anyLegalMoves(legal_moves) {
+function any_legal_moves(legal_moves) {
     for (const row of legal_moves) {
         if (row != 0) return true
     }
     return false
 }
 
-function handleGameEnd(board) {
-    drawBoard(board)
+function handle_game_end(board) {
+    draw_board(board)
     board.log_board()
     //count chips, declare winner
     let white_count = 0
@@ -479,17 +476,17 @@ function handleGameEnd(board) {
         }
     }
     if (white_count > black_count) {
-        statusIndicator.textContent =
+        status_indicator.textContent =
             'White wins! 🎉 (' + white_count + '-' + black_count + ')'
     } else if (black_count > white_count) {
-        statusIndicator.textContent =
+        status_indicator.textContent =
             'Black wins! 🎉 (' + black_count + '-' + white_count + ')'
     } else {
-        statusIndicator.textContent = 'Draw!'
+        status_indicator.textContent = 'Draw!'
     }
 }
 
-newGameButton.addEventListener('click', () => {
+new_game_button.addEventListener('click', () => {
     board.data.fill(0)
     board.set_cell(3, 3, true)
     board.set_cell(4, 4, true)
@@ -497,16 +494,16 @@ newGameButton.addEventListener('click', () => {
     board.set_cell(4, 3, false)
     is_whites_turn = false
     move_number = 0
-    lastMoveLocation = null;
+    last_move = null;
     legal_moves = board.find_legal_moves(is_whites_turn)
-    drawBoard(board)
-    updateStatus(is_whites_turn, move_number)
+    draw_board(board)
+    update_status(is_whites_turn, move_number)
 })
 
-undoButton.addEventListener('click', () => {
+undo_button.addEventListener('click', () => {
     //TODO
 })
-redoButton.addEventListener('click', () => {
+redo_button.addEventListener('click', () => {
     //TODO
 })
 
@@ -520,16 +517,16 @@ async function runAI(board, legal_moves, is_whites_turn) {
     const legal_moves_array = []
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            if (isMoveLegal(x, y, legal_moves)) {
+            if (is_move_legal(x, y, legal_moves)) {
                 legal_moves_array.push([x, y])
             }
         }
     }
-    const randomIndex = Math.floor(Math.random() * legal_moves_array.length)
-    const [x, y] = legal_moves_array[randomIndex]
+    const rand_index = Math.floor(Math.random() * legal_moves_array.length)
+    const [x, y] = legal_moves_array[rand_index]
     return [x, y]
 }
-function isMoveLegal(x, y, legal_moves) {
+function is_move_legal(x, y, legal_moves) {
     return legal_moves[y] & (1 << x)
 }
 
@@ -540,10 +537,10 @@ async function runAIGreedy(board, legal_moves, is_whites_turn) {
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            if (isMoveLegal(x, y, legal_moves)) {
-                let tilesFlipped = board.play_move(x, y, is_whites_turn, false);
-                if (tilesFlipped > score) {
-                    score = tilesFlipped;
+            if (is_move_legal(x, y, legal_moves)) {
+                let tiles_flipped = board.play_move(x, y, is_whites_turn, false);
+                if (tiles_flipped > score) {
+                    score = tiles_flipped;
                     move = [x, y];
                 }
 
@@ -554,28 +551,28 @@ async function runAIGreedy(board, legal_moves, is_whites_turn) {
 }
 
 //function is made to look one move ahead and try to make the move that is least beneficial for the opponent 
-async function miniMaxAI(board, legal_moves, is_whites_turn) {
+async function minimax_ai(board, legal_moves, is_whites_turn) {
     let move;
     let score = Number.POSITIVE_INFINITY;
     await timer(300);
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            if (isMoveLegal(x, y, legal_moves)) {
-                let boardCopy = board.make_copy();
-                boardCopy.play_move(x, y, is_whites_turn, true);
-                let board_copy_legal_moves = boardCopy.find_legal_moves(!is_whites_turn)
-                let mostTilesFlipped = 0;
+            if (is_move_legal(x, y, legal_moves)) {
+                let board_copy = board.make_copy();
+                board_copy.play_move(x, y, is_whites_turn, true);
+                let board_copy_legal_moves = board_copy.find_legal_moves(!is_whites_turn)
+                let most_tiles_flipped = 0;
                 for (let yy = 0; yy < 8; yy++) {
                     for (let xx = 0; xx < 8; xx++) {
                         console.log(xx,yy)
-                        if (isMoveLegal(xx, yy, board_copy_legal_moves)) {
-                            let tilesFlipped = boardCopy.play_move(xx, yy, !is_whites_turn, false);
-                            if (tilesFlipped > mostTilesFlipped) mostTilesFlipped = tilesFlipped;
+                        if (is_move_legal(xx, yy, board_copy_legal_moves)) {
+                            let tiles_flipped = board_copy.play_move(xx, yy, !is_whites_turn, false);
+                            if (tiles_flipped > most_tiles_flipped) most_tiles_flipped = tiles_flipped;
                         }
                     }
                 }
-                if (mostTilesFlipped < score) {
-                    score = mostTilesFlipped;
+                if (most_tiles_flipped < score) {
+                    score = most_tiles_flipped;
                     move = [x, y]
                 }
 
