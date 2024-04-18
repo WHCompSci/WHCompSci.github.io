@@ -4,7 +4,7 @@ class Board {
     WHITE_CHIP = 3
     //locations of the different legal move checker types on the board
     //https://phwl.org/assets/papers/othello_fpt04.pdf
-    legalMoveCheckers = [
+    legal_move_checkers = [
         [0, 1, 2, 3, 3, 2, 1, 0],
         [4, 5, 6, 7, 7, 6, 5, 4],
         [8, 9, 10, 11, 11, 10, 9, 8],
@@ -65,37 +65,37 @@ class Board {
         //8x8 board, 2 bits per cell
         //stored as is_on, is_white
     }
-    getCell(x, y) {
+    get_cell(x, y) {
         return (this.data[y] >> (x << 1)) & 3
     }
-    setCell(x, y, is_white) {
+    set_cell(x, y, is_white) {
         this.data[y] &= ~(3 << (x << 1))
         this.data[y] |= (is_white | 2) << (x << 1)
     }
-    makeCopy() {
+    make_copy() {
         let b = new Board()
         b.data = new Uint16Array(this.data)
         return b
     }
-    logBoard() {
+    log_board() {
         let txt = ''
         for (let y = 0; y < 8; y++) {
             let row = ''
             for (let x = 0; x < 8; x++) {
                 row +=
-                    this.getCell(x, y) == 0 ? '.' : this.getCell(x, y) == 2 ? 'B' : 'W'
+                    this.get_cell(x, y) == 0 ? '.' : this.get_cell(x, y) == 2 ? 'B' : 'W'
             }
             txt += row + '\n'
         }
         console.log(txt)
     }
-    playMove(x, y, is_white, change_board = true) {
+    play_move(x, y, is_white, change_board = true) {
         let count = 0;
         //assume move is legal
         const my_chip = is_white ? this.WHITE_CHIP : this.BLACK_CHIP
         const enemy_chip = is_white ? this.BLACK_CHIP : this.WHITE_CHIP
-        if (change_board) this.setCell(x, y, is_white)
-        const LMCType = this.legalMoveCheckers[y][x]
+        if (change_board) this.set_cell(x, y, is_white)
+        const LMCType = this.legal_move_checkers[y][x]
         const numAndTermsInEachDirection = this.legalMoveCheckerTypes[LMCType]
         const quadrant = (x > 3) | ((y > 3) << 1) //0: TL, 1: TR, 2: BL, 3: BR
         const reindexing = this.quadrantReindexings[quadrant]
@@ -108,16 +108,16 @@ class Board {
             console.log('Checking direction:', this.direction_names[reindexing[i]], 'for', numAndTerms, 'terms');
             let [dx, dy] = direction
 
-            if (this.getCell(x + dx, y + dy) != enemy_chip) continue
+            if (this.get_cell(x + dx, y + dy) != enemy_chip) continue
 
             for (let j = 1; j <= numAndTerms + 1; j++) {
                 console.log('Checking distance:', j)
-                let cell = this.getCell(x + j * dx, y + j * dy)
+                let cell = this.get_cell(x + j * dx, y + j * dy)
                 if (cell == 0) break
                 if (cell == my_chip) {
                     for (let k = 1; k <= j; k++) {
                         if (change_board) {
-                            this.setCell(x + k * dx, y + k * dy, is_white)
+                            this.set_cell(x + k * dx, y + k * dy, is_white)
                         }
                         count++
                     }
@@ -127,15 +127,15 @@ class Board {
         }
         return count;
     }
-    findLegalMoves(is_white) {
+    find_legal_moves(is_white) {
         //fast check if move is legal, using https://phwl.org/assets/papers/othello_fpt04.pdf
         const my_chip = is_white ? this.WHITE_CHIP : this.BLACK_CHIP
         const enemy_chip = is_white ? this.BLACK_CHIP : this.WHITE_CHIP
         let legal_moves = new Uint8Array(8)
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
-                if (this.getCell(x, y) != 0) continue
-                const LMCType = this.legalMoveCheckers[y][x]
+                if (this.get_cell(x, y) != 0) continue
+                const LMCType = this.legal_move_checkers[y][x]
                 const numAndTermsInEachDirection = this.legalMoveCheckerTypes[LMCType]
                 const quadrant = (x > 3) | ((y > 3) << 1) //0: TL, 1: TR, 2: BL, 3: BR
                 const reindexing = this.quadrantReindexings[quadrant]
@@ -148,38 +148,38 @@ class Board {
                     // ugly code, but it's fast apparently
                     const isDirectionLegal =
                         (numAndTerms >= 1 &&
-                            this.getCell(x + dx, y + dy) == enemy_chip &&
-                            this.getCell(x + 2 * dx, y + 2 * dy) == my_chip) ||
+                            this.get_cell(x + dx, y + dy) == enemy_chip &&
+                            this.get_cell(x + 2 * dx, y + 2 * dy) == my_chip) ||
                         (numAndTerms >= 2 &&
-                            this.getCell(x + dx, y + dy) == enemy_chip &&
-                            this.getCell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
-                            this.getCell(x + 3 * dx, y + 3 * dy) == my_chip) ||
+                            this.get_cell(x + dx, y + dy) == enemy_chip &&
+                            this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
+                            this.get_cell(x + 3 * dx, y + 3 * dy) == my_chip) ||
                         (numAndTerms >= 3 &&
-                            this.getCell(x + dx, y + dy) == enemy_chip &&
-                            this.getCell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
-                            this.getCell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
-                            this.getCell(x + 4 * dx, y + 4 * dy) == my_chip) ||
+                            this.get_cell(x + dx, y + dy) == enemy_chip &&
+                            this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
+                            this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
+                            this.get_cell(x + 4 * dx, y + 4 * dy) == my_chip) ||
                         (numAndTerms >= 4 &&
-                            this.getCell(x + dx, y + dy) == enemy_chip &&
-                            this.getCell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
-                            this.getCell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
-                            this.getCell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
-                            this.getCell(x + 5 * dx, y + 5 * dy) == my_chip) ||
+                            this.get_cell(x + dx, y + dy) == enemy_chip &&
+                            this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
+                            this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
+                            this.get_cell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
+                            this.get_cell(x + 5 * dx, y + 5 * dy) == my_chip) ||
                         (numAndTerms >= 5 &&
-                            this.getCell(x + dx, y + dy) == enemy_chip &&
-                            this.getCell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
-                            this.getCell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
-                            this.getCell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
-                            this.getCell(x + 5 * dx, y + 5 * dy) == enemy_chip &&
-                            this.getCell(x + 6 * dx, y + 6 * dy) == my_chip) ||
+                            this.get_cell(x + dx, y + dy) == enemy_chip &&
+                            this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
+                            this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
+                            this.get_cell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
+                            this.get_cell(x + 5 * dx, y + 5 * dy) == enemy_chip &&
+                            this.get_cell(x + 6 * dx, y + 6 * dy) == my_chip) ||
                         (numAndTerms >= 6 &&
-                            this.getCell(x + dx, y + dy) == enemy_chip &&
-                            this.getCell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
-                            this.getCell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
-                            this.getCell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
-                            this.getCell(x + 5 * dx, y + 5 * dy) == enemy_chip &&
-                            this.getCell(x + 6 * dx, y + 6 * dy) == enemy_chip &&
-                            this.getCell(x + 7 * dx, y + 7 * dy) == my_chip)
+                            this.get_cell(x + dx, y + dy) == enemy_chip &&
+                            this.get_cell(x + 2 * dx, y + 2 * dy) == enemy_chip &&
+                            this.get_cell(x + 3 * dx, y + 3 * dy) == enemy_chip &&
+                            this.get_cell(x + 4 * dx, y + 4 * dy) == enemy_chip &&
+                            this.get_cell(x + 5 * dx, y + 5 * dy) == enemy_chip &&
+                            this.get_cell(x + 6 * dx, y + 6 * dy) == enemy_chip &&
+                            this.get_cell(x + 7 * dx, y + 7 * dy) == my_chip)
 
                     if (isDirectionLegal) {
                         legal_moves[y] |= 1 << x
@@ -196,12 +196,12 @@ const board = new Board()
 let is_whites_turn = false
 let move_number = 0
 let lastMoveLocation = null;
-board.setCell(3, 3, true)
-board.setCell(4, 4, true)
-board.setCell(3, 4, false)
-board.setCell(4, 3, false)
-let legal_moves = board.findLegalMoves(is_whites_turn)
-board.logBoard()
+board.set_cell(3, 3, true)
+board.set_cell(4, 4, true)
+board.set_cell(3, 4, false)
+board.set_cell(4, 3, false)
+let legal_moves = board.find_legal_moves(is_whites_turn)
+board.log_board()
 logLegalMoves(legal_moves)
 
 function logLegalMoves(legal_moves) {
@@ -321,7 +321,7 @@ function drawBoard(b, drawLegalMoves = true) {
     //draw chips
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            const cell = b.getCell(x, y)
+            const cell = b.get_cell(x, y)
             if (cell == b.BLACK_CHIP) {
                 ctx.fillStyle = '#424544'
                 drawCircle(
@@ -424,7 +424,7 @@ async function handleClick(event) {
     let playerHasLegalMoves = anyLegalMoves(legal_moves)
     if (!playerMoveIsLegal) return;
     //play move
-    board.playMove(x, y, is_whites_turn)
+    board.play_move(x, y, is_whites_turn)
     lastMoveLocation = [x, y]
     move_number++
     is_whites_turn = !is_whites_turn
@@ -432,20 +432,20 @@ async function handleClick(event) {
     isProcessing = true;
 
     do {
-        legal_moves = board.findLegalMoves(is_whites_turn)
+        legal_moves = board.find_legal_moves(is_whites_turn)
         if (!anyLegalMoves(legal_moves)) break;
         console.log("Prompting AI")
         const [aiMoveX, aiMoveY] = await miniMaxAI(board, legal_moves, is_whites_turn);
-        board.playMove(aiMoveX, aiMoveY, is_whites_turn)
+        board.play_move(aiMoveX, aiMoveY, is_whites_turn)
         lastMoveLocation = [aiMoveX, aiMoveY]
         move_number++
         drawBoard(board, false)
         updateStatus(is_whites_turn, move_number)
-        playerHasLegalMoves = anyLegalMoves(board.findLegalMoves(!is_whites_turn))
+        playerHasLegalMoves = anyLegalMoves(board.find_legal_moves(!is_whites_turn))
     } while (!playerHasLegalMoves)
 
     is_whites_turn = !is_whites_turn
-    legal_moves = board.findLegalMoves(is_whites_turn)
+    legal_moves = board.find_legal_moves(is_whites_turn)
     drawBoard(board, true)
     updateStatus(is_whites_turn, move_number)
     if (!anyLegalMoves(legal_moves)) {
@@ -467,13 +467,13 @@ function anyLegalMoves(legal_moves) {
 
 function handleGameEnd(board) {
     drawBoard(board)
-    board.logBoard()
+    board.log_board()
     //count chips, declare winner
     let white_count = 0
     let black_count = 0
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            const cell = board.getCell(x, y)
+            const cell = board.get_cell(x, y)
             if (cell == board.BLACK_CHIP) black_count++
             if (cell == board.WHITE_CHIP) white_count++
         }
@@ -491,14 +491,14 @@ function handleGameEnd(board) {
 
 newGameButton.addEventListener('click', () => {
     board.data.fill(0)
-    board.setCell(3, 3, true)
-    board.setCell(4, 4, true)
-    board.setCell(3, 4, false)
-    board.setCell(4, 3, false)
+    board.set_cell(3, 3, true)
+    board.set_cell(4, 4, true)
+    board.set_cell(3, 4, false)
+    board.set_cell(4, 3, false)
     is_whites_turn = false
     move_number = 0
     lastMoveLocation = null;
-    legal_moves = board.findLegalMoves(is_whites_turn)
+    legal_moves = board.find_legal_moves(is_whites_turn)
     drawBoard(board)
     updateStatus(is_whites_turn, move_number)
 })
@@ -541,7 +541,7 @@ async function runAIGreedy(board, legal_moves, is_whites_turn) {
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             if (isMoveLegal(x, y, legal_moves)) {
-                let tilesFlipped = board.playMove(x, y, is_whites_turn, false);
+                let tilesFlipped = board.play_move(x, y, is_whites_turn, false);
                 if (tilesFlipped > score) {
                     score = tilesFlipped;
                     move = [x, y];
@@ -561,15 +561,15 @@ async function miniMaxAI(board, legal_moves, is_whites_turn) {
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             if (isMoveLegal(x, y, legal_moves)) {
-                let boardCopy = board.makeCopy();
-                boardCopy.playMove(x, y, is_whites_turn, true);
-                let board_copy_legal_moves = boardCopy.findLegalMoves(!is_whites_turn)
+                let boardCopy = board.make_copy();
+                boardCopy.play_move(x, y, is_whites_turn, true);
+                let board_copy_legal_moves = boardCopy.find_legal_moves(!is_whites_turn)
                 let mostTilesFlipped = 0;
                 for (let yy = 0; yy < 8; yy++) {
                     for (let xx = 0; xx < 8; xx++) {
                         console.log(xx,yy)
                         if (isMoveLegal(xx, yy, board_copy_legal_moves)) {
-                            let tilesFlipped = boardCopy.playMove(xx, yy, !is_whites_turn, false);
+                            let tilesFlipped = boardCopy.play_move(xx, yy, !is_whites_turn, false);
                             if (tilesFlipped > mostTilesFlipped) mostTilesFlipped = tilesFlipped;
                         }
                     }
