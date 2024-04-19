@@ -564,7 +564,7 @@ async function minimax_ai(board, legal_moves, is_whites_turn) {
                 let most_tiles_flipped = 0;
                 for (let yy = 0; yy < 8; yy++) {
                     for (let xx = 0; xx < 8; xx++) {
-                        console.log(xx,yy)
+                        console.log(xx, yy)
                         if (is_move_legal(xx, yy, board_copy_legal_moves)) {
                             let tiles_flipped = board_copy.play_move(xx, yy, !is_whites_turn, false);
                             if (tiles_flipped > most_tiles_flipped) most_tiles_flipped = tiles_flipped;
@@ -582,21 +582,17 @@ async function minimax_ai(board, legal_moves, is_whites_turn) {
     console.log("Playing Move:", move)
     return move;
 }
-function score_board(board,is_whites_turn)
-{
+function score_board(board, is_whites_turn) {
     //0000 0000 - black (0)
     //0000 0001 - white (1)
 
     //0000 0010
     let my_chip = is_whites_turn | 2;
-    
-    for( let y = 0; y<8; y++)
-    {
-        for(let x =0; x<8; x++)
-        {
+
+    for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
             let score = board.getCell();
-            if(is_whites_turn)
-            {
+            if (is_whites_turn) {
 
             }
         }
