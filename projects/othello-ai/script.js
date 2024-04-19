@@ -590,9 +590,43 @@ function score_board(board, is_whites_turn) {
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            let chip = board.get_cell(x,y)
+            let chip = board.get_cell(x, y)
             if (my_chip == chip) score++;
         }
     }
     return score;
+}
+
+class QueueData {
+    constructor(board, curr_depth, is_whites_turn, prev_move) {
+        this.board = board
+        this.depth = curr_depth
+        this.is_whites_turn
+        this.prev_move
+
+    }
+}
+
+
+async function mini_max_v2(board, legal_moves, is_whites_turn, max_depth) {
+    const queue = [new QueueData(board, 0, false, null)];
+    while (queue.length > 0) {
+        const curr = queue.pop(0);
+        if (curr.depth < max_depth) {
+            continue;
+        }
+        const curr_legal_moves = curr_board.find_legal_moves(curr.is_whites_turn);
+        // if(!any_legal_moves(curr_board_legal_moves)) {
+        //     continue
+        // }
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                if (is_move_legal(x, y, curr_legal_moves)) {
+                    const next_board = curr.board.make_copy();
+                    next_board.play_move(x, y, is_whites_turn, true);
+                    queue.push(new QueueData(next_board, curr_depth + 1, !is_whites_turn, [x, y]))
+                }
+            }
+        }
+    }
 }
