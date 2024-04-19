@@ -612,8 +612,9 @@ async function mini_max_v2(board, legal_moves, is_whites_turn, max_depth) {
     const queue = [new QueueData(board, 0, false, null)];
     while (queue.length > 0) {
         const curr = queue.pop(0);
-        if (curr.depth < max_depth) {
+        if (curr.depth > max_depth) {
             continue;
+            //add it to a list.
         }
         const curr_legal_moves = curr_board.find_legal_moves(curr.is_whites_turn);
         // if(!any_legal_moves(curr_board_legal_moves)) {
