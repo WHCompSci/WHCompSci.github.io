@@ -383,6 +383,8 @@ function draw_board(b, draw_legal_moves = true) {
             }
         }
     }
+    console.log("White score: ", score_board(board, true));
+    console.log("Black score: ", score_board(board, false));
 }
 
 function update_status(is_whites_turn, move_number) {
@@ -583,18 +585,14 @@ async function minimax_ai(board, legal_moves, is_whites_turn) {
     return move;
 }
 function score_board(board, is_whites_turn) {
-    //0000 0000 - black (0)
-    //0000 0001 - white (1)
-
-    //0000 0010
+    let score = 0;
     let my_chip = is_whites_turn | 2;
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
-            let score = board.getCell();
-            if (is_whites_turn) {
-
-            }
+            let chip = board.get_cell(x,y)
+            if (my_chip == chip) score++;
         }
     }
+    return score;
 }
