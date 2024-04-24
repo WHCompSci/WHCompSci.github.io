@@ -434,7 +434,7 @@ async function handleClick(event) {
         legal_moves = board.find_legal_moves(is_whites_turn);
         if (!any_legal_moves(legal_moves)) break;
         console.log("Prompting AI");
-        const [ai_move_x, ai_move_y] = await mini_max_recursive(board,2,is_whites_turn);
+        const [_, [ai_move_x, ai_move_y]] = await mini_max_recursive(board,2,is_whites_turn);
         board.play_move(ai_move_x, ai_move_y, is_whites_turn);
         last_move = [ai_move_x, ai_move_y];
         move_number++;
@@ -631,40 +631,60 @@ async function mini_max_v2(board, legal_moves, is_whites_turn, max_depth) {
     }
 }
 
+// 0 1 1 2 3 5 8 13 21 34 
+function fib(n) {
+    if(n < 0) return  null
+    if (n==0) return 0
+    if (n==1) return 1
+    return fib(n-1) + fib(n-2)
+}
 
-function mini_max_recursive(current_board, depth, is_whites_turn = true) {
+async function mini_max_recursive(current_board, depth, is_whites_turn = true) {
+    current_board.log_board()
+    
+    console.log(depth, is_whites_turn)
     if (depth == 0) {
-        return score_board(current_board, is_whites_turn);
+        return [score_board(current_board, is_whites_turn), null]
     }
-    let curr_legal_moves = board.find_legal_moves();
+    let curr_legal_moves = current_board.find_legal_moves(is_whites_turn)
+    log_legal_moves(curr_legal_moves)
+    let move, score;
     if (is_whites_turn) {
-        let max_opponents_score = Number.NEGATIVE_INFINITY;
+        score = Number.NEGATIVE_INFINITY;
+        
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
-                    const next_board = curr.board.make_copy();
+                    console.log("move was legal: ", x, y)
+                    const next_board = current_board.make_copy();
                     next_board.play_move(x, y, is_whites_turn, true);
-                    max_opponents_chips = max(max_opponents_chips, mini_max_recursive(next_board, depth - 1, false));
-
+                    
+                    let [curr_score, _] = await mini_max_recursive(next_board, depth - 1, false);
+                    if(curr_score > score) {
+                        move = [x,y]
+                        score = curr_score
+                    }
                 }
             }
         }
-        return max_opponents_chips
     } else {
         // opponent's turn
-        let min_my_score = Number.POSITIVE_INFINITY;
+        score = Number.POSITIVE_INFINITY;
         for (let y = 0; y < 8; y++) {
             for (let x = 0; x < 8; x++) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
-                    const next_board = curr.board.make_copy();
+                    const next_board = current_board.make_copy();
                     next_board.play_move(x, y, is_whites_turn, true);
-                    min_my_score = min(min_my_score, mini_max_recursive(next_board, depth - 1, true));
-
+                    let [curr_score, _] = await mini_max_recursive(next_board, depth - 1, true)
+                    if(curr_score < score) {
+                        move = [x,y]
+                        score = curr_score
+                    }
                 }
             }
         }
-        return min_my_score
     }
+    return [score, move]
 }
