@@ -353,39 +353,46 @@ self.addEventListener("message", function (event) {
     let is_whites_turn = data.is_whites_turn
     let legal_moves = undefined;
     let move = null;
+    let player_has_legal_moves = undefined;
     do {
         legal_moves = board.find_legal_moves(is_whites_turn);
-        if (!any_legal_moves(legal_moves)) break;
+        if (!any_legal_moves(legal_moves)) {
+            player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
+            break;  // AI has no moves
+        }
         
         console.log("Prompting AI");
         let [_, move] = AI.mini_max_recursive(board,DEPTH,is_whites_turn)
-        if(move == null) {
+        if(move == null) { // AI has no move (I shouldn't need this theres probably a bug in the minimax)
             console.log("Move was null. Legal moves are: ")
             log_legal_moves(legal_moves)
+            player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
             break;
         }
         let [ai_move_x, ai_move_y] = move
         let message = {
             legal_moves: legal_moves,
             ai_move: move,
-            is_last_move: false
+            status_message: "playing move"
         }
         //send next move
         self.postMessage(message)
 
-        board.play_move(ai_move_x, ai_move_y, is_whites_turn);
+        // board.play_move(ai_move_x, ai_move_y, is_whites_turn);
         last_move = [ai_move_x, ai_move_y];
-        move_number++;
-        draw_board(board, false);
-        update_status(is_whites_turn, move_number);
+        
+        // draw_board(board, false);
+        // update_status(is_whites_turn, move_number);
         player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
-    } while (!player_has_legal_moves);
+    } while (!player_has_legal_moves); // while the player has no moves
     //run ai 
-   
+
+    
+    let status = player_has_legal_moves ? "passing turn" : "ending game"
     let message = {
         legal_moves: legal_moves,
-        ai_move: move,
-        is_last_move: true
+        ai_move: null,
+        status_message: status
     }
     // Send a response back to the main thread
     self.postMessage(message)

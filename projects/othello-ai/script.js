@@ -234,18 +234,30 @@ async function handleClick(event) {
         current_board: board,
         is_whites_turn: is_whites_turn,
     });
-    is_whites_turn = !is_whites_turn;
-    legal_moves = board.find_legal_moves(is_whites_turn);
-    draw_board(board, true);
-    update_status(is_whites_turn, move_number);
+    ai_worker.onmessage = (event) => {
+        let data = event.data;
+        switch (data.status) {
+            case "playing move":
+                board.play_move(data.move[0], data.move[1], is_whites_turn)
+                draw_board(board, true);
+                move_number++;
 
+                break;
+            case "passing turn":
+                is_whites_turn = !is_whites_turn;
+                legal_moves = board.find_legal_moves(is_whites_turn);
+                is_processing = false;
+                return;
+            
+            case "ending game":
+                handle_game_end(board);
 
-    if (!any_legal_moves(legal_moves)) {
-        //no one has legal moves, end the game
-        handle_game_end(board);
+        }
     }
-    is_processing = false;
     
+    
+    
+    update_status(is_whites_turn, move_number);
     return;
 }
 
