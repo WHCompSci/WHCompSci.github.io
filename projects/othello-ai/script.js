@@ -1,4 +1,4 @@
-import { Board, any_legal_moves, log_legal_moves  } from './ai.js'
+import { Board, score_board, any_legal_moves, log_legal_moves, is_move_legal  } from './ai.js'
 
 const board = new Board();
 const ai_worker = new Worker("./ai.js", { type: "module" })
@@ -236,14 +236,17 @@ async function handleClick(event) {
     });
     ai_worker.onmessage = (event) => {
         let data = event.data;
-        switch (data.status) {
+        console.log("received move, status:", data)
+        switch (data.status_message) {
             case "playing move":
                 board.play_move(data.move[0], data.move[1], is_whites_turn)
+                console.log("played move")
                 draw_board(board, true);
                 move_number++;
 
                 break;
             case "passing turn":
+                console.log("passed turn")
                 is_whites_turn = !is_whites_turn;
                 legal_moves = board.find_legal_moves(is_whites_turn);
                 is_processing = false;

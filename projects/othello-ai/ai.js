@@ -191,141 +191,140 @@ export class Board {
         return legal_moves;
     }
 }
-const timer = ms => new Promise(res => setTimeout(res, ms));
-export class AI {
-
-
-    runAI(board, legal_moves, is_whites_turn) {
-        //simple AI that plays the a random legal move.
-        const legal_moves_array = [];
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                if (is_move_legal(x, y, legal_moves)) {
-                    legal_moves_array.push([x, y]);
-                }
-            }
-        }
-        const rand_index = Math.floor(Math.random() * legal_moves_array.length);
-        const [x, y] = legal_moves_array[rand_index];
-        return [x, y];
-    }
-    is_move_legal(x, y, legal_moves) {
-        return legal_moves[y] & (1 << x);
-    }
-
-    runAIGreedy(board, legal_moves, is_whites_turn) {
-        let move;
-        let score = 0;
-
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                if (is_move_legal(x, y, legal_moves)) {
-                    let tiles_flipped = board.play_move(x, y, is_whites_turn, false);
-                    if (tiles_flipped > score) {
-                        score = tiles_flipped;
-                        move = [x, y];
-                    }
-
-                }
-            }
-        }
-        return move;
-    }
-
-    //function is made to look one move ahead and try to make the move that is least beneficial for the opponent 
-    minimax_ai(board, legal_moves, is_whites_turn) {
-        let move;
-        let score = Number.POSITIVE_INFINITY;
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                if (is_move_legal(x, y, legal_moves)) {
-                    let board_copy = board.make_copy();
-                    board_copy.play_move(x, y, is_whites_turn, true);
-                    let board_copy_legal_moves = board_copy.find_legal_moves(!is_whites_turn);
-                    let most_tiles_flipped = 0;
-                    for (let yy = 0; yy < 8; yy++) {
-                        for (let xx = 0; xx < 8; xx++) {
-                            console.log(xx, yy);
-                            if (is_move_legal(xx, yy, board_copy_legal_moves)) {
-                                let tiles_flipped = board_copy.play_move(xx, yy, !is_whites_turn, false);
-                                if (tiles_flipped > most_tiles_flipped) most_tiles_flipped = tiles_flipped;
-                            }
-                        }
-                    }
-                    if (most_tiles_flipped < score) {
-                        score = most_tiles_flipped;
-                        move = [x, y];
-                    }
-
-                }
-            }
-        }
-        console.log("Playing Move:", move);
-        return move;
-    }
-    score_board(board, is_whites_turn) {
-        let score = 0;
-        let my_chip = is_whites_turn | 2;
-
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
-                let chip = board.get_cell(x, y);
-                if (my_chip == chip) score++;
-            }
-        }
-        return score;
-    }
-
-    mini_max_recursive(current_board, depth, is_whites_turn = true) {
-        // current_board.log_board()
-
-        // console.log(depth, is_whites_turn)
-        if (depth == 0) {
-            return [score_board(current_board, is_whites_turn), null]
-        }
-        let curr_legal_moves = current_board.find_legal_moves(is_whites_turn)
-        // log_legal_moves(curr_legal_moves)
-        let move, score;
-        if (is_whites_turn) {
-            score = Number.NEGATIVE_INFINITY;
-
-            for (let y = 0; y < 8; y++) {
-                for (let x = 0; x < 8; x++) {
-                    //search through all legal moves.
-                    if (is_move_legal(x, y, curr_legal_moves)) {
-                        // console.log("move was legal: ", x, y)
-                        const next_board = current_board.make_copy();
-                        next_board.play_move(x, y, is_whites_turn, true);
-
-                        let [curr_score, _] = mini_max_recursive(next_board, depth - 1, false);
-                        if (curr_score > score) {
-                            move = [x, y]
-                            score = curr_score
-                        }
-                    }
-                }
-            }
-        } else {
-            // opponent's turn
-            score = Number.POSITIVE_INFINITY;
-            for (let y = 0; y < 8; y++) {
-                for (let x = 0; x < 8; x++) {
-                    //search through all legal moves.
-                    if (is_move_legal(x, y, curr_legal_moves)) {
-                        const next_board = current_board.make_copy();
-                        next_board.play_move(x, y, is_whites_turn, true);
-                        let [curr_score, _] = mini_max_recursive(next_board, depth - 1, true)
-                        if (curr_score < score) {
-                            move = [x, y]
-                            score = curr_score
-                        }
-                    }
-                }
-            }
-        }
-        return [score, move]
-    }
+export function is_move_legal(x, y, legal_moves) {
+    return legal_moves[y] & (1 << x);
 }
+const timer = ms => new Promise(res => setTimeout(res, ms));
+
+// export function runAI(board, legal_moves, is_whites_turn) {
+//     //simple AI that plays the a random legal move.
+//     const legal_moves_array = [];
+//     for (let y = 0; y < 8; y++) {
+//         for (let x = 0; x < 8; x++) {
+//             if (is_move_legal(x, y, legal_moves)) {
+//                 legal_moves_array.push([x, y]);
+//             }
+//         }
+//     }
+//     const rand_index = Math.floor(Math.random() * legal_moves_array.length);
+//     const [x, y] = legal_moves_array[rand_index];
+//     return [x, y];
+// }
+
+
+// export function runAIGreedy(board, legal_moves, is_whites_turn) {
+//     let move;
+//     let score = 0;
+
+//     for (let y = 0; y < 8; y++) {
+//         for (let x = 0; x < 8; x++) {
+//             if (is_move_legal(x, y, legal_moves)) {
+//                 let tiles_flipped = board.play_move(x, y, is_whites_turn, false);
+//                 if (tiles_flipped > score) {
+//                     score = tiles_flipped;
+//                     move = [x, y];
+//                 }
+
+//             }
+//         }
+//     }
+//     return move;
+// }
+
+//function is made to look one move ahead and try to make the move that is least beneficial for the opponent 
+// minimax_ai(board, legal_moves, is_whites_turn) {
+//     let move;
+//     let score = Number.POSITIVE_INFINITY;
+//     for (let y = 0; y < 8; y++) {
+//         for (let x = 0; x < 8; x++) {
+//             if (is_move_legal(x, y, legal_moves)) {
+//                 let board_copy = board.make_copy();
+//                 board_copy.play_move(x, y, is_whites_turn, true);
+//                 let board_copy_legal_moves = board_copy.find_legal_moves(!is_whites_turn);
+//                 let most_tiles_flipped = 0;
+//                 for (let yy = 0; yy < 8; yy++) {
+//                     for (let xx = 0; xx < 8; xx++) {
+//                         console.log(xx, yy);
+//                         if (is_move_legal(xx, yy, board_copy_legal_moves)) {
+//                             let tiles_flipped = board_copy.play_move(xx, yy, !is_whites_turn, false);
+//                             if (tiles_flipped > most_tiles_flipped) most_tiles_flipped = tiles_flipped;
+//                         }
+//                     }
+//                 }
+//                 if (most_tiles_flipped < score) {
+//                     score = most_tiles_flipped;
+//                     move = [x, y];
+//                 }
+
+//             }
+//         }
+//     }
+//     console.log("Playing Move:", move);
+//     return move;
+// }
+export function score_board(board, is_whites_turn) {
+    let score = 0;
+    let my_chip = is_whites_turn | 2;
+
+    for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+            let chip = board.get_cell(x, y);
+            if (my_chip == chip) score++;
+        }
+    }
+    return score;
+}
+
+export function mini_max_recursive(current_board, depth, is_whites_turn = true) {
+    // current_board.log_board()
+
+    // console.log(depth, is_whites_turn)
+    if (depth == 0) {
+        return [score_board(current_board, is_whites_turn), null];
+    }
+    let curr_legal_moves = current_board.find_legal_moves(is_whites_turn);
+    // log_legal_moves(curr_legal_moves)
+    let move, score;
+    if (is_whites_turn) {
+        score = Number.NEGATIVE_INFINITY;
+
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                //search through all legal moves.
+                if (is_move_legal(x, y, curr_legal_moves)) {
+                    // console.log("move was legal: ", x, y)
+                    const next_board = current_board.make_copy();
+                    next_board.play_move(x, y, is_whites_turn, true);
+
+                    let [curr_score, _] = mini_max_recursive(next_board, depth - 1, false);
+                    if (curr_score > score) {
+                        move = [x, y];
+                        score = curr_score;
+                    }
+                }
+            }
+        }
+    } else {
+        // opponent's turn
+        score = Number.POSITIVE_INFINITY;
+        for (let y = 0; y < 8; y++) {
+            for (let x = 0; x < 8; x++) {
+                //search through all legal moves.
+                if (is_move_legal(x, y, curr_legal_moves)) {
+                    const next_board = current_board.make_copy();
+                    next_board.play_move(x, y, is_whites_turn, true);
+                    let [curr_score, _] = mini_max_recursive(next_board, depth - 1, true);
+                    if (curr_score < score) {
+                        move = [x, y];
+                        score = curr_score;
+                    }
+                }
+            }
+        }
+    }
+    return [score, move];
+}
+
 
 export function any_legal_moves(legal_moves) {
     for (const row of legal_moves) {
@@ -345,12 +344,19 @@ export function log_legal_moves(legal_moves) {
     }
     console.log(txt);
 }
+
+// export function is_move_legal(x, y, legal_moves) {
+//     return legal_moves[y] & (1 << x);
+// }   
+
 self.addEventListener("message", function (event) {
-    const DEPTH = 8
+    const DEPTH = 2;
     // Handle the received message
-    let data = event.data
-    let board = data.current_board
-    let is_whites_turn = data.is_whites_turn
+    let data = event.data;
+
+    let board = Object.assign(new Board(), data.current_board);
+    console.log("board:", board)
+    let is_whites_turn = data.is_whites_turn;
     let legal_moves = undefined;
     let move = null;
     let player_has_legal_moves = undefined;
@@ -360,40 +366,42 @@ self.addEventListener("message", function (event) {
             player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
             break;  // AI has no moves
         }
-        
+
         console.log("Prompting AI");
-        let [_, move] = AI.mini_max_recursive(board,DEPTH,is_whites_turn)
-        if(move == null) { // AI has no move (I shouldn't need this theres probably a bug in the minimax)
-            console.log("Move was null. Legal moves are: ")
-            log_legal_moves(legal_moves)
+        let [_, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
+        console.log("got move")
+        if (move == null) { // AI has no move (I shouldn't need this theres probably a bug in the minimax)
+            console.log("Move was null. Legal moves are: ");
+            log_legal_moves(legal_moves);
             player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
             break;
         }
-        let [ai_move_x, ai_move_y] = move
+        let [ai_move_x, ai_move_y] = move;
         let message = {
             legal_moves: legal_moves,
             ai_move: move,
             status_message: "playing move"
-        }
+        };
         //send next move
-        self.postMessage(message)
+        console.log("sending move")
+        self.postMessage(message);
 
         // board.play_move(ai_move_x, ai_move_y, is_whites_turn);
-        last_move = [ai_move_x, ai_move_y];
-        
+        //last_move = [ai_move_x, ai_move_y];
+
         // draw_board(board, false);
         // update_status(is_whites_turn, move_number);
         player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
     } while (!player_has_legal_moves); // while the player has no moves
     //run ai 
 
-    
-    let status = player_has_legal_moves ? "passing turn" : "ending game"
+
+    let status = player_has_legal_moves ? "passing turn" : "ending game";
     let message = {
         legal_moves: legal_moves,
         ai_move: null,
         status_message: status
-    }
+    };
     // Send a response back to the main thread
-    self.postMessage(message)
-})
+    self.postMessage(message);
+});
