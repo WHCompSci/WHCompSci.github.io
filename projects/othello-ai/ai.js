@@ -349,8 +349,8 @@ export function log_legal_moves(legal_moves) {
 //     return legal_moves[y] & (1 << x);
 // }   
 
-self.addEventListener("message", function (event) {
-    const DEPTH = 2;
+self.addEventListener("message", async function (event) {
+    const DEPTH = 6;
     // Handle the received message
     let data = event.data;
 
@@ -369,7 +369,9 @@ self.addEventListener("message", function (event) {
 
         console.log("Prompting AI");
         let [_, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
-        console.log("got move")
+        console.log("got move: ", move)
+        console.log("internal board state for AI:", board.log_board())
+        console.log("internal legal moves for AI:", log_legal_moves(legal_moves))
         if (move == null) { // AI has no move (I shouldn't need this theres probably a bug in the minimax)
             console.log("Move was null. Legal moves are: ");
             log_legal_moves(legal_moves);
@@ -377,6 +379,7 @@ self.addEventListener("message", function (event) {
             break;
         }
         let [ai_move_x, ai_move_y] = move;
+        // await timer(100);
         let message = {
             legal_moves: legal_moves,
             ai_move: move,
@@ -396,7 +399,7 @@ self.addEventListener("message", function (event) {
     //run ai 
 
 
-    let status = player_has_legal_moves ? "passing turn" : "ending game";
+    let status =  "passing turn" 
     let message = {
         legal_moves: legal_moves,
         ai_move: null,

@@ -239,21 +239,25 @@ async function handleClick(event) {
         console.log("received move, status:", data)
         switch (data.status_message) {
             case "playing move":
-                board.play_move(data.move[0], data.move[1], is_whites_turn)
+                legal_moves = board.find_legal_moves(is_whites_turn)
+                board.play_move(data.ai_move[0], data.ai_move[1], is_whites_turn)
                 console.log("played move")
-                draw_board(board, true);
+                draw_board(board, false);
                 move_number++;
 
                 break;
             case "passing turn":
                 console.log("passed turn")
+                let ai_legal_moves = board.find_legal_moves(is_whites_turn);
                 is_whites_turn = !is_whites_turn;
                 legal_moves = board.find_legal_moves(is_whites_turn);
+                draw_board(board, true)
                 is_processing = false;
+                //if the player has no legal moves, then end the game
+                if(!any_legal_moves(legal_moves) && !any_legal_moves(ai_legal_moves)) {
+                    handle_game_end(board)
+                }
                 return;
-            
-            case "ending game":
-                handle_game_end(board);
 
         }
     }
