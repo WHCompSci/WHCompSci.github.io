@@ -4,8 +4,6 @@ const BOARD_SIZE = 5;
 const tileR = sideLen * .4;
 const offSetX = window.innerWidth / 2 - BOARD_SIZE * sideLen * 0.5;
 const offSetY = window.innerHeight / 2 - BOARD_SIZE * sideLen * 0.5;
-
-
 const minX = offSetX - sideLen * 0.5;
 const minY = offSetY - sideLen * 0.5;
 const maxX = (BOARD_SIZE - 0.5) * sideLen + offSetX;
@@ -15,14 +13,12 @@ var canvas;
 var ctx;
 
 let board = Array.from({ length: BOARD_SIZE }, _ => Array(BOARD_SIZE).fill(0));
-console.log("runningjavcas");
 window.onload = () => {
     for(let i = 0; i < 10; i++) {
         const x = Math.floor(Math.random() * BOARD_SIZE)
         const y = Math.floor(Math.random() * BOARD_SIZE)
         doTurn(x,y)
     }
-    console.log("runningjavcas");
     canvas = document.getElementById("game-canvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -48,8 +44,6 @@ addEventListener("click", (ev) => {
     console.log(gridY);
     doTurn(gridX, gridY);
 
-    
-    
 });
 
 let turn = 0;
@@ -61,14 +55,11 @@ function doTurn(gridX, gridY) {
     if(gridY < BOARD_SIZE - 1) board[gridX][gridY + 1] = ~board[gridX][gridY + 1];
 
     turn++;
-    
-
 }
 
 function update() {
     drawBoard(board, ctx);
 }
-
 function drawBoard(board, context) {
     context.fillStyle = "cornflowerblue";
     context.fillRect(minX - sideLen / 4, minY - sideLen / 4, sideLen * BOARD_SIZE + sideLen / 2, sideLen * BOARD_SIZE + sideLen / 2);

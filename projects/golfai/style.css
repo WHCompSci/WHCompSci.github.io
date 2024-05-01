@@ -1,0 +1,16 @@
+/* ...mini golf game... full screen canvas*/
+/* ...canvas is 100% width and height of the window... */
+
+* {
+  margin: 0;
+  padding: 0;
+}
+/* NO SCROLL */
+html, body {
+  overflow: hidden;
+}
+/* CANVAS */
+canvas {
+  display: block;
+  margin: 0 auto;
+}
