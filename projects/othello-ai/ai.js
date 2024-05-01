@@ -350,7 +350,7 @@ export function log_legal_moves(legal_moves) {
 // }   
 
 self.addEventListener("message", async function (event) {
-    const DEPTH = 6;
+    const DEPTH = 4;
     // Handle the received message
     let data = event.data;
 
