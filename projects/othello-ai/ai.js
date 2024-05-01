@@ -387,6 +387,7 @@ self.addEventListener("message", async function (event) {
         };
         //send next move
         console.log("sending move")
+        board.play_move(move[0], move[1], is_whites_turn)
         self.postMessage(message);
 
         // board.play_move(ai_move_x, ai_move_y, is_whites_turn);
