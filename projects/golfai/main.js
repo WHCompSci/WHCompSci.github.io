@@ -27,33 +27,7 @@ function generate_map(height, width, N) {
         let y = Math.floor(gaussianRandom(height / 2, height / 6))
         points.push([x, y])
     }
-    //for each point, calculate the minimum distance to any other point
-    let points_dtc = []
-    for (let [x, y] of points) {
-        let dists = []
-        for (let [x2, y2] of points) {
-            //normalize the distance to a value between 0 and 1
-            let dist = Math.sqrt((x - x2) ** 2 + (y - y2) ** 2)
-            dists.push(dist)
-        }
-        points_dtc.push(dists)
-    }
-
-    let min_dists = []
-    for (let i = 0; i < N; i++) {
-        let min_dist = Infinity
-        for (let j = 0; j < N; j++) {
-            if (i !== j) {
-                let dist = Math.sqrt((points[i][0] - points[j][0]) ** 2 + (points[i][1] - points[j][1]) ** 2)
-                if (dist < min_dist) min_dist = dist
-            }
-        }
-        min_dists.push(min_dist)
-    }
-    // avg min dist
-    // let max_min_dist = Math.max(...min_dists) * .5
-    // let inv_max_min_dist_sq = 1 / max_min_dist ** 1 / 2
-    // console.log(max_min_dist, inv_max_min_dist_sq)
+    // DEBUG // ========================
     // //draw metaballs for each point. First create a texture to draw the metaballs on
 
     // ctx.fillStyle = 'white'
@@ -80,8 +54,9 @@ function generate_map(height, width, N) {
     // for (let [x, y] of points) {
     //     ctx.fillRect(x, y, 5, 5)
     // }
+    // =================================
 
-
+    //calclate metaball implicit function at a point (x,y)
     const get_sum = (x, y) => {
 
         let sum = 0
@@ -329,13 +304,55 @@ function update(dt) {
         const v_normal = ball.vx * normal[0] + ball.vy * normal[1]
         //reverse the normal component
         //check if ball is colliding with either of the two  points (x1,y1) or (x2,y2)
-        const dist1 = Math.sqrt((ball.x - x1) ** 2 + (ball.y - y1) ** 2)
-        const dist2 = Math.sqrt((ball.x - x2) ** 2 + (ball.y - y2) ** 2)
-        console.log(dist1,dist2)
-        if(dist1<ball.r || dist2<ball.r){
+        function check_sweep_collision(x1, y1, x2, y2) {
+            const ball_old_x = ball.x - ball.vx * dt
+            const ball_old_y = ball.y - ball.vy * dt
+            //loop over every point speced 1 radius apart on the ball's trajectory  and check if it intersects the segment if it does, return true
+            const r = ball.r
+            const dx = x2 - x1
+            const dy = y2 - y1
+            const a = dx ** 2 + dy ** 2
+            const b = 2 * (dx * (x1 - ball_old_x) + dy * (y1 - ball_old_y))
+            const c = (x1 - ball_old_x) ** 2 + (y1 - ball_old_y) ** 2 - r ** 2
+            const discriminant = b ** 2 - 4 * a * c
+            if (discriminant < 0) return false
+            const t1 = (-b + Math.sqrt(discriminant)) / (2 * a)
+            const t2 = (-b - Math.sqrt(discriminant)) / (2 * a)
+            if (t1 < 0 || t1 > 1 && t2 < 0 || t2 > 1) return false
+            const intersection = [x1 + t1 * dx, y1 + t1 * dy]
+            //draw the intersection point
+            ctx.fillStyle = 'red'
+            ctx.beginPath()
+            ctx.arc(intersection[0], intersection[1], 2, 0, 2 * Math.PI)
+            ctx.fill()
+            return true
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        const swept_through_segment = check_sweep_collision(x1, y1, x2, y2)
+        if (!swept_through_segment) continue
+
         ball.vx = v_tangent * tangent[0] - v_normal * normal[0]
         ball.vy = v_tangent * tangent[1] - v_normal * normal[1]
-        }
+        //put the ball outside the segment
+        const d = 5
+        ball.x -= d * normal[0]
+        ball.y -= d * normal[1]
+
+
+        
 
 
 
