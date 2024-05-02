@@ -234,6 +234,7 @@ async function handleClick(event) {
         current_board: board,
         is_whites_turn: is_whites_turn,
     });
+    // 3 scenarios are either one is player the turn, switching turns, or the game is going to end
     ai_worker.onmessage = (event) => {
         let data = event.data;
         console.log("received move, status:", data)
@@ -246,6 +247,8 @@ async function handleClick(event) {
                 move_number++;
 
                 break;
+                //when we are switching turns we have to always check if either player still has legal moves
+                //this is to know to end the game before all the spaces on the board are filled 
             case "passing turn":
                 console.log("passed turn")
                 let ai_legal_moves = board.find_legal_moves(is_whites_turn);
@@ -253,7 +256,7 @@ async function handleClick(event) {
                 legal_moves = board.find_legal_moves(is_whites_turn);
                 draw_board(board, true)
                 is_processing = false;
-                //if the player has no legal moves, then end the game
+                //if neither the player or Ai have any legal moves then end the game 
                 if(!any_legal_moves(legal_moves) && !any_legal_moves(ai_legal_moves)) {
                     handle_game_end(board)
                 }
