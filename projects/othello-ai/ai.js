@@ -274,12 +274,24 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 // when looking ahead it gives a move a "score" and whichever move has the best "score" thats the one it will play 
 // the score it based on how many chips the turn flips 
 export function score_board(board, is_whites_turn) {
+    const weights = [
+        [5, -1,1,1,1,1,-1,5],
+        [-1,-1,1,1,1,1,-1,5],
+        [1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1],
+        [-1,-1,1,1,1,1,-1,5],
+        [5, -1,1,1,1,1,-1,5],
+    ]
     let score = 0;
     let my_chip = is_whites_turn | 2;
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             let chip = board.get_cell(x, y);
-            if (my_chip == chip) score++;
+            if(chip == 0) continue;
+            score += (my_chip == chip ? 1 : -1) * weights[y][x]
+            
         }
     }
     return score;
@@ -384,13 +396,14 @@ self.addEventListener("message", async function (event) {
         }
 
         console.log("Prompting AI");
-        let [_, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
+        let [score, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
+        console.log("score=",score);
         //the move it is going to play 
-        console.log("got move: ", move)
-        //what the AI's current board looks like 
-        console.log("internal board state for AI:", board.log_board())
-        //printing out all of the AI's legal moves 
-        console.log("internal legal moves for AI:", log_legal_moves(legal_moves))
+        // console.log("got move: ", move)
+        // //what the AI's current board looks like 
+        // console.log("internal board state for AI:", board.log_board())
+        // //printing out all of the AI's legal moves 
+        // console.log("internal legal moves for AI:", log_legal_moves(legal_moves))
         if (move == null) { // AI has no move (I shouldn't need this theres probably a bug in the minimax)
             console.log("Move was null. Legal moves are: ");
             log_legal_moves(legal_moves);
