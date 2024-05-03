@@ -275,21 +275,25 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 // the score it based on how many chips the turn flips 
 export function score_board(board, is_whites_turn) {
     const weights = [
-        [5, -1, 1, 1, 1, 1, -1, 5],
+        [10, -1, 1, 1, 1, 1, -1, 10],
         [-1, -1, 1, 1, 1, 1, -1, -1],
         [1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1],
         [-1, -1, 1, 1, 1, 1, -1, -1],
-        [5, -1, 1, 1, 1, 1, -1, 5],
+        [10, -1, 1, 1, 1, 1, -1, 10],
     ];
+    let empty = 0;
     let score = 0;
     let my_chip = is_whites_turn | 2;
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             let chip = board.get_cell(x, y);
-            if (chip == 0) continue;
+            if (chip == 0) {
+                empty++;
+                continue;
+            }
             score += (my_chip == chip ? 1 : -1) * weights[y][x];
 
         }
@@ -307,13 +311,19 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true) 
         return [score_board(current_board, is_whites_turn), null];
     }
     let curr_legal_moves = current_board.find_legal_moves(is_whites_turn);
+    let search_strategies = [
+        [0, 8, 1],
+        [8, 0, -1]
+    ];
+    const [ystart, yend, yinc] = search_strategies[~~(Math.random * 2)];
+    const [xstart, xend, xinc] = search_strategies[~~(Math.random * 2)];
     // log_legal_moves(curr_legal_moves)
     let move, score;
     if (is_whites_turn) {
         score = Number.NEGATIVE_INFINITY;
 
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
+        for (let y = ystart; y < yend; y += yinc) {
+            for (let x = xstart; x < xend; x += xinc) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
                     // console.log("move was legal: ", x, y)
@@ -331,8 +341,8 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true) 
     } else {
         // opponent's turn
         score = Number.POSITIVE_INFINITY;
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
+        for (let y = ystart; y < yend; y += yinc) {
+            for (let x = xstart; x < xend; x += xinc) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
                     const next_board = current_board.make_copy();
@@ -376,7 +386,7 @@ export function log_legal_moves(legal_moves) {
 // }   
 
 self.addEventListener("message", async function (event) {
-    const DEPTH = 4;
+    const DEPTH = 6;
     // Handle the received message
     let data = event.data;
 

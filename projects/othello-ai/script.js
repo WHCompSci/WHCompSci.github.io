@@ -227,6 +227,7 @@ async function handleClick(event) {
     move_number++;
     is_whites_turn = !is_whites_turn;
     draw_board(board, false);
+    update_status(is_whites_turn, move_number)
     console.log("drawing board")
     is_processing = true;
 
@@ -244,6 +245,7 @@ async function handleClick(event) {
                 board.play_move(data.ai_move[0], data.ai_move[1], is_whites_turn)
                 console.log("played move")
                 draw_board(board, false);
+                update_status(is_whites_turn, move_number);
                 move_number++;
 
                 break;
@@ -255,6 +257,7 @@ async function handleClick(event) {
                 is_whites_turn = !is_whites_turn;
                 legal_moves = board.find_legal_moves(is_whites_turn);
                 draw_board(board, true)
+                update_status(is_whites_turn, move_number);
                 is_processing = false;
                 //if neither the player or Ai have any legal moves then end the game 
                 if(!any_legal_moves(legal_moves) && !any_legal_moves(ai_legal_moves)) {
