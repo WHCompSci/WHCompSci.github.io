@@ -275,23 +275,23 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 // the score it based on how many chips the turn flips 
 export function score_board(board, is_whites_turn) {
     const weights = [
-        [5, -1,1,1,1,1,-1,5],
-        [-1,-1,1,1,1,1,-1,5],
-        [1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1],
-        [-1,-1,1,1,1,1,-1,5],
-        [5, -1,1,1,1,1,-1,5],
-    ]
+        [5, -1, 1, 1, 1, 1, -1, 5],
+        [-1, -1, 1, 1, 1, 1, -1, -1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [-1, -1, 1, 1, 1, 1, -1, -1],
+        [5, -1, 1, 1, 1, 1, -1, 5],
+    ];
     let score = 0;
     let my_chip = is_whites_turn | 2;
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             let chip = board.get_cell(x, y);
-            if(chip == 0) continue;
-            score += (my_chip == chip ? 1 : -1) * weights[y][x]
-            
+            if (chip == 0) continue;
+            score += (my_chip == chip ? 1 : -1) * weights[y][x];
+
         }
     }
     return score;
@@ -381,7 +381,7 @@ self.addEventListener("message", async function (event) {
     let data = event.data;
 
     let board = Object.assign(new Board(), data.current_board);
-    console.log("board:", board)
+    console.log("board:", board);
     let is_whites_turn = data.is_whites_turn;
     let legal_moves = undefined;
     let move = null;
@@ -397,7 +397,7 @@ self.addEventListener("message", async function (event) {
 
         console.log("Prompting AI");
         let [score, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
-        console.log("score=",score);
+        console.log("score=", score);
         //the move it is going to play 
         // console.log("got move: ", move)
         // //what the AI's current board looks like 
@@ -418,8 +418,8 @@ self.addEventListener("message", async function (event) {
             status_message: "playing move"
         };
         //send next move
-        console.log("sending move")
-        board.play_move(move[0], move[1], is_whites_turn)
+        console.log("sending move");
+        board.play_move(move[0], move[1], is_whites_turn);
         self.postMessage(message);
 
         // board.play_move(ai_move_x, ai_move_y, is_whites_turn);
@@ -432,7 +432,7 @@ self.addEventListener("message", async function (event) {
     //run ai 
 
 
-    let status = "passing turn"
+    let status = "passing turn";
     let message = {
         legal_moves: legal_moves,
         ai_move: null,
