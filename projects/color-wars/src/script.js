@@ -5,7 +5,7 @@ const smallest_dim = Math.min(window.innerWidth, window.innerHeight)
 canvas.height = Math.min(smallest_dim * 0.9, 800)
 canvas.width = Math.min(smallest_dim * 0.9, 800)
 const TILE_SIZE = canvas.width / 8
-const BOARD_SIZE = 5 //5x5 board
+const BOARD_SIZE = 6 //5x5 board
 
 const board_offset_x = (canvas.width - TILE_SIZE * BOARD_SIZE) / 2
 const board_offset_y = (canvas.height - TILE_SIZE * BOARD_SIZE) / 2
@@ -54,7 +54,7 @@ function draw_board(board, turn_num) {
     ctx.fillText(
         'Turn ' + turn_num + `: ${curr_player_name}'s Turn`,
         canvas.width / 2,
-        canvas.height * 0.09
+        canvas.height * 0.07
     )
 
     //instead of drawing grid lines, draw white squares with rounded corners for the tiles.
@@ -170,7 +170,7 @@ function try_play_move(x, y, color, is_first_turn) {
             ctx.fillText(
                 COL_ORD[winner].name + ' wins!',
                 canvas.width / 2,
-                canvas.height * 0.14
+                canvas.height * 0.11
             )
             game_over = true
             return true
@@ -248,29 +248,20 @@ function isPointInButton(x, y) {
 }
 
 let curr_player_index = 0
-function restartGame() 
-{
-    board = new Board()
-    turn_num = 1
-    curr_player_index = 0
 
-    game_over = false
-    draw_board(board, turn_num)
-    startGame()
-}
 
 class Player {
-    constructor(color, is_ai) {
+    constructor(color, is_ai, idx) {
         this.color = color
         this.is_ai = is_ai
         this.worker = null
         this.is_first_turn = true
+        this.player_idx = idx
         if (is_ai) {
             this.worker = new Worker('src/aiWorker.js')
             this.worker.onmessage = event => {
                 // This is where you would handle the move returned by the AI.
                 const move = event.data
-                console.log(event)
                 const played = try_play_move(
                     move.x,
                     move.y,
@@ -294,6 +285,8 @@ class Player {
             this.worker.postMessage({
                 board: board,
                 color: this.color,
+                player_idx: this.player_idx,
+                ptc: players.map(player => player.color.value),
                 is_first_turn: this.is_first_turn
             })
 
@@ -326,7 +319,7 @@ class Player {
     }
 }
 
-const players = [new Player(Colors.RED, false), new Player(Colors.BLUE, true)]
+const players = [new Player(Colors.RED, false, 0), new Player(Colors.BLUE, true, 1)]
 function startGame() {
     // Set up the initial game state and draw the board
     draw_board(board, turn_num)
@@ -342,3 +335,17 @@ function nextPlayer() {
 }
 
 startGame()
+
+function restartGame() {
+    board = new Board()
+    turn_num = 1
+    game_over = false
+    curr_player_index = 0
+    draw_board(board, turn_num)
+    players.forEach(player => {
+        player.is_first_turn = true
+    }
+    )
+
+    startGame()
+}

@@ -2,7 +2,7 @@ class Board {
     //boards are stored as binary numbers. Each tile is 4 bits.
     //The first 2 bits (little endian) are the color, the last 2 bits are the number of dots
 
-    constructor(BOARD_SIZE = 5) {
+    constructor(BOARD_SIZE = 6) {
         this.BOARD_SIZE = BOARD_SIZE
         this.board = new Uint8Array(BOARD_SIZE * BOARD_SIZE * 4)
     }
@@ -50,6 +50,19 @@ class Board {
         }
         return neighbors
     }
+    get_legal_moves_not_first_turn(color) {
+        let moves = []
+        for (let x = 0; x < this.BOARD_SIZE; x++) {
+            for (let y = 0; y < this.BOARD_SIZE; y++) {
+                if (this.check_color(x, y, color)) {
+                    moves.push({ x, y })
+                }
+            }
+        }
+        return moves
+    }
+
+
     play_move(x, y, color, is_first_turn) {
         if (!this.is_valid(x, y)) {
             return false
@@ -72,6 +85,11 @@ class Board {
         }
         this.set_tile(x, y, color, dots + 1)
         return true
+    }
+    copy() {
+        let new_board = new Board(this.BOARD_SIZE)
+        new_board.board = new Uint8Array(this.board)
+        return new_board
     }
     _handle_propagation(positions, color) {
         if (positions.size == 0) {
