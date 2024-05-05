@@ -6,9 +6,9 @@ addEventListener('message', async event => {
     const { board, color, player_idx, ptc, is_first_turn } = event.data
     const b = Object.assign(new Board(), board)
     PTC = ptc
-    console.log("pitc", ptc)
-    console.log("PTC", PTC)
-    console.log(player_idx)
+    // console.log("pitc", ptc)
+    // console.log("PTC", PTC)
+    // console.log(player_idx)
     const move = await iterative_deepening_mm_ai(b, player_idx, is_first_turn)
     postMessage(move)
 })
@@ -33,7 +33,7 @@ function evaluate_board(board, color) {
     if (others_score === 0) {
         return Infinity
     }
-    return score - others_score
+    return -others_score
 }
 
 async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
@@ -43,18 +43,18 @@ async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
     let best_move
     let best_move_from_previous_iteration
     let best_score = -Infinity
-    let TIME_LIMIT = 500
+    let TIME_LIMIT = 350
     let start_time = Date.now() // if the time limit is reached, return the best move so far
 
     for (let depth = 1; Date.now() - start_time < TIME_LIMIT; depth++) {
-        console.log('depth', depth)
+        // console.log('depth', depth)
         let moves = board.get_legal_moves_not_first_turn(PTC[player_idx])
         if(best_move_from_previous_iteration){
             //sort the moves so that the best move from the previous iteration is checked first
             moves.sort((a, b) => (a.x === best_move_from_previous_iteration.x && a.y === best_move_from_previous_iteration.y) ? -1 : 1)
         }
         let { move, score } = minimax(board, player_idx, moves,  depth, -Infinity, Infinity, true, start_time, TIME_LIMIT)
-        console.log('score', score)
+        // console.log('score', score)
         if (score > -Infinity && Date.now() - start_time < TIME_LIMIT){
             best_move = move
             best_score = score
@@ -68,7 +68,7 @@ async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
         }
         best_move_from_previous_iteration = best_move
     }
-    console.log("best move", best_move)
+    // console.log("best move", best_move)
     return best_move
 }
 
@@ -102,16 +102,19 @@ function minimax(board, player_idx, moves, depth, alpha, beta, is_maximizing, st
                 best_score = score
                 best_move = move
             }
+            if(best_score > beta) {
+                break
+            }
             alpha = Math.max(alpha, score)
         } else {
             if (score < best_score) {
                 best_score = score
                 best_move = move
             }
+            if(best_score < alpha) {
+                break
+            }
             beta = Math.min(beta, score)
-        }
-        if (beta <= alpha) {
-            break
         }
     }
     return { score: best_score, move: best_move }
