@@ -6,9 +6,11 @@
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
     margin: auto;
+    box-shadow: 0 0 10px #000;
 }
+
 body {
-    background-color: #9290C3;
+    background-color: #272626;
     color: #fff;
     font-family: 'Arial', sans-serif;
     text-align: center;
