@@ -1,0 +1,15 @@
+#canvas {
+    display: block;
+    margin: auto;
+    border: none;
+    border-radius: 25px;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    margin: auto;
+}
+body {
+    background-color: #9290C3;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
