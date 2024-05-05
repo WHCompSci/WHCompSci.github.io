@@ -65,9 +65,11 @@ export class Board {
         //8x8 board, 2 bits per cell
         //stored as is_on, is_white
     }
+    // gets the exact spot on the board
     get_cell(x, y) {
         return (this.data[y] >> (x << 1)) & 3;
     }
+    //used for flipping chips 
     set_cell(x, y, is_white) {
         this.data[y] &= ~(3 << (x << 1));
         this.data[y] |= (is_white | 2) << (x << 1);
@@ -77,6 +79,7 @@ export class Board {
         b.data = new Uint16Array(this.data);
         return b;
     }
+    //prints out the board into the console 
     log_board() {
         let txt = '';
         for (let y = 0; y < 8; y++) {
@@ -127,6 +130,7 @@ export class Board {
         }
         return count;
     }
+    //goes through the whole board and finds the legal moves for the player depending on the parameter given 
     find_legal_moves(is_white) {
         //fast check if move is legal, using https://phwl.org/assets/papers/othello_fpt04.pdf
         const my_chip = is_white ? this.WHITE_CHIP : this.BLACK_CHIP;
@@ -191,10 +195,12 @@ export class Board {
         return legal_moves;
     }
 }
+//uses bit shifting to check through every spot in an 8 bit array(each row) 
 export function is_move_legal(x, y, legal_moves) {
     return legal_moves[y] & (1 << x);
 }
 const timer = ms => new Promise(res => setTimeout(res, ms));
+//THIS FUNCTION RUNS AN AI THAT PLAYS ITS MOVES COMPLETELY RANDOM 
 
 // export function runAI(board, legal_moves, is_whites_turn) {
 //     //simple AI that plays the a random legal move.
@@ -211,7 +217,8 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 //     return [x, y];
 // }
 
-
+//THIS AI EXECUTES VERY POORLY 
+// THE POINT OF THIS AI IS TO TAKE AS MANY PIECES AS IT CAN DURING ITS CURRENT TURN WITHOUT LOOKING AHEAD 
 // export function runAIGreedy(board, legal_moves, is_whites_turn) {
 //     let move;
 //     let score = 0;
@@ -230,7 +237,9 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 //     }
 //     return move;
 // }
-
+//ORIGINAL MINIMAX FUNCTION 
+//THIS FUNCTION WOULD LOOK A FIXED NUMBER OF MOVES AHEAD 
+// IT WAS A SETUP FOR THE MINIMAX RECURSIVE METHOD 
 //function is made to look one move ahead and try to make the move that is least beneficial for the opponent 
 // minimax_ai(board, legal_moves, is_whites_turn) {
 //     let move;
@@ -262,19 +271,38 @@ const timer = ms => new Promise(res => setTimeout(res, ms));
 //     console.log("Playing Move:", move);
 //     return move;
 // }
+// when looking ahead it gives a move a "score" and whichever move has the best "score" thats the one it will play 
+// the score it based on how many chips the turn flips 
 export function score_board(board, is_whites_turn) {
+    const weights = [
+        [10, -1, 1, 1, 1, 1, -1, 10],
+        [-1, -1, 1, 1, 1, 1, -1, -1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1],
+        [-1, -1, 1, 1, 1, 1, -1, -1],
+        [10, -1, 1, 1, 1, 1, -1, 10],
+    ];
+    let empty = 0;
     let score = 0;
     let my_chip = is_whites_turn | 2;
-
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
             let chip = board.get_cell(x, y);
-            if (my_chip == chip) score++;
+            if (chip == 0) {
+                empty++;
+                continue;
+            }
+            score += (my_chip == chip ? 1 : -1) * weights[y][x];
+
         }
     }
     return score;
 }
-
+// meant to play defensive moves
+// looks through all its possible moves and evaluates whic hleast beenfits the opponents next move 
+// evaulates which piece to play based on our previous score function, the number of pieces it flips 
 export function mini_max_recursive(current_board, depth, is_whites_turn = true) {
     // current_board.log_board()
 
@@ -283,13 +311,19 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true) 
         return [score_board(current_board, is_whites_turn), null];
     }
     let curr_legal_moves = current_board.find_legal_moves(is_whites_turn);
+    let search_strategies = [
+        [0, 8, 1],
+        [8, 0, -1]
+    ];
+    const [ystart, yend, yinc] = search_strategies[~~(Math.random * 2)];
+    const [xstart, xend, xinc] = search_strategies[~~(Math.random * 2)];
     // log_legal_moves(curr_legal_moves)
     let move, score;
     if (is_whites_turn) {
         score = Number.NEGATIVE_INFINITY;
 
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
+        for (let y = ystart; y < yend; y += yinc) {
+            for (let x = xstart; x < xend; x += xinc) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
                     // console.log("move was legal: ", x, y)
@@ -307,8 +341,8 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true) 
     } else {
         // opponent's turn
         score = Number.POSITIVE_INFINITY;
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 8; x++) {
+        for (let y = ystart; y < yend; y += yinc) {
+            for (let x = xstart; x < xend; x += xinc) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
                     const next_board = current_board.make_copy();
@@ -332,7 +366,9 @@ export function any_legal_moves(legal_moves) {
     }
     return false;
 }
-
+// uses the find legal move function and rhe is move legal function 
+//according to thr spot on the board it makes a new log statement that prints the board with just dots and Ls 
+// the Ls represent the legal moves on the board 
 export function log_legal_moves(legal_moves) {
     let txt = '';
     for (let y = 0; y < 8; y++) {
@@ -355,23 +391,29 @@ self.addEventListener("message", async function (event) {
     let data = event.data;
 
     let board = Object.assign(new Board(), data.current_board);
-    console.log("board:", board)
+    console.log("board:", board);
     let is_whites_turn = data.is_whites_turn;
     let legal_moves = undefined;
     let move = null;
     let player_has_legal_moves = undefined;
     do {
+        //is finding legal moves for AI
         legal_moves = board.find_legal_moves(is_whites_turn);
+        //if the Ai has no legal moves check again for the player's legal moves 
         if (!any_legal_moves(legal_moves)) {
             player_has_legal_moves = any_legal_moves(board.find_legal_moves(!is_whites_turn));
             break;  // AI has no moves
         }
 
         console.log("Prompting AI");
-        let [_, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
-        console.log("got move: ", move)
-        console.log("internal board state for AI:", board.log_board())
-        console.log("internal legal moves for AI:", log_legal_moves(legal_moves))
+        let [score, move] = mini_max_recursive(board, DEPTH, is_whites_turn);
+        console.log("score=", score);
+        //the move it is going to play 
+        // console.log("got move: ", move)
+        // //what the AI's current board looks like 
+        // console.log("internal board state for AI:", board.log_board())
+        // //printing out all of the AI's legal moves 
+        // console.log("internal legal moves for AI:", log_legal_moves(legal_moves))
         if (move == null) { // AI has no move (I shouldn't need this theres probably a bug in the minimax)
             console.log("Move was null. Legal moves are: ");
             log_legal_moves(legal_moves);
@@ -386,8 +428,8 @@ self.addEventListener("message", async function (event) {
             status_message: "playing move"
         };
         //send next move
-        console.log("sending move")
-        board.play_move(move[0], move[1], is_whites_turn)
+        console.log("sending move");
+        board.play_move(move[0], move[1], is_whites_turn);
         self.postMessage(message);
 
         // board.play_move(ai_move_x, ai_move_y, is_whites_turn);
@@ -400,7 +442,7 @@ self.addEventListener("message", async function (event) {
     //run ai 
 
 
-    let status =  "passing turn" 
+    let status = "passing turn";
     let message = {
         legal_moves: legal_moves,
         ai_move: null,
