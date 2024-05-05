@@ -214,7 +214,7 @@ function drawButton() {
     const buttonWidth = 200
     const buttonHeight = 50
     const x = canvas.width / 2 - buttonWidth / 2
-    const y = canvas.height * 0.92 - buttonHeight / 2
+    const y = canvas.height * 0.94 - buttonHeight / 2
 
     // Draw the background rectangle
     ctx.fillStyle = '#1B1A55'
@@ -237,7 +237,7 @@ function isPointInButton(x, y) {
     const buttonWidth = 200
     const buttonHeight = 50
     const buttonX = canvas.width / 2 - buttonWidth / 2
-    const buttonY = canvas.height * 0.92 - buttonHeight / 2
+    const buttonY = canvas.height * 0.94 - buttonHeight / 2
 
     return (
         x >= buttonX &&
