@@ -24,16 +24,31 @@ function evaluate_board(board, color) {
     for (let x = 0; x < size; x++) {
         for (let y = 0; y < size; y++) {
             if (board.check_color(x, y, color)) {
-                score++
-            } else if (!board.is_empty(x, y)) {
-                others_score++
+                const {my_color, my_dots} = board.get_tile(x,y)
+                //its our color
+                let found_gte_neighbor = false;
+                for(const {nx, ny} of board.get_neighbors()) {  
+                    const {n_color, n_dots} = board.get_tile(nx, ny)
+                    if(n_color === my_color) continue
+                    if(n_dots >= my_dots) {
+                        found_gte_neighbor = true
+                        break
+                    } 
+                }   
+               score += found_gte_neighbor ? -1 : 1
             }
+            // } else if (!board.is_empty(x, y)) {
+            //     others_score++
+            // }
         }
     }
-    if (others_score === 0) {
-        return Infinity
-    }
-    return -others_score
+    // if (others_score === 0) { // we won
+    //     return Infinity
+    // }
+    // if(score === 0) { // we lost
+    //     return -Infinity
+    // }
+    return score
 }
 
 async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
@@ -47,14 +62,14 @@ async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
     let start_time = Date.now() // if the time limit is reached, return the best move so far
 
     for (let depth = 1; Date.now() - start_time < TIME_LIMIT; depth++) {
-        // console.log('depth', depth)
+        console.log('depth', depth)
         let moves = board.get_legal_moves_not_first_turn(PTC[player_idx])
         if(best_move_from_previous_iteration){
             //sort the moves so that the best move from the previous iteration is checked first
             moves.sort((a, b) => (a.x === best_move_from_previous_iteration.x && a.y === best_move_from_previous_iteration.y) ? -1 : 1)
         }
         let { move, score } = minimax(board, player_idx, moves,  depth, -Infinity, Infinity, true, start_time, TIME_LIMIT)
-        // console.log('score', score)
+        console.log('score', score)
         if (score > -Infinity && Date.now() - start_time < TIME_LIMIT){
             best_move = move
             best_score = score
@@ -68,7 +83,7 @@ async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
         }
         best_move_from_previous_iteration = best_move
     }
-    // console.log("best move", best_move)
+    console.log("best move", best_move)
     return best_move
 }
 
