@@ -1,57 +1,29 @@
 importScripts('./board.js')
+importScripts('./evaluation.js')
+
+
 
 let PTC = null
+let my_player_idx = null
+let evaluation = null
 
 addEventListener('message', async event => {
-    const { board, color, player_idx, ptc, is_first_turn } = event.data
+    const { board, eval_function, alive_players, player_idx, ptc, is_first_turn } = event.data
     const b = Object.assign(new Board(), board)
+    console.assert(alive_players[player_idx] === true) // we're alive!
     PTC = ptc
+    my_player_idx = player_idx
+    evaluation = EVAL_FUNCS[eval_function]
     // console.log("pitc", ptc)
     // console.log("PTC", PTC)
     // console.log(player_idx)
-    const move = await iterative_deepening_mm_ai(b, player_idx, is_first_turn)
+    const move = await iterative_deepening_mm_ai(b, player_idx, alive_players, is_first_turn)
     postMessage(move)
 })
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
 
-
-function evaluate_board(board, color) {
-    // This is a very simple evaluation function.
-    let score = 0
-    let others_score = 0
-    const size = board.BOARD_SIZE
-    for (let x = 0; x < size; x++) {
-        for (let y = 0; y < size; y++) {
-            if (board.check_color(x, y, color)) {
-                const {my_color, my_dots} = board.get_tile(x,y)
-                //its our color
-                let found_gte_neighbor = false;
-                for(const {nx, ny} of board.get_neighbors()) {  
-                    const {n_color, n_dots} = board.get_tile(nx, ny)
-                    if(n_color === my_color) continue
-                    if(n_dots >= my_dots) {
-                        found_gte_neighbor = true
-                        break
-                    } 
-                }   
-               score += found_gte_neighbor ? -1 : 1
-            }
-            // } else if (!board.is_empty(x, y)) {
-            //     others_score++
-            // }
-        }
-    }
-    // if (others_score === 0) { // we won
-    //     return Infinity
-    // }
-    // if(score === 0) { // we lost
-    //     return -Infinity
-    // }
-    return score
-}
-
-async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
+async function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_turn) {
     if (is_first_turn) {
         return await first_turn_move(board)
     }
@@ -68,7 +40,7 @@ async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
             //sort the moves so that the best move from the previous iteration is checked first
             moves.sort((a, b) => (a.x === best_move_from_previous_iteration.x && a.y === best_move_from_previous_iteration.y) ? -1 : 1)
         }
-        let { move, score } = minimax(board, player_idx, moves,  depth, -Infinity, Infinity, true, start_time, TIME_LIMIT)
+        let { move, score } = minimax(board, player_idx, moves, depth, alive_players, -Infinity, Infinity, start_time, TIME_LIMIT)
         console.log('score', score)
         if (score > -Infinity && Date.now() - start_time < TIME_LIMIT){
             best_move = move
@@ -87,24 +59,32 @@ async function iterative_deepening_mm_ai(board, player_idx, is_first_turn) {
     return best_move
 }
 
-function minimax(board, player_idx, moves, depth, alpha, beta, is_maximizing, start_time, TIME_LIMIT) {
+function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, start_time, TIME_LIMIT) {
     //mini-max with alpha beta pruning
     if (Date.now() - start_time > TIME_LIMIT) {
-        return { score: evaluate_board(board, player_idx), move: null }
+        return { score: evaluation(board, player_idx), move: null }
     }
     if (depth === 0) {
-        return { score: evaluate_board(board, player_idx), move: null }
+        return { score: evaluation(board, player_idx), move: null }
     }
+
+    
+    
     let color = PTC[player_idx]
     let best_move = null
+    const is_maximizing = player_idx == my_player_idx
     let best_score = is_maximizing ? -Infinity : Infinity
+
+    if (moves.length == 0 && is_maximizing) {
+        return {score: -Infinity, move: null}
+    }
+    //add a "NONE" move
     for (let move of moves) {
         let new_board = board.copy()
+        
         new_board.play_move(move.x, move.y, color, false)
         let new_moves = new_board.get_legal_moves_not_first_turn(PTC[(player_idx + 1) % PTC.length])
-        
-
-        let { score } = minimax(new_board, (player_idx + 1) % PTC.length, new_moves, depth - 1, alpha, beta, !is_maximizing, start_time, TIME_LIMIT)
+        let { score } = minimax(new_board, (player_idx + 1) % PTC.length, new_moves, depth - 1, alpha, beta, start_time, TIME_LIMIT)
         
         //ALPHA BETA PRUNING
         //when we go back up the tree, we want to maximize the score for the player, and minimize the score for the opponent. (minimax algorithm)
