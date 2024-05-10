@@ -30,7 +30,7 @@ async function iterative_deepening_mm_ai(board, player_idx, alive_players, is_fi
     let best_move
     let best_move_from_previous_iteration
     let best_score = -Infinity
-    let TIME_LIMIT = 350
+    let TIME_LIMIT = 1000
     let start_time = Date.now() // if the time limit is reached, return the best move so far
 
     for (let depth = 1; Date.now() - start_time < TIME_LIMIT; depth++) {
