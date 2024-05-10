@@ -17,7 +17,8 @@ function neighbor_evaluation(board, color) {
                         break;
                     }
                 }
-                score += found_gte_neighbor ? -1 : 1;
+                // score += found_gte_neighbor ? -1 : 1;
+                score += found_gte_neighbor ? -my_dots : my_dots
             }
             // } else if (!board.is_empty(x, y)) {
             //     others_score++
