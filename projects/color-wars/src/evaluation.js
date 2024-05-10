@@ -7,6 +7,8 @@ function neighbor_evaluation(board, color) {
         for (let y = 0; y < size; y++) {
             if (board.check_color(x, y, color)) {
                 const { my_color, my_dots } = board.get_tile(x, y);
+                score += my_dots;
+                continue
                 //its our color
                 let found_gte_neighbor = false;
                 for (const { nx, ny } of board.get_neighbors()) {
@@ -18,7 +20,7 @@ function neighbor_evaluation(board, color) {
                     }
                 }
                 // score += found_gte_neighbor ? -1 : 1;
-                score += found_gte_neighbor ? -my_dots : my_dots
+                // score += found_gte_neighbor ? -my_dots : my_dots
             }
             // } else if (!board.is_empty(x, y)) {
             //     others_score++
