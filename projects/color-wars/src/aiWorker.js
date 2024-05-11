@@ -31,18 +31,19 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
     let best_move
     let best_move_from_previous_iteration
     let best_score = -Infinity
-    let TIME_LIMIT = 100
+    let TIME_LIMIT = 500
     let start_time = Date.now() // if the time limit is reached, return the best move so far
 
     for (let depth = 1; Date.now() - start_time < TIME_LIMIT; depth++) {
-        // console.log('depth', depth)
+        console.log('depth', depth)
         let moves = board.get_legal_moves_not_first_turn(PTC[player_idx])
         if(best_move_from_previous_iteration){
             //sort the moves so that the best move from the previous iteration is checked first
             moves.sort((a, b) => (a.x === best_move_from_previous_iteration.x && a.y === best_move_from_previous_iteration.y) ? -1 : 1)
         }
         let { move, score } = minimax(board, player_idx, moves, depth, alive_players, -Infinity, Infinity, start_time, TIME_LIMIT)
-        // console.log('score', score)
+        console.log('score', score)
+        console.log('move', move)
         if (score > -Infinity && Date.now() - start_time < TIME_LIMIT){
             best_move = move
             best_score = score
@@ -56,7 +57,7 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
         }
         best_move_from_previous_iteration = best_move
     }
-    // console.log("best move", best_move)
+    console.log("best move", best_move)
     return best_move
 }
 

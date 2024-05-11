@@ -104,4 +104,4 @@ async function run_test_games(num_games) {
     return results
 }
 
-run_test_games(10).then(console.log)
+// run_test_games(10).then(console.log)
