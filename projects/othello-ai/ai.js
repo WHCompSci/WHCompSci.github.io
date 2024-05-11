@@ -303,8 +303,10 @@ export function score_board(board, is_whites_turn) {
 // meant to play defensive moves
 // looks through all its possible moves and evaluates whic hleast beenfits the opponents next move 
 // evaulates which piece to play based on our previous score function, the number of pieces it flips 
-export function mini_max_recursive(current_board, depth, is_whites_turn = true) {
+export function mini_max_recursive(current_board, depth, is_whites_turn = true, alpha, beta) {
     // current_board.log_board()
+    const is_maximizing = is_whites_turn;
+    let best_move = null;
 
     // console.log(depth, is_whites_turn)
     if (depth == 0) {
@@ -330,14 +332,24 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true) 
                     const next_board = current_board.make_copy();
                     next_board.play_move(x, y, is_whites_turn, true);
 
-                    let [curr_score, _] = mini_max_recursive(next_board, depth - 1, false);
+                    let [curr_score, _] = mini_max_recursive(next_board, depth - 1, false, alpha, beta);
                     if (curr_score > score) {
                         move = [x, y];
                         score = curr_score;
                     }
+
+                    if (curr_score > score) {
+                        score = curr_score;
+                        best_move = move;
+                    }
+                    if (score > beta) {
+                        break;
+                    }
+                    let alpha = Math.max((alpha, score))
                 }
             }
         }
+
     } else {
         // opponent's turn
         score = Number.POSITIVE_INFINITY;
@@ -352,12 +364,23 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true) 
                         move = [x, y];
                         score = curr_score;
                     }
+
+
+                    if (curr_score < score) {
+                        score = curr_score;
+                        best_move = move;
+                    }
+                    if (score < alpha) {
+                        break;
+                    }
+                    beta = Math.min(beta, score);
                 }
             }
         }
     }
-    return [score, move];
+    return [score, move]
 }
+
 
 
 export function any_legal_moves(legal_moves) {
