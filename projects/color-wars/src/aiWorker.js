@@ -17,31 +17,32 @@ addEventListener('message', async event => {
     // console.log("pitc", ptc)
     // console.log("PTC", PTC)
     // console.log(player_idx)
-    const move = await iterative_deepening_mm_ai(b, player_idx, alive_players, is_first_turn)
+    const move = iterative_deepening_mm_ai(b, player_idx, alive_players, is_first_turn)
     postMessage(move)
 })
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
 
-async function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_turn) {
+function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_turn) {
     if (is_first_turn) {
-        return await first_turn_move(board)
+        console.log("first turn")
+        return first_turn_move(board)
     }
     let best_move
     let best_move_from_previous_iteration
     let best_score = -Infinity
-    let TIME_LIMIT = 350
+    let TIME_LIMIT = 100
     let start_time = Date.now() // if the time limit is reached, return the best move so far
 
     for (let depth = 1; Date.now() - start_time < TIME_LIMIT; depth++) {
-        console.log('depth', depth)
+        // console.log('depth', depth)
         let moves = board.get_legal_moves_not_first_turn(PTC[player_idx])
         if(best_move_from_previous_iteration){
             //sort the moves so that the best move from the previous iteration is checked first
             moves.sort((a, b) => (a.x === best_move_from_previous_iteration.x && a.y === best_move_from_previous_iteration.y) ? -1 : 1)
         }
         let { move, score } = minimax(board, player_idx, moves, depth, alive_players, -Infinity, Infinity, start_time, TIME_LIMIT)
-        console.log('score', score)
+        // console.log('score', score)
         if (score > -Infinity && Date.now() - start_time < TIME_LIMIT){
             best_move = move
             best_score = score
@@ -55,7 +56,7 @@ async function iterative_deepening_mm_ai(board, player_idx, alive_players, is_fi
         }
         best_move_from_previous_iteration = best_move
     }
-    console.log("best move", best_move)
+    // console.log("best move", best_move)
     return best_move
 }
 
@@ -119,8 +120,8 @@ function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, st
 
 
 
-async function first_turn_move(board) {
-    await timer(500)
+function first_turn_move(board) {
+    // await timer(500)
     //object assign board
     const possible_moves = []
     const size = board.BOARD_SIZE

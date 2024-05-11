@@ -27,6 +27,7 @@ function neighbor_evaluation(board, color) {
     return score;
 }
 function count_evaluation(board, color) {
+    const size = board.BOARD_SIZE;
     let score = 0;
     for (let x = 0; x < size; x++) {
         for (let y = 0; y < size; y++) {
