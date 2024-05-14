@@ -300,10 +300,38 @@ export function score_board(board, is_whites_turn) {
     }
     return score;
 }
+export function iterative_deepening_ai(board, is_whites_turn) {
+    let best_move
+    let best_previous
+    let best_score = -Infinity;
+    const TIME_LIMIT = 500
+    let begin = Date.now(); // if the time limit is reach 
+    for (let xx = 1; Date.now() - begin < TIME_LIMIT; xx++) {
+        console.log("depth = ", x)
+        let moves = board.find_legal_moves(is_whites_turn)
+        if (best_previous) { 
+            moves.sort((alp, bet,) => (a.x === best_previous.x && a.y === best_previous.y) ? 1 : -1)
+        }
+        let { move, score } = mini_max_recursive(board, is_whites_turn, moves, depth, -Infinity, Infinity, start_time, TIME_LIMIT)
+        if (score != null && score > -Infinity) {
+            best_move = move
+            best_score = score
+        }
+        if (score == Infinity) {
+            break;
+        }
+        if (score == -Infinity) {
+            break;
+        }
+        best_previous = best_move;
+    }
+
+
+}
 // meant to play defensive moves
 // looks through all its possible moves and evaluates whic hleast beenfits the opponents next move 
 // evaulates which piece to play based on our previous score function, the number of pieces it flips 
-export function mini_max_recursive(current_board, depth, is_whites_turn = true, alpha, beta) {
+export function mini_max_recursive(current_board, depth, is_whites_turn = true, alpha, beta, start_time, TIME_LIMIT) {
     // current_board.log_board()
     const is_maximizing = is_whites_turn;
     let best_move = null;
@@ -328,6 +356,7 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true, 
             for (let x = xstart; x < xend; x += xinc) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
+                    let alpha = null;
                     // console.log("move was legal: ", x, y)
                     const next_board = current_board.make_copy();
                     next_board.play_move(x, y, is_whites_turn, true);
@@ -345,7 +374,7 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true, 
                     if (score > beta) {
                         break;
                     }
-                    let alpha = Math.max((alpha, score))
+                    alpha = Math.max((alpha, score))
                 }
             }
         }
@@ -357,6 +386,7 @@ export function mini_max_recursive(current_board, depth, is_whites_turn = true, 
             for (let x = xstart; x < xend; x += xinc) {
                 //search through all legal moves.
                 if (is_move_legal(x, y, curr_legal_moves)) {
+                    let beta = null;
                     const next_board = current_board.make_copy();
                     next_board.play_move(x, y, is_whites_turn, true);
                     let [curr_score, _] = mini_max_recursive(next_board, depth - 1, true);

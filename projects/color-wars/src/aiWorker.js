@@ -17,6 +17,7 @@ addEventListener('message', async event => {
     // console.log("pitc", ptc)
     // console.log("PTC", PTC)
     // console.log(player_idx)
+    console.log("eval=",evaluation(b, PTC[my_player_idx]));
     const move = iterative_deepening_mm_ai(b, player_idx, alive_players, is_first_turn)
     postMessage(move)
 })
@@ -31,7 +32,7 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
     let best_move
     let best_move_from_previous_iteration
     let best_score = -Infinity
-    let TIME_LIMIT = 500
+    let TIME_LIMIT = 250
     let start_time = Date.now() // if the time limit is reached, return the best move so far
 
     for (let depth = 1; Date.now() - start_time < TIME_LIMIT; depth++) {
@@ -44,7 +45,7 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
         let { move, score } = minimax(board, player_idx, moves, depth, alive_players, -Infinity, Infinity, start_time, TIME_LIMIT)
         console.log('score', score)
         console.log('move', move)
-        if (score > -Infinity && Date.now() - start_time < TIME_LIMIT){
+        if (score != null && score > -Infinity) {
             best_move = move
             best_score = score
         }
@@ -62,24 +63,25 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
 }
 
 function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, start_time, TIME_LIMIT) {
+    let color = PTC[player_idx]
     //mini-max with alpha beta pruning
     if (Date.now() - start_time > TIME_LIMIT) {
-        return { score: evaluation(board, player_idx), move: null }
+        return { score: null, move: null }
     }
     if (depth === 0) {
-        return { score: evaluation(board, player_idx), move: null }
+        return { score: evaluation(board, color), move: null }
     }
 
     
     
-    let color = PTC[player_idx]
+    
     let best_move = null
     const is_maximizing = player_idx == my_player_idx
     let best_score = is_maximizing ? -Infinity : Infinity
 
-    if (moves.length == 0 && is_maximizing) {
-        return {score: -Infinity, move: null}
-    }
+    // if (moves.length == 0 && is_maximizing) {
+    //     return {score: -Infinity, move: null}
+    // }
     //add a "NONE" move
     for (let move of moves) {
         let new_board = board.copy()
@@ -88,6 +90,9 @@ function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, st
         let new_moves = new_board.get_legal_moves_not_first_turn(PTC[(player_idx + 1) % PTC.length])
         let { score } = minimax(new_board, (player_idx + 1) % PTC.length, new_moves, depth - 1, alpha, beta, start_time, TIME_LIMIT)
         
+        if(score == null) {
+            return { score: null, move: null }
+        }
         //ALPHA BETA PRUNING
         //when we go back up the tree, we want to maximize the score for the player, and minimize the score for the opponent. (minimax algorithm)
         // Let's call alpha the best score we have found so far for the player, and beta the best score we have found so far for the opponent.

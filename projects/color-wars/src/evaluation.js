@@ -6,7 +6,6 @@ function neighbor_evaluation(board, my_col) {
     for (let x = 0; x < size; x++) {
         for (let y = 0; y < size; y++) {
             let { color, dots } = board.get_tile(x, y);
-
             if (dots == 0) {
                 continue;
             }
