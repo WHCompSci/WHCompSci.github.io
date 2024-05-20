@@ -69,7 +69,7 @@ function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, st
         return { score: null, move: null }
     }
     if (depth === 0) {
-        return { score: evaluation(board, color), move: null }
+        return { score: evaluation(board, PTC[my_player_idx]), move: null }
     }
 
     
