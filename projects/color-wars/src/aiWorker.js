@@ -42,7 +42,7 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
             //sort the moves so that the best move from the previous iteration is checked first
             moves.sort((a, b) => (a.x === best_move_from_previous_iteration.x && a.y === best_move_from_previous_iteration.y) ? -1 : 1)
         }
-        let { move, score } = minimax(board, player_idx, moves, depth, alive_players, -Infinity, Infinity, start_time, TIME_LIMIT)
+        let { move, score } = minimax(board, player_idx, moves, depth, -Infinity, Infinity, start_time, TIME_LIMIT)
         console.log('score', score)
         console.log('move', move)
         if (score != null && score > -Infinity) {
@@ -62,7 +62,7 @@ function iterative_deepening_mm_ai(board, player_idx, alive_players, is_first_tu
     return best_move
 }
 
-function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, start_time, TIME_LIMIT) {
+function minimax(board, player_idx, moves, depth, alpha, beta, start_time, TIME_LIMIT) {
     let color = PTC[player_idx]
     //mini-max with alpha beta pruning
     if (Date.now() - start_time > TIME_LIMIT) {
@@ -72,17 +72,10 @@ function minimax(board, player_idx, moves, depth, alive_players, alpha, beta, st
         return { score: evaluation(board, PTC[my_player_idx]), move: null }
     }
 
-    
-    
-    
     let best_move = null
     const is_maximizing = player_idx == my_player_idx
     let best_score = is_maximizing ? -Infinity : Infinity
 
-    // if (moves.length == 0 && is_maximizing) {
-    //     return {score: -Infinity, move: null}
-    // }
-    //add a "NONE" move
     for (let move of moves) {
         let new_board = board.copy()
         
