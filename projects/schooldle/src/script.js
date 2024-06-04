@@ -16,7 +16,6 @@ const winCloseModalBtn = document.getElementById("win-modal-close-btn");
 const numGuessesDisplay = document.getElementById("num-guesses");
 
 const maxGuesses = 8;
-const newAnswerEveryXhours = 0.01;
 const guessesRemainingText = document.getElementById("guesses-remaining");
 const subtitle = document.getElementById("subtitle");
 const timer = document.getElementById("timer");
@@ -37,8 +36,19 @@ const urlOfFile = "./data/collegedata_abbr.csv";
 const urlOfAnswerFile = "./data/answerkey.csv";
 let collegeOfTheDay, collegeInfoOfTheDay; // define it here so we can cheat in the chrome devtools ;)
 let gameMode = "normal"; // normal mode or endless mode
+// toolbar children that are <a> or <button> should have a hover effect
+const toolbarLinksButtons = []
+for (let i = 0; i < toolbar.children.length; i++) {
+    const child = toolbar.children[i];
+    if (child.tagName == "A" || child.tagName == "BUTTON") {
+        toolbarLinksButtons.push(child)
+        addChangeColorHover(child)
+    }
+}
 let guesses = [];
 let answers;
+
+// answers reset at midnight local time
 
 const collegeData = new Map();
 const noCollegesMSG = "No colleges found";
@@ -58,8 +68,29 @@ function clearGuesses() {
     guesses = [];
     updateGuessesRemaining();
 }
+
+const NORMAL_TOOLBAR_BG_COLOR = "#f0f0f0"
+const ENDLESS_TOOLBAR_BG_COLOR = "#fbeabc"
+const NORMAL_TOOLBAR_HOVER_COLOR = "#dedede"
+const ENDLESS_TOOLBAR_HOVER_COLOR = "#f5cc5b"
+
+function addChangeColorHover(button) { 
+    button.addEventListener("mouseover", () => {
+        button.style.backgroundColor = gameMode == "endless" ? ENDLESS_TOOLBAR_HOVER_COLOR : NORMAL_TOOLBAR_HOVER_COLOR
+    })
+    button.addEventListener("mouseout", () => {
+        button.style.backgroundColor = gameMode == "endless" ? ENDLESS_TOOLBAR_BG_COLOR : NORMAL_TOOLBAR_BG_COLOR
+    })
+}
+
 function enterEndlessMode() {
-    toolbar.style.backgroundColor = "#fbeabc"
+    toolbar.style.backgroundColor = ENDLESS_TOOLBAR_BG_COLOR
+    for (let i = 0; i < toolbarLinksButtons.length; i++) {
+        toolbarLinksButtons[i].style.backgroundColor = ENDLESS_TOOLBAR_BG_COLOR
+    }
+
+    // all buttons that are children of toolbar should be yellow on hover
+    const buttons = toolbar.getElementsByTagName("button")
     console.log()
     clearGuesses();
     resetMapPosAndClearMarkers();
@@ -72,7 +103,13 @@ function enterEndlessMode() {
     subtitle.innerText = "Endless Mode";
 }
 function exitEndlessMode() {
-    toolbar.style.backgroundColor = "#f0f0f0"
+    toolbar.style.backgroundColor = NORMAL_TOOLBAR_BG_COLOR
+    for (let i = 0; i < toolbarLinksButtons.length; i++) {
+        toolbarLinksButtons[i].style.backgroundColor = NORMAL_TOOLBAR_BG_COLOR
+        // little hack to make the hover effect work
+    }
+
+
     const completedGame = getWithExpiry("completedGame")
     if(completedGame != null) {
         
@@ -98,24 +135,23 @@ function hideTimerAndShowInput() {
     //openDropdown()
 }
 function pickCollegeOftheDay() {
-    const now = new Date();
-    const inc = incrementByXHours(now)
-    collegeOfTheDay = answers[Math.floor(inc/newAnswerEveryXhours) % answers.length].trim();
+    const startDate = new Date('2022-01-01')
+    const now = new Date()
+    const oneDay = 24 * 60 * 60 * 1000 // Number of milliseconds in one day
+
+    // Calculate the number of days since the start date
+    const daysSinceStart = Math.floor((now - startDate) / oneDay)
+
+    collegeOfTheDay = answers[Math.floor(daysSinceStart) % answers.length].trim();
     collegeInfoOfTheDay = collegeData.get(collegeOfTheDay);
     console.log("Set the college info to be "+collegeInfoOfTheDay)
 }
-function incrementByXHours(date) {
-    const millisecondsInHour = 60 * 60 * 1000;
-    const currentTime = date.getTime();
-    const hoursElapsed = Math.floor(currentTime / millisecondsInHour);
-    return hoursElapsed + 1;
-  }
-
 
 function getTimeMSToNextAnswer() {
-    const now = new Date();
-    return (incrementByXHours(now) * 60 * 60 * 1000) - now.getTime()
-    // return msToTime(now - (+1) * newAnswerEveryXhours * 60 * 60 * 1000);
+    let now = new Date()
+    let nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0)
+    // answers reset at midnight local time
+    return nextMidnight - now;
 }
 
 function msToTime(duration) {

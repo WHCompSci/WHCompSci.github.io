@@ -351,9 +351,9 @@ tr {
     align-items: center;
 }
 
-.toolbar-button:hover {
+/* .toolbar-button:hover {
     background-color: #dedede;
-}
+} */
 
 .toolbar-button:visited {
     text-decoration: none;
@@ -439,4 +439,8 @@ tr {
     margin-top: 1rem;
     font-size: xx-large;
     font-weight: 800;
+}
+
+#map {
+  height: calc(100vh - 52px); /* 100% of the viewport height - navbar height */
 }
