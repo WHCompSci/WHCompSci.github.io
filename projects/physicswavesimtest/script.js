@@ -4,8 +4,8 @@ const canvas = document.getElementById('simulation-canvas')
 canvas.width = GRIDSIZE
 canvas.height = GRIDSIZE
 const ctx = canvas.getContext('2d')
-const baseAmp = 0.2
-const freq = .06
+const baseAmp = 0.6
+const freq = .16
 
 let shift = 0
 
@@ -13,6 +13,7 @@ function draw() {
     ctx.fillStyle = 'white'
     // 0 1 0 -1 0 ...
     const phase = Math.sin(freq * circleRadius - shift)
+  
     // ctx.fillRect(0, 0, GRIDSIZE, GRIDSIZE)
     const circumference = 2 * Math.PI * circleRadius
     const numCircleSamplePoints = circumference // number of points to sample on the circle to ensure that every grid cell that the circle's circumference passes through is found
@@ -27,14 +28,15 @@ function draw() {
         const dx = x - gridCenterX
         const dy = y - gridCenterY
         const manhattanDistance = gridCenterX / GRIDSIZE + gridCenterY / GRIDSIZE
-        const reflectionSignChange = Math.pow(-1, Math.floor(manhattanDistance)) // 1
+        const reflectionSignChange = 1 // Math.pow(-1, Math.floor(manhattanDistance)) // 1
 
         //get color of the grid cell
         let color = ctx.getImageData(gridCenterX + GRIDSIZE / 2, gridCenterY + GRIDSIZE / 2, 1, 1).data
-        let origAmp = color[0] / 255
+        let origAmp = (color[0] /255) * 2 - 1
+
         let newAmp = origAmp + baseAmp * phase * reflectionSignChange
-        let newColor = newAmp * 255
-        ctx.fillStyle = `rgb(${newColor},${100+newColor/2},${135})`
+        let newColor = (( newAmp + 1) /2) * 255
+        ctx.fillStyle = `rgb(${newColor},${127 - newColor/2},${255-newColor})`
 
         
        
@@ -60,14 +62,14 @@ setInterval(() => {
 }, 10)
 
 
-function saveCanvasAsImage(canvasId) {
+function saveCanvasAsImage() {
     // Get the canvas element
-    const canvas = document.getElementById(canvasId)
-    const context = canvas.getContext('2d')
 
-   
-    // Save the canvas as an image
-    const image = canvas.toDataURL("image/png")
+    // Get the data of the canvas
+    const image = canvas.toDataURL('image/png')
+
+
+
 
     // Create a temporary link element and trigger the download
     const link = document.createElement('a')
@@ -79,7 +81,7 @@ function saveCanvasAsImage(canvasId) {
 
 // Save the canvas as an image when the button is clicked
 document.getElementById('save-button').addEventListener('click', () => {
-    saveCanvasAsImage('simulation-canvas')
+    saveCanvasAsImage()
 })
 
 document.getElementById('restart-button').addEventListener('click', () => {
