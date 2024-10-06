@@ -1,5 +1,5 @@
-
-function generateHeightMapDLA(height, width, iterations, stickiness = .4, initialHeightMap = new Array2D(height, width)) {
+let rec;
+function generateHeightMapDLA(height, width, iterations, stickiness = .7, initialHeightMap = new Array2D(height, width)) {
     const heightMap = initialHeightMap
     const seedRow = ~~(height / 2)
     const seedCol = ~~(width / 2)
@@ -93,6 +93,7 @@ class Array2D {
         console.log()
     }
     drawOnCanvas(ctx) {
+        ctx.fillStyle = "black"
         for (let row = 0; row < this.height; row++) {
             for (let col = 0; col < this.width; col++) {
                 if (this.get(row, col)) {
@@ -138,6 +139,7 @@ function detailedUpscale(initialHeightMap) {
 }
 
 function drawPixel(row, col, ctx) {
+    ctx.fillStyle = "black"
     const scale = 2
     ctx.fillRect(row * scale, col * scale, scale, scale)
 }
@@ -150,18 +152,24 @@ const ctx = canvas.getContext("2d")
 
 let interval
 const run = () => {
-    const hm = generateHeightMapDLA(256, 256, 5000)
+    const numPixelsPerFrame = 4
+    
+    const hm = generateHeightMapDLA(256, 256, 10000)
     hm.heightMap.print()
     clearInterval(interval)
+    startRecording()
     interval = setInterval(() => {
-        const i = hm.generator.next()
-        if (i.done) {
-            clearInterval(interval)
-            return
+        const pxBuffer = []
+        for(let j = 0; j < numPixelsPerFrame; j ++) {
+            const i = hm.generator.next()
+            if (i.done) {
+                clearInterval(interval)
+                return
+            }
+            const [r, c] = i.value
+            pxBuffer.push([r, c])
         }
-        const [r, c] = i.value
-        drawPixel(r, c, ctx)
-
+        pxBuffer.forEach(([r, c]) => drawPixel(r, c, ctx))
     }, 1)
 }
 
@@ -180,14 +188,45 @@ function saveCanvasAsImage() {
 
 }
 
+function startRecording() {
+    let i = 0
+    const chunks = [] // here we will store our recorded media chunks (Blobs)
+    const stream = canvas.captureStream(10) // grab our canvas MediaStream
+    rec = new MediaRecorder(stream) // init the recorder
+    // every time the recorder has new data, we will store it in our array
+    rec.ondataavailable = e =>  { 
+        chunks.push(e.data) 
+        
+    }
+    // only when the recorder stops, we construct a complete Blob from all the chunks
+    rec.onstop = e => exportVid(new Blob(chunks, { type: 'video/webm' }))
+
+    rec.start()
+    // setTimeout(() => rec.stop(), 3000) // stop recording in 3s
+}
+
+function exportVid(blob) {
+ 
+    // document.body.appendChild(vid)
+    const a = document.getElementById('save-video-button')
+    a.download = 'myvid.webm'
+    a.href = URL.createObjectURL(blob)
+    a.click()
+    // a.textContent = 'download the video'
+    // document.body.appendChild(a)
+}
+
+
 // Save the canvas as an image when the button is clicked
 document.getElementById('save-button').addEventListener('click', () => {
     saveCanvasAsImage()
 })
-
+document.getElementById('save-video-button').addEventListener('click', () => {
+    rec.stop()
+})
 document.getElementById('restart-button').addEventListener('click', () => {
-
-    ctx.clearRect(0, 0, 512, 512)
+    ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, 512, 512)
     console.log("restart")
     run()
 })
