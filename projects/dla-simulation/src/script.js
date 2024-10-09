@@ -1,5 +1,5 @@
 let rec;
-function generateHeightMapDLA(height, width, iterations, stickiness = .7, initialHeightMap = new Array2D(height, width)) {
+function* generateHeightMapDLA(height, width, iterations, initialHeightMap = new Array2D(height, width)) {
     const heightMap = initialHeightMap
     const seedRow = ~~(height / 2)
     const seedCol = ~~(width / 2)
@@ -7,47 +7,51 @@ function generateHeightMapDLA(height, width, iterations, stickiness = .7, initia
     if (height != heightMap.height || width != heightMap.width) {
         throw new Error("Invalid initial heightmap supplied. Dimensions do not match. ")
     }
-    function* DLA() {
-
-        heightMap.set(seedRow, seedCol, 1)
-        for (let i = 0; i < iterations; i++) {
-            let [currRow, currCol] = randomPerimeterSquare()
-            while (true) {
-                const topNeighbor = currRow > 0 && heightMap.get(currRow - 1, currCol)
-                const bottomNeighbor = currRow < height - 1 && heightMap.get(currRow + 1, currCol)
-                const leftNeighbor = currCol > 0 && heightMap.get(currRow, currCol - 1)
-                const rightNeighbor = currCol < width - 1 && heightMap.get(currRow, currCol + 1)
-
-                const deltas = []
-                if (!topNeighbor) deltas.push([-1, 0])
-                if (!bottomNeighbor) deltas.push([1, 0])
-                if (!leftNeighbor) deltas.push([0, -1])
-                if (!rightNeighbor) deltas.push([0, 1])
-
-                // check if we're sticking to any neighbor.
-                if ((topNeighbor || bottomNeighbor || leftNeighbor || rightNeighbor) && (Math.random() < stickiness || deltas.length == 0)) {
-                    heightMap.set(currRow, currCol, 1)
-                    yield [currRow, currCol]
-                    // console.log(i)
-                    break
-                }
-                
+    // for(let rowOffset = -2; rowOffset <= 2; rowOffset++) {
+    //     for (let colOffset = -80; colOffset <= 80; colOffset++) {
+    //         heightMap.set(seedRow + rowOffset, seedCol + colOffset, 1)
+    //         yield [seedRow + rowOffset, seedCol + colOffset, 1]
+    //     }
+    // }
+    heightMap.set(seedRow,seedCol, 1)
+    yield [seedRow , seedCol, 1]
     
-                const [dRow, dCol] = deltas[~~(Math.random() * deltas.length)]
-                currRow = mod(currRow + dRow, height)
-                currCol = mod(currCol + dCol, width)
-                // if (currRow < 0 || currRow >= height || currCol < 0 || currCol >= width) {
-                //     // we went off the map, respawn at a new perimeter square
-                //     [currRow, currCol] = randomPerimeterSquare()
-                // }
+    for (let i = 0; i < iterations; i++) {
+        let [currRow, currCol] = randomPerimeterSquare()
+        while (true) {
+            const topNeighbor = currRow > 0 ? heightMap.get(currRow - 1, currCol) : 0
+            const bottomNeighbor = currRow < height - 1 ? heightMap.get(currRow + 1, currCol) : 0
+            const leftNeighbor = currCol > 0 ? heightMap.get(currRow, currCol - 1) : 0
+            const rightNeighbor = currCol < width - 1 ? heightMap.get(currRow, currCol + 1) : 0
+
+            const deltas = []
+            if (!topNeighbor) deltas.push([-1, 0])
+            if (!bottomNeighbor) deltas.push([1, 0])
+            if (!leftNeighbor) deltas.push([0, -1])
+            if (!rightNeighbor) deltas.push([0, 1])
+
+            // check if we're sticking to any neighbor.
+            if ((topNeighbor || bottomNeighbor || leftNeighbor || rightNeighbor) && (Math.random() < stickinessSlider.value || deltas.length == 0)) {
+                const height = Math.max(Math.max(topNeighbor, bottomNeighbor), Math.max(leftNeighbor, rightNeighbor)) + 1
+                heightMap.set(currRow, currCol, height)
+                yield [currRow, currCol, height]
+                // console.log(i)
+                break
             }
+            
+
+            const [dRow, dCol] = deltas[~~(Math.random() * deltas.length)]
+            currRow = mod(currRow + dRow, height)
+            currCol = mod(currCol + dCol, width)
+            // if (currRow < 0 || currRow >= height || currCol < 0 || currCol >= width) {
+            //     // we went off the map, respawn at a new perimeter square
+            //     [currRow, currCol] = randomPerimeterSquare()
+            // }
         }
+    }
         // return heightMap
-    }
-    return {
-        generator: DLA(),
-        heightMap: heightMap
-    }
+
+
 
     function mod(n, m) {
         return ((n % m) + m) % m
@@ -97,7 +101,7 @@ class Array2D {
         for (let row = 0; row < this.height; row++) {
             for (let col = 0; col < this.width; col++) {
                 if (this.get(row, col)) {
-                    drawPixel(row, col, ctx)
+                    drawPixel(row, col, 1, ctx)
                 }
             }
         }
@@ -138,8 +142,8 @@ function detailedUpscale(initialHeightMap) {
     return newHeightMap
 }
 
-function drawPixel(row, col, ctx) {
-    ctx.fillStyle = "black"
+function drawPixel(row, col, val, ctx) {
+    ctx.fillStyle = `rgba( ${val}, 36, 130, ${.7})`
     const scale = 2
     ctx.fillRect(row * scale, col * scale, scale, scale)
 }
@@ -154,22 +158,21 @@ let interval
 const run = () => {
     const numPixelsPerFrame = 4
     
-    const hm = generateHeightMapDLA(256, 256, 10000)
-    hm.heightMap.print()
+    const hm = generateHeightMapDLA(256, 256, 256 * 256 * 0.5)
     clearInterval(interval)
     startRecording()
     interval = setInterval(() => {
         const pxBuffer = []
         for(let j = 0; j < numPixelsPerFrame; j ++) {
-            const i = hm.generator.next()
+            const i = hm.next()
             if (i.done) {
                 clearInterval(interval)
                 return
             }
-            const [r, c] = i.value
-            pxBuffer.push([r, c])
+            const [r, c, val] = i.value
+            pxBuffer.push([r, c, val])
         }
-        pxBuffer.forEach(([r, c]) => drawPixel(r, c, ctx))
+        pxBuffer.forEach(([r, c, val]) => drawPixel(r, c, val, ctx))
     }, 1)
 }
 
@@ -229,6 +232,12 @@ document.getElementById('restart-button').addEventListener('click', () => {
     ctx.fillRect(0, 0, 512, 512)
     console.log("restart")
     run()
+})
+
+const stickinessSlider = document.getElementById('stickiness-slider')
+const stickinessIndicator = document.getElementById('stickiness-indicator')
+stickinessSlider.addEventListener("change", (ev) => {
+    stickinessIndicator.innerText = "Stickiness="+stickinessSlider.value
 })
 
 run()
