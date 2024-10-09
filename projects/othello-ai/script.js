@@ -244,6 +244,7 @@ async function handleClick(event) {
                 legal_moves = board.find_legal_moves(is_whites_turn)
                 board.play_move(data.ai_move[0], data.ai_move[1], is_whites_turn)
                 console.log("played move")
+                last_move = [data.ai_move[0], data.ai_move[1]]
                 draw_board(board, false);
                 update_status(is_whites_turn, move_number);
                 move_number++;
@@ -314,11 +315,5 @@ new_game_button.addEventListener('click', () => {
     update_status(is_whites_turn, move_number);
 });
 
-undo_button.addEventListener('click', () => {
-    //TODO
-});
-redo_button.addEventListener('click', () => {
-    //TODO
-});
 
 

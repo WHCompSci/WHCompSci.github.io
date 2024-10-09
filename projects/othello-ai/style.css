@@ -1,7 +1,7 @@
 /* style for Othello game and AI */
 * {
     margin: 0;
-    margin-top: 10px;
+
     padding: 0;
     box-sizing: border-box;
     /* overflow: hidden; */
@@ -10,29 +10,27 @@
     color: #f4fdfa;
 }
 
-button {
-    background-color: #60aadf;
 
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 5px;
-    height: 70px;
-
-}
 
 #controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: max(25vw, 15rem) 1fr;
+    padding: 1.5rem;
 
 }
 
 #controls button {
-    margin: 0 10px;
+    width: 10rem;
+    font-size: 16px;
+    border:1px solid #009067;
+    height: 2rem;
+    
+    /* color: #009067; */
+    transition: background-color .3s ease;
+}
+
+#controls button:hover {
+    background-color: #009067;
 }
 
 #game {
@@ -47,9 +45,13 @@ button {
     position: relative;
     top: - 25px;
     left: -25px;
+    margin-top: 10px;
 }
 
 #status {
-    margin-top: 20px;
-    font-size: 24px;
+    height: 2rem;
+    font-size: 18px;
+    line-height: 2rem;
+    
 }
+
