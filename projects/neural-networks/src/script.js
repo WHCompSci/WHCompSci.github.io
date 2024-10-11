@@ -114,3 +114,30 @@ addEventListener("mousedown", (ev) => {
 
 })
 
+
+
+class Value {
+    constructor(data, _prev=[]) {
+        this.data = data
+        this._prev = new Set(_prev)
+    }
+    add(other) {
+        other = other instanceof Value ? other : new Value(other)
+        const out = new Value(this.data + other.data, [this, other])
+        return out
+    }
+    mult(other) {
+        other = other instanceof Value ? other : new Value(other)
+        const out = new Value(this.data * other.data, [this,other])
+        return out
+    }
+    reLu() {
+        const out = new Value(this.data < 0 ? 0 : this.data, [this])
+        return out
+    }
+}
+
+const v = new Value(13)
+const u = new Value(5)
+const z = v.add(u)
+console.log(z)
