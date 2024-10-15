@@ -119,20 +119,34 @@ addEventListener("mousedown", (ev) => {
 class Value {
     constructor(data, _prev=[]) {
         this.data = data
+        this.grad = 0
         this._prev = new Set(_prev)
+        this._backward = () => null
     }
     add(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data + other.data, [this, other])
+        out._backward = () => {
+            this.grad += out.grad
+            other.grad += out.grad
+        }
         return out
     }
+    
     mult(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data * other.data, [this,other])
+        out._backward = () => {
+            this.grad += other.data*out.grad
+            other.grad += this.data*out.grad
+        }
         return out
     }
     reLu() {
         const out = new Value(this.data < 0 ? 0 : this.data, [this])
+        out._backward = () => {
+            this.grad += (this.data > 0 ? 1 : 0) * out.grad
+        }
         return out
     }
 }
