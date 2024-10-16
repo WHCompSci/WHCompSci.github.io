@@ -142,7 +142,7 @@ class Value {
         }
         return out
     }
-    reLu() {
+    relu() {
         const out = new Value(this.data < 0 ? 0 : this.data, [this])
         out._backward = () => {
             this.grad += (this.data > 0 ? 1 : 0) * out.grad
@@ -151,7 +151,41 @@ class Value {
     }
 }
 
-const v = new Value(13)
-const u = new Value(5)
-const z = v.add(u)
-console.log(z)
+class Module {
+    parameters() { return [] }
+
+    zero_grad() {
+        for(const p of self.parameters()) {
+            p.grad = 0
+        }
+    }
+}
+
+class Neuron extends Module {
+    constructor(nin, nonlin=true) {
+        super()
+        this.weights = []
+        for (let _ = 0; _ < nin; _++) {
+            this.weights.push(new Value(Math.random()*2-1))
+        }
+        this.bias = new Value(0)
+        console.log(this.weights)
+        
+    }
+}
+
+const a = new Value(3)
+const b = new Value(-2)
+const c = new Value(10)
+const d = a.mult(b)
+const e = d.add(c)
+const f = e.relu()
+f.grad = 1
+f._backward()
+e._backward()
+c._backward()
+d._backward()
+// console.log([a,b,c,d,e,f])
+
+const n = new Neuron(10)
+
