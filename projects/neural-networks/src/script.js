@@ -1,14 +1,12 @@
-
-
 const canvas = document.getElementById("canvas")
-const mousePos = {x: 0, y: 0}
+const mousePos = { x: 0, y: 0 }
 const points = []
 let foundMouse = false
 const gridSize = 25
 const DELETE_RADIUS = 10;
 canvas.width = innerWidth, canvas.height = innerHeight
 window.onresize = () => {
-        canvas.width = innerWidth, canvas.height = innerHeight
+    canvas.width = innerWidth, canvas.height = innerHeight
 }
 const ctx = canvas.getContext("2d")
 
@@ -16,7 +14,7 @@ function draw() {
     ctx.fillStyle = "#202020"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = "white"
-    if(foundMouse) {
+    if (foundMouse) {
         drawGridGlow(mousePos)
     }
     points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
@@ -32,9 +30,9 @@ addEventListener("mousemove", (ev) => {
 })
 
 function drawGridGlow(mousePos) {
-    
-    const {x: mx, y: my} = mousePos
-    
+
+    const { x: mx, y: my } = mousePos
+
     const radius = 60
     const falloff = 10
     const maxAlpha = .8
@@ -56,7 +54,7 @@ function drawGridGlow(mousePos) {
 
         drawLine(Xvalue, my - sqrt, Xvalue, my + sqrt, grad)
         Xvalue += gridSize
-    }   
+    }
 
     // drawing horizontal lines
     let Yvalue = Math.ceil((my - radius) / gridSize) * gridSize
@@ -65,9 +63,9 @@ function drawGridGlow(mousePos) {
         const sqrt = Math.sqrt(radius * radius - Yoffset * Yoffset)
 
         drawLine(mx - sqrt, Yvalue, mx + sqrt, Yvalue, grad)
-        Yvalue+= gridSize
-    } 
-    
+        Yvalue += gridSize
+    }
+
 }
 
 function distanceSquared(x1, y1, x2, y2) {
@@ -86,7 +84,7 @@ function drawLine(x1, y1, x2, y2, color) {
     ctx.stroke()
 }
 
-function drawPoint(x,y,radius,color) {
+function drawPoint(x, y, radius, color) {
     let orig = ctx.fillStyle
     ctx.fillStyle = color
     ctx.beginPath()
@@ -98,14 +96,14 @@ document.querySelector('canvas').addEventListener('contextmenu', e => e.preventD
 addEventListener("mousedown", (ev) => {
     const x = ev.clientX
     const y = ev.clientY
-    if(ev.button == 0) {
-        
+    if (ev.button == 0) {
+
         points.push({ x, y })
     }
-    else if(ev.button == 2) {
-        for(let i = 0; i < points.length; i++) {
+    else if (ev.button == 2) {
+        for (let i = 0; i < points.length; i++) {
             const p = points[i]
-            if(distanceSquared(p.x, p.y, x,y) < DELETE_RADIUS * DELETE_RADIUS) {
+            if (distanceSquared(p.x, p.y, x, y) < DELETE_RADIUS * DELETE_RADIUS) {
                 points.splice(i, 1)
                 break
             }
@@ -117,7 +115,7 @@ addEventListener("mousedown", (ev) => {
 
 
 class Value {
-    constructor(data, _prev=[]) {
+    constructor(data, _prev = []) {
         this.data = data
         this.grad = 0
         this._prev = new Set(_prev)
@@ -132,13 +130,13 @@ class Value {
         }
         return out
     }
-    
+
     mult(other) {
         other = other instanceof Value ? other : new Value(other)
-        const out = new Value(this.data * other.data, [this,other])
+        const out = new Value(this.data * other.data, [this, other])
         out._backward = () => {
-            this.grad += other.data*out.grad
-            other.grad += this.data*out.grad
+            this.grad += other.data * out.grad
+            other.grad += this.data * out.grad
         }
         return out
     }
@@ -155,23 +153,58 @@ class Module {
     parameters() { return [] }
 
     zero_grad() {
-        for(const p of self.parameters()) {
+        for (const p of self.parameters()) {
             p.grad = 0
         }
     }
 }
 
 class Neuron extends Module {
-    constructor(nin, nonlin=true) {
+    constructor(nin, nonlin = true) {
         super()
         this.weights = []
         for (let _ = 0; _ < nin; _++) {
-            this.weights.push(new Value(Math.random()*2-1))
+            this.weights.push(new Value(Math.random() * 2 - 1))
         }
         this.bias = new Value(0)
+        this.nonlin = nonlin
         console.log(this.weights)
-        
     }
+    feedforward(inputs) {
+        let sum = bias
+        for (let i = 0; i < this.weights.length; i++) {
+            sum = sum.add(weights[i].mult(inputs[i]))
+        }
+        const activation = this.nonlin ? sum.relu() : sum
+        return activation
+    }
+    parameters() {
+        return [...this.weights, this.bias]
+    }
+}
+
+class Layer extends Module {
+    constructor(nin,nout) {
+        this.neurons = []
+        for (let i = 0; i < nout; i++) {
+            this.neurons.push(new Neuron(nin))
+        }
+    }
+    feedforward(inputs) {
+        const outputs = []
+        for(let i = 0; i < this.neurons.length; i++) {
+            outputs.push(neurons[i].feedforward(inputs))
+        }
+        return outputs
+    }
+    parameters() {
+        const params = []
+        for(let i = 0; i < this.neurons.length; i++) {
+            params.push(...neurons[i].parameters())
+        }
+        return params
+    }
+    
 }
 
 const a = new Value(3)
