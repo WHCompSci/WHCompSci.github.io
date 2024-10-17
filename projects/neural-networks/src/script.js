@@ -121,6 +121,7 @@ class Value {
         this._prev = new Set(_prev)
         this._backward = () => null
     }
+    // adds variables of type Value
     add(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data + other.data, [this, other])
@@ -131,6 +132,7 @@ class Value {
         return out
     }
 
+    // multiplies variables of type Value
     mult(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data * other.data, [this, other])
@@ -140,6 +142,7 @@ class Value {
         }
         return out
     }
+    // reLu function
     relu() {
         const out = new Value(this.data < 0 ? 0 : this.data, [this])
         out._backward = () => {
@@ -170,6 +173,7 @@ class Neuron extends Module {
         this.nonlin = nonlin
         console.log(this.weights)
     }
+    // feedforward inside of the neuron
     feedforward(inputs) {
         let sum = bias
         for (let i = 0; i < this.weights.length; i++) {
@@ -178,6 +182,7 @@ class Neuron extends Module {
         const activation = this.nonlin ? sum.relu() : sum
         return activation
     }
+    // returns the parameters in the neuron class
     parameters() {
         return [...this.weights, this.bias]
     }
@@ -190,6 +195,7 @@ class Layer extends Module {
             this.neurons.push(new Neuron(nin))
         }
     }
+    // feedforward in layers (not inside neurons)
     feedforward(inputs) {
         const outputs = []
         for(let i = 0; i < this.neurons.length; i++) {
@@ -197,6 +203,7 @@ class Layer extends Module {
         }
         return outputs
     }
+    // returns parameters of layers
     parameters() {
         const params = []
         for(let i = 0; i < this.neurons.length; i++) {
@@ -206,6 +213,8 @@ class Layer extends Module {
     }
     
 }
+
+class 
 
 const a = new Value(3)
 const b = new Value(-2)
