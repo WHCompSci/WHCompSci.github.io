@@ -156,7 +156,7 @@ class Module {
     parameters() { return [] }
 
     zero_grad() {
-        for (const p of self.parameters()) {
+        for (const p of this.parameters()) {
             p.grad = 0
         }
     }
@@ -175,9 +175,9 @@ class Neuron extends Module {
     }
     // feedforward inside of the neuron
     feedforward(inputs) {
-        let sum = bias
+        let sum = this.bias
         for (let i = 0; i < this.weights.length; i++) {
-            sum = sum.add(weights[i].mult(inputs[i]))
+            sum = sum.add(this.weights[i].mult(inputs[i]))
         }
         const activation = this.nonlin ? sum.relu() : sum
         return activation
@@ -190,6 +190,7 @@ class Neuron extends Module {
 
 class Layer extends Module {
     constructor(nin,nout) {
+        super()
         this.neurons = []
         for (let i = 0; i < nout; i++) {
             this.neurons.push(new Neuron(nin))
@@ -199,7 +200,7 @@ class Layer extends Module {
     feedforward(inputs) {
         const outputs = []
         for(let i = 0; i < this.neurons.length; i++) {
-            outputs.push(neurons[i].feedforward(inputs))
+            outputs.push(this.neurons[i].feedforward(inputs))
         }
         return outputs
     }
@@ -214,19 +215,36 @@ class Layer extends Module {
     
 }
 
-class 
+class NeuralNetwork extends Module {
+    constructor(layerwidths, nin) {
+        super()
+        this.layers = [new Layer(nin, layerwidths[0])]
+        for(let i = 1; i < layerwidths.length; i++) {
+            this.layers.push(new Layer(layerwidths[i-1], layerwidths[i]))
+        }
+    }
 
-const a = new Value(3)
-const b = new Value(-2)
-const c = new Value(10)
-const d = a.mult(b)
-const e = d.add(c)
-const f = e.relu()
-f.grad = 1
-f._backward()
-e._backward()
-c._backward()
-d._backward()
+    feedforward(inputs) {
+        let output = this.layers[0].feedforward(inputs)
+        for(let i = 1; i < this.layers.length; i++) {
+            output = this.layers[i].feedforward(output)
+        }
+        return output
+    }
+    parameters() {
+        const params = []
+        for(let layer = 0; layer < this.layers.length; layer++) {
+            for(let i = 0; i < this.layers[layer].neurons.length; i++) {
+                params.push(...this.layers[layer].neurons.parameters())
+            }
+        }
+        return params
+    }
+}
+
+const na = new NeuralNetwork([3, 3, 1], 4)
+const output = na.feedforward([3, 7, 8, 61])
+console.log(output)
 // console.log([a,b,c,d,e,f])
 
 const n = new Neuron(10)
