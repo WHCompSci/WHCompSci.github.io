@@ -115,17 +115,17 @@ addEventListener("mousedown", (ev) => {
 
 
 class Value {
-    constructor(data, _prev = []) {
+    constructor(data, children=[]) {
         this.data = data
         this.grad = 0
-        this._prev = new Set(_prev)
-        this._backward = () => null
+        this.children = children
+        this.backward = () => null
     }
     // adds variables of type Value
     add(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data + other.data, [this, other])
-        out._backward = () => {
+        out.backward = () => {
             this.grad += out.grad
             other.grad += out.grad
         }
@@ -136,7 +136,7 @@ class Value {
     mult(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data * other.data, [this, other])
-        out._backward = () => {
+        out.backward = () => {
             this.grad += other.data * out.grad
             other.grad += this.data * out.grad
         }
@@ -145,8 +145,8 @@ class Value {
     // reLu function
     relu() {
         const out = new Value(this.data < 0 ? 0 : this.data, [this])
-        out._backward = () => {
-            this.grad += (this.data > 0 ? 1 : 0) * out.grad
+        out.backward = () => {
+            this.grad += out.data > 0 ? out.grad : 0
         }
         return out
     }
@@ -171,7 +171,7 @@ class Neuron extends Module {
         }
         this.bias = new Value(0)
         this.nonlin = nonlin
-        console.log(this.weights)
+        // console.log(this.weights)
     }
     // feedforward inside of the neuron
     feedforward(inputs) {
@@ -208,7 +208,7 @@ class Layer extends Module {
     parameters() {
         const params = []
         for(let i = 0; i < this.neurons.length; i++) {
-            params.push(...neurons[i].parameters())
+            params.push(...this.neurons[i].parameters())
         }
         return params
     }
@@ -222,6 +222,7 @@ class NeuralNetwork extends Module {
         for(let i = 1; i < layerwidths.length; i++) {
             this.layers.push(new Layer(layerwidths[i-1], layerwidths[i]))
         }
+        console.log("Created a new NN with layers: ", this.layers)
     }
 
     feedforward(inputs) {
@@ -234,18 +235,48 @@ class NeuralNetwork extends Module {
     parameters() {
         const params = []
         for(let layer = 0; layer < this.layers.length; layer++) {
-            for(let i = 0; i < this.layers[layer].neurons.length; i++) {
-                params.push(...this.layers[layer].neurons.parameters())
-            }
+            params.push(...this.layers[layer].parameters())
+            
         }
         return params
     }
 }
 
-const na = new NeuralNetwork([3, 3, 1], 4)
-const output = na.feedforward([3, 7, 8, 61])
+function backprop(loss) {
+    const topo = []
+    const visited = new Set()
+
+    function sortgraph(v) {
+        if(visited.has(v)) {
+            return
+        }
+        visited.add(v)
+        console.log("v=",v)
+        for(const child of v.children) {
+            sortgraph(child)
+        }
+        topo.push(v)
+    }
+    sortgraph(loss)
+    loss.grad = 1
+    console.log("topo", topo)
+    for (const value of topo.reverse()) {
+        value.backward()
+    }
+
+}
+
+const na = new NeuralNetwork([5, 1], 3)
+const output = na.feedforward([.1, .2, .3])
+backprop(output[0])
+
+console.log(na.parameters())
+
 console.log(output)
 // console.log([a,b,c,d,e,f])
-
+const a = new Value(5)
+console.log(a.relu())
+const b = new Value(-5)
+console.log(b.relu())
 const n = new Neuron(10)
 
