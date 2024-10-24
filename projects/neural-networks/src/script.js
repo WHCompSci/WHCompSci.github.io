@@ -115,7 +115,7 @@ addEventListener("mousedown", (ev) => {
 
 
 class Value {
-    constructor(data, children=[]) {
+    constructor(data, children = []) {
         this.data = data
         this.grad = 0
         this.children = children
@@ -131,6 +131,28 @@ class Value {
         }
         return out
     }
+    sub(other) {
+        other = other instanceof Value ? other : new Value(other)
+        const out = new Value(this.data - other.data, [this, other])
+        out.backward = () => {
+            this.grad += out.grad
+            other.grad -= out.grad
+        }
+        return out
+    }
+    pow(other) {
+        other = other instanceof Value ? other : new Value(other)
+        const out = new Value(Math.pow(this.data, other.data), [this, other])
+        out.backward = () => {
+            this.grad +=  (other.data*Math.pow(this.data, other.data.sub(1))) * out.grad
+            other.grad += () * out.grad
+        }
+        return out
+    }
+    ln() {
+        //implement ln(X)
+    }
+
 
     // multiplies variables of type Value
     mult(other) {
@@ -189,7 +211,7 @@ class Neuron extends Module {
 }
 
 class Layer extends Module {
-    constructor(nin,nout) {
+    constructor(nin, nout) {
         super()
         this.neurons = []
         for (let i = 0; i < nout; i++) {
@@ -199,7 +221,7 @@ class Layer extends Module {
     // feedforward in layers (not inside neurons)
     feedforward(inputs) {
         const outputs = []
-        for(let i = 0; i < this.neurons.length; i++) {
+        for (let i = 0; i < this.neurons.length; i++) {
             outputs.push(this.neurons[i].feedforward(inputs))
         }
         return outputs
@@ -207,36 +229,36 @@ class Layer extends Module {
     // returns parameters of layers
     parameters() {
         const params = []
-        for(let i = 0; i < this.neurons.length; i++) {
+        for (let i = 0; i < this.neurons.length; i++) {
             params.push(...this.neurons[i].parameters())
         }
         return params
     }
-    
+
 }
 
 class NeuralNetwork extends Module {
-    constructor(layerwidths, nin) {
+    constructor(nin, layerwidths) {
         super()
         this.layers = [new Layer(nin, layerwidths[0])]
-        for(let i = 1; i < layerwidths.length; i++) {
-            this.layers.push(new Layer(layerwidths[i-1], layerwidths[i]))
+        for (let i = 1; i < layerwidths.length; i++) {
+            this.layers.push(new Layer(layerwidths[i - 1], layerwidths[i]))
         }
         console.log("Created a new NN with layers: ", this.layers)
     }
 
     feedforward(inputs) {
         let output = this.layers[0].feedforward(inputs)
-        for(let i = 1; i < this.layers.length; i++) {
+        for (let i = 1; i < this.layers.length; i++) {
             output = this.layers[i].feedforward(output)
         }
         return output
     }
     parameters() {
         const params = []
-        for(let layer = 0; layer < this.layers.length; layer++) {
+        for (let layer = 0; layer < this.layers.length; layer++) {
             params.push(...this.layers[layer].parameters())
-            
+
         }
         return params
     }
@@ -247,12 +269,12 @@ function backprop(loss) {
     const visited = new Set()
 
     function sortgraph(v) {
-        if(visited.has(v)) {
+        if (visited.has(v)) {
             return
         }
         visited.add(v)
-        console.log("v=",v)
-        for(const child of v.children) {
+        console.log("v=", v)
+        for (const child of v.children) {
             sortgraph(child)
         }
         topo.push(v)
@@ -266,7 +288,7 @@ function backprop(loss) {
 
 }
 
-const na = new NeuralNetwork([5, 1], 3)
+const na = new NeuralNetwork(3, [5, 1])
 const output = na.feedforward([.1, .2, .3])
 backprop(output[0])
 
@@ -280,3 +302,19 @@ const b = new Value(-5)
 console.log(b.relu())
 const n = new Neuron(10)
 
+
+
+function trainNetwork(xs, ys, iterations) {
+    const nn = new NeuralNetwork(1, [5, 1])
+    for (let i = 0; i < iterations; i++) {
+        // 1. Forward Pass
+        const loss = 0
+        for (let j = 0; j < ys.length; i++) {
+            const act = new Value(ys[j])
+            const pred = nn.feedforward(xs[j])[0]
+
+        }
+        // 2. Backward Pass
+        // 3. Update Gradients
+    }
+}
