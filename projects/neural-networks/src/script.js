@@ -216,9 +216,9 @@ class Layer extends Module {
 }
 
 class NeuralNetwork extends Module {
-    constructor(layerwidths, nin) {
+    constructor(nin, layerwidths) {
         super()
-        this.layers = [new Layer(nin, layerwidths[0])]
+        this.layers = [new Layer(nin, layerwidths[0])] // add first layer
         for(let i = 1; i < layerwidths.length; i++) {
             this.layers.push(new Layer(layerwidths[i-1], layerwidths[i]))
         }
@@ -226,11 +226,10 @@ class NeuralNetwork extends Module {
     }
 
     feedforward(inputs) {
-        let output = this.layers[0].feedforward(inputs)
-        for(let i = 1; i < this.layers.length; i++) {
-            output = this.layers[i].feedforward(output)
+        for(let i = 0; i < this.layers.length; i++) {
+            inputs = this.layers[i].feedforward(inputs)
         }
-        return output
+        return inputs
     }
     parameters() {
         const params = []
@@ -266,8 +265,28 @@ function backprop(loss) {
 
 }
 
-const na = new NeuralNetwork([5, 1], 3)
-const output = na.feedforward([.1, .2, .3])
+
+const xs = [1.0 , 0.2, 0.5, 1.]
+
+const ys = [1.0, -1.0, -1.0, 0.5] // desired targets
+
+
+const na = new NeuralNetwork(1, [5, 1])
+
+const ypred = []
+for (const x of xs) {
+    ypred = na.feedforward(x)
+}
+
+for (let i = 0;i<ypred.length;i++) {
+    
+}
+
+for (const i of na.parameters()) {
+    i.grad = 0.0
+
+}
+
 backprop(output[0])
 
 console.log(na.parameters())
