@@ -115,7 +115,7 @@ addEventListener("mousedown", (ev) => {
 
 
 class Value {
-    constructor(data, children=[]) {
+    constructor(data, children = []) {
         this.data = data
         this.grad = 0
         this.children = children
@@ -128,6 +128,16 @@ class Value {
         out.backward = () => {
             this.grad += out.grad
             other.grad += out.grad
+        }
+        return out
+    }
+
+    sub(other) {
+        other = other instanceof Value ? other : new Value(other)
+        const out = new Value(this.data - other.data, [this, other])
+        out.backward = () => {
+            this.grad += out.grad
+            other.grad -= out.grad
         }
         return out
     }
@@ -189,7 +199,7 @@ class Neuron extends Module {
 }
 
 class Layer extends Module {
-    constructor(nin,nout) {
+    constructor(nin, nout) {
         super()
         this.neurons = []
         for (let i = 0; i < nout; i++) {
@@ -199,7 +209,7 @@ class Layer extends Module {
     // feedforward in layers (not inside neurons)
     feedforward(inputs) {
         const outputs = []
-        for(let i = 0; i < this.neurons.length; i++) {
+        for (let i = 0; i < this.neurons.length; i++) {
             outputs.push(this.neurons[i].feedforward(inputs))
         }
         return outputs
@@ -207,35 +217,35 @@ class Layer extends Module {
     // returns parameters of layers
     parameters() {
         const params = []
-        for(let i = 0; i < this.neurons.length; i++) {
+        for (let i = 0; i < this.neurons.length; i++) {
             params.push(...this.neurons[i].parameters())
         }
         return params
     }
-    
+
 }
 
 class NeuralNetwork extends Module {
     constructor(nin, layerwidths) {
         super()
         this.layers = [new Layer(nin, layerwidths[0])] // add first layer
-        for(let i = 1; i < layerwidths.length; i++) {
-            this.layers.push(new Layer(layerwidths[i-1], layerwidths[i]))
+        for (let i = 1; i < layerwidths.length; i++) {
+            this.layers.push(new Layer(layerwidths[i - 1], layerwidths[i]))
         }
         console.log("Created a new NN with layers: ", this.layers)
     }
 
     feedforward(inputs) {
-        for(let i = 0; i < this.layers.length; i++) {
+        for (let i = 0; i < this.layers.length; i++) {
             inputs = this.layers[i].feedforward(inputs)
         }
         return inputs
     }
     parameters() {
         const params = []
-        for(let layer = 0; layer < this.layers.length; layer++) {
+        for (let layer = 0; layer < this.layers.length; layer++) {
             params.push(...this.layers[layer].parameters())
-            
+
         }
         return params
     }
@@ -246,56 +256,54 @@ function backprop(loss) {
     const visited = new Set()
 
     function sortgraph(v) {
-        if(visited.has(v)) {
+        if (visited.has(v)) {
             return
         }
         visited.add(v)
-        console.log("v=",v)
-        for(const child of v.children) {
+        // console.log("v=", v)
+        for (const child of v.children) {
             sortgraph(child)
         }
         topo.push(v)
     }
     sortgraph(loss)
     loss.grad = 1
-    console.log("topo", topo)
+    // console.log("topo", topo)
     for (const value of topo.reverse()) {
         value.backward()
     }
 
 }
 
+function train(net, xs, ys, learningrate) {
+    let loss = new Value(0)
+    for (let i = 0; i < ys.length; i++) {
+        const ypred = net.feedforward(xs[i])[0]
+        const yact = ys[i]
+        const dy = ypred.sub(yact)
+        loss = loss.add(dy.mult(dy))
+    }
+    loss = loss.mult(1 / ys.length)
+    console.log("Loss=", loss)
+    console.log()
+    net.zero_grad()
+    backprop(loss)
+    for (const p of net.parameters()) {
+        p.data -= learningrate * p.grad
+    }
+}
 
-const xs = [1.0 , 0.2, 0.5, 1.]
+
+
+
+const xs = [1.0, 0.2, 0.5, 1.]
 
 const ys = [1.0, -1.0, -1.0, 0.5] // desired targets
 
 
 const na = new NeuralNetwork(1, [5, 1])
 
-const ypred = []
-for (const x of xs) {
-    ypred = na.feedforward(x)
-}
+train(na, xs, ys, 0.01)
 
-for (let i = 0;i<ypred.length;i++) {
-    
-}
 
-for (const i of na.parameters()) {
-    i.grad = 0.0
-
-}
-
-backprop(output[0])
-
-console.log(na.parameters())
-
-console.log(output)
-// console.log([a,b,c,d,e,f])
-const a = new Value(5)
-console.log(a.relu())
-const b = new Value(-5)
-console.log(b.relu())
-const n = new Neuron(10)
 
