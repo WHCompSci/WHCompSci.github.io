@@ -18,10 +18,12 @@ function draw() {
         drawGridGlow(mousePos)
     }
     points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
+    drawPoints(xs, ys)
+    plotNetwork(na)
     requestAnimationFrame(draw)
 }
 
-requestAnimationFrame(draw)
+// requestAnimationFrame(draw)
 
 addEventListener("mousemove", (ev) => {
     mousePos.x = ev.clientX
@@ -278,7 +280,8 @@ function backprop(loss) {
 function train(net, xs, ys, learningrate) {
     let loss = new Value(0)
     for (let i = 0; i < ys.length; i++) {
-        const ypred = net.feedforward(xs[i])[0]
+        const ypred = net.feedforward([xs[i]])[0]
+        console.log("ypred=", ypred)
         const yact = ys[i]
         const dy = ypred.sub(yact)
         loss = loss.add(dy.mult(dy))
@@ -290,20 +293,80 @@ function train(net, xs, ys, learningrate) {
     backprop(loss)
     for (const p of net.parameters()) {
         p.data -= learningrate * p.grad
+        console.log("changing by", p.grad)
     }
+    console.log("net=", net)
+
 }
 
 
 
 
-const xs = [1.0, 0.2, 0.5, 1.]
+const xs = randomPoints(10)
 
-const ys = [1.0, -1.0, -1.0, 0.5] // desired targets
+const ys = randomPoints(10) // desired targets
+
+function randomPoints(n) {
+    const p = []
+    for (let i = 0; i < n; i++) {
+        p.push(Math.random())   
+    }
+    return p
+}
+const margin = 50;
+
+function drawPoints(xs, ys) {
+    for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+        drawPoint(xs[i] * (canvas.width - 2 * margin) + margin, ys[i] * (canvas.height - 2 * margin) + margin, 10, "#876f35")
+    }
+}
 
 
-const na = new NeuralNetwork(1, [5, 1])
+function plotNetwork(net, samplePoints = 100) {
+    let lastX, lastY = [0, net.feedforward([0])[0]]
+    for (let i = 1; i < samplePoints; i++) {
+        const x = i / samplePoints;
+        const y = net.feedforward([x])[0].data
+        drawPoint(2* (x * (canvas.height - 2 * margin) + margin), y * (canvas.height - 2 * margin) + margin,5, "green")
+        console.log(x, y)
+        ctx.strokeWidth = 10
+
+        drawLine(
+            lastX * (canvas.width - 2 * margin) + margin, 
+            lastY * (canvas.height - 2 * margin) + margin, 
+            x * (canvas.width - 2 * margin) + margin, 
+            y * (canvas.height - 2 * margin) + margin, 
+            "#4383f3")
+        lastX, lastY = [x, y]
+    }
+
+}
+const na = new NeuralNetwork(1, [5, 10, 1])
+y = na.feedforward([1])
+console.log("y=", y)
 
 train(na, xs, ys, 0.01)
+// train(na, xs, ys, 0.01)
+
+// train(na, xs, ys, 0.01)
 
 
 
+drawPoints(xs, ys)
+plotNetwork(na)
+
+document.onkeydown = (ev) => {
+    if(ev.key == 'q' ) {
+        ctx.clearRect(0,0,canvas.width, canvas.height)
+        train(na, xs, ys, 0.1)
+        // train(na, xs, ys, 0.04)
+        // train(na, xs, ys, 0.04)
+
+        plotNetwork(na)
+        drawPoints(xs, ys)
+    }
+    if(ev.key == 'p') {
+        console.log(na.parameters())
+    }
+}
+ // bias arent being propigated
