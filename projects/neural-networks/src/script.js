@@ -10,18 +10,18 @@ window.onresize = () => {
 }
 const ctx = canvas.getContext("2d")
 
-function draw() {
-    ctx.fillStyle = "#202020"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "white"
-    if (foundMouse) {
-        drawGridGlow(mousePos)
-    }
-    points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
-    drawPoints(xs, ys)
-    plotNetwork(na)
-    requestAnimationFrame(draw)
-}
+// function draw() {
+//     ctx.fillStyle = "#202020"
+//     ctx.fillRect(0, 0, canvas.width, canvas.height)
+//     ctx.fillStyle = "white"
+//     if (foundMouse) {
+//         drawGridGlow(mousePos)
+//     }
+//     points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
+//     drawPoints(xs, ys)
+//     plotNetwork(na)
+//     requestAnimationFrame(draw)
+// }
 
 // requestAnimationFrame(draw)
 
@@ -187,10 +187,11 @@ class Neuron extends Module {
     }
     // feedforward inside of the neuron
     feedforward(inputs) {
-        let sum = this.bias
+        let sum = new Value(0)
         for (let i = 0; i < this.weights.length; i++) {
             sum = sum.add(this.weights[i].mult(inputs[i]))
         }
+        sum = sum.add(this.bias)
         const activation = this.nonlin ? sum.relu() : sum
         return activation
     }
@@ -234,6 +235,7 @@ class NeuralNetwork extends Module {
         for (let i = 1; i < layerwidths.length; i++) {
             this.layers.push(new Layer(layerwidths[i - 1], layerwidths[i]))
         }
+        this.layers[this.layers.length - 1].nonlin = false;
         console.log("Created a new NN with layers: ", this.layers)
     }
 
@@ -283,14 +285,18 @@ function train(net, xs, ys, learningrate) {
         const ypred = net.feedforward([xs[i]])[0]
         console.log("ypred=", ypred)
         const yact = ys[i]
-        const dy = ypred.sub(yact)
-        loss = loss.add(dy.mult(dy))
+        const error = ypred.sub(yact)
+        console.log("err=", error)
+
+        loss = loss.add(error.mult(error))
     }
     loss = loss.mult(1 / ys.length)
-    console.log("Loss=", loss)
+    // console.log("Loss=", loss)
     console.log()
     net.zero_grad()
     backprop(loss)
+    console.log("Loss=", loss)
+
     for (const p of net.parameters()) {
         p.data -= learningrate * p.grad
         console.log("changing by", p.grad)
@@ -323,29 +329,63 @@ function drawPoints(xs, ys) {
 
 
 function plotNetwork(net, samplePoints = 100) {
-    let lastX, lastY = [0, net.feedforward([0])[0]]
+    let lastX = 0
+    let lastY = net.feedforward([0])[0].data
     for (let i = 1; i < samplePoints; i++) {
         const x = i / samplePoints;
         const y = net.feedforward([x])[0].data
-        drawPoint(2* (x * (canvas.height - 2 * margin) + margin), y * (canvas.height - 2 * margin) + margin,5, "green")
-        console.log(x, y)
+        // drawPoint(...toPixelCoords(x,y),2, "green")
+        // console.log(x, y)
         ctx.strokeWidth = 10
 
-        drawLine(
-            lastX * (canvas.width - 2 * margin) + margin, 
-            lastY * (canvas.height - 2 * margin) + margin, 
-            x * (canvas.width - 2 * margin) + margin, 
-            y * (canvas.height - 2 * margin) + margin, 
-            "#4383f3")
-        lastX, lastY = [x, y]
+        // drawLine(
+        //     lastX * (canvas.width - 2 * margin) + margin, 
+        //     lastY * (canvas.height - 2 * margin) + margin, 
+        //     x * (canvas.width - 2 * margin) + margin, 
+        //     y * (canvas.height - 2 * margin) + margin, 
+        //     "#4383f3")
+        const [x1, y1] = toPixelCoords(x,y)
+        const [x2, y2] = toPixelCoords(lastX, lastY)
+        // console.log("x1=", x1)
+        // console.log("y1=", y1)
+
+        // console.log("x2L=", x2)
+
+        // console.log("y2L=", lastY)
+
+        ctx.strokeStyle = "black"
+        // ctx.strokeWidth = 0
+        ctx.beginPath()
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
+        ctx.stroke()
+        lastX = x
+        lastY = y
     }
 
 }
-const na = new NeuralNetwork(1, [5, 10, 1])
+
+function toPixelCoords(x, y) {
+    const margin = 10;
+    x = x * (canvas.width - 2 * margin) + margin; 
+    y = y * (canvas.height - 2 * margin) + margin; 
+    return [x,y]
+}
+const na = new NeuralNetwork(1, [10,10, 1])
 y = na.feedforward([1])
 console.log("y=", y)
 
-train(na, xs, ys, 0.01)
+
+const q = new Value(10)//
+// const qq = new Value(1)
+// const qqq = new Value(4)
+// const qqqqq = new Value(2)
+// const qqqq = new Value(16)
+
+// const P = q.add(qq.mult(qq.add(qqq.sub(qqqqq))))
+// backprop(P)
+// console.log("P=", P)
+// train(na, xs, ys, 0.01)
 // train(na, xs, ys, 0.01)
 
 // train(na, xs, ys, 0.01)
@@ -358,7 +398,7 @@ plotNetwork(na)
 document.onkeydown = (ev) => {
     if(ev.key == 'q' ) {
         ctx.clearRect(0,0,canvas.width, canvas.height)
-        train(na, xs, ys, 0.1)
+        train(na, xs, ys, 0.01)
         // train(na, xs, ys, 0.04)
         // train(na, xs, ys, 0.04)
 
