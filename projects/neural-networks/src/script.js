@@ -1,6 +1,8 @@
 const canvas = document.getElementById("canvas")
 const mousePos = { x: 0, y: 0 }
 const points = []
+const [xs, ys] = randomPoints(200)
+
 let foundMouse = false
 const gridSize = 25
 const DELETE_RADIUS = 10;
@@ -162,6 +164,14 @@ class Value {
         }
         return out
     }
+    tanh() {
+        const out = new Value(Math.tanh(this.data), [this])
+        out.backward = () => {
+            this.grad += (1 - out.data*out.data) * out.grad
+        }
+        return out
+
+    }
 }
 
 class Module {
@@ -183,7 +193,6 @@ class Neuron extends Module {
         }
         this.bias = new Value(0)
         this.nonlin = nonlin
-        // console.log(this.weights)
     }
     // feedforward inside of the neuron
     feedforward(inputs) {
@@ -192,7 +201,7 @@ class Neuron extends Module {
             sum = sum.add(this.weights[i].mult(inputs[i]))
         }
         sum = sum.add(this.bias)
-        const activation = this.nonlin ? sum.relu() : sum
+        const activation = this.nonlin ? sum.tanh() : sum
         return activation
     }
     // returns the parameters in the neuron class
@@ -264,7 +273,6 @@ function backprop(loss) {
             return
         }
         visited.add(v)
-        // console.log("v=", v)
         for (const child of v.children) {
             sortgraph(child)
         }
@@ -272,7 +280,6 @@ function backprop(loss) {
     }
     sortgraph(loss)
     loss.grad = 1
-    // console.log("topo", topo)
     for (const value of topo.reverse()) {
         value.backward()
     }
@@ -291,7 +298,6 @@ function train(net, xs, ys, learningrate) {
         loss = loss.add(error.mult(error))
     }
     loss = loss.mult(1 / ys.length)
-    // console.log("Loss=", loss)
     console.log()
     net.zero_grad()
     backprop(loss)
@@ -305,20 +311,20 @@ function train(net, xs, ys, learningrate) {
 
 }
 
-
-
-
-const xs = randomPoints(10)
-
-const ys = randomPoints(10) // desired targets
+console.log(xs, ys)
 
 function randomPoints(n) {
-    const p = []
+    const x = []
+    const y = []
     for (let i = 0; i < n; i++) {
-        p.push(Math.random())   
+        const v = Math.random()
+        const fv = Math.sin(v * 10)  * 0.8 + Math.random() * 0.1 - v*v * 0.2
+        x.push(v)  
+        y.push(fv)
     }
-    return p
+    return [x, y]
 }
+
 const margin = 50;
 
 function drawPoints(xs, ys) {
@@ -327,34 +333,16 @@ function drawPoints(xs, ys) {
     }
 }
 
-
 function plotNetwork(net, samplePoints = 100) {
     let lastX = 0
     let lastY = net.feedforward([0])[0].data
     for (let i = 1; i < samplePoints; i++) {
         const x = i / samplePoints;
         const y = net.feedforward([x])[0].data
-        // drawPoint(...toPixelCoords(x,y),2, "green")
-        // console.log(x, y)
         ctx.strokeWidth = 10
-
-        // drawLine(
-        //     lastX * (canvas.width - 2 * margin) + margin, 
-        //     lastY * (canvas.height - 2 * margin) + margin, 
-        //     x * (canvas.width - 2 * margin) + margin, 
-        //     y * (canvas.height - 2 * margin) + margin, 
-        //     "#4383f3")
         const [x1, y1] = toPixelCoords(x,y)
         const [x2, y2] = toPixelCoords(lastX, lastY)
-        // console.log("x1=", x1)
-        // console.log("y1=", y1)
-
-        // console.log("x2L=", x2)
-
-        // console.log("y2L=", lastY)
-
         ctx.strokeStyle = "black"
-        // ctx.strokeWidth = 0
         ctx.beginPath()
         ctx.moveTo(x1, y1)
         ctx.lineTo(x2, y2)
@@ -371,26 +359,10 @@ function toPixelCoords(x, y) {
     y = y * (canvas.height - 2 * margin) + margin; 
     return [x,y]
 }
-const na = new NeuralNetwork(1, [10,10, 1])
+
+const na = new NeuralNetwork(1, [10, 4,1])
 y = na.feedforward([1])
 console.log("y=", y)
-
-
-const q = new Value(10)//
-// const qq = new Value(1)
-// const qqq = new Value(4)
-// const qqqqq = new Value(2)
-// const qqqq = new Value(16)
-
-// const P = q.add(qq.mult(qq.add(qqq.sub(qqqqq))))
-// backprop(P)
-// console.log("P=", P)
-// train(na, xs, ys, 0.01)
-// train(na, xs, ys, 0.01)
-
-// train(na, xs, ys, 0.01)
-
-
 
 drawPoints(xs, ys)
 plotNetwork(na)
@@ -398,7 +370,7 @@ plotNetwork(na)
 document.onkeydown = (ev) => {
     if(ev.key == 'q' ) {
         ctx.clearRect(0,0,canvas.width, canvas.height)
-        train(na, xs, ys, 0.01)
+        train(na, xs, ys, 0.2)
         // train(na, xs, ys, 0.04)
         // train(na, xs, ys, 0.04)
 
@@ -409,4 +381,3 @@ document.onkeydown = (ev) => {
         console.log(na.parameters())
     }
 }
- // bias arent being propigated
