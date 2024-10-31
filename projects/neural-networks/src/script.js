@@ -22,6 +22,9 @@ function draw() {
     // xs.forEach((x, i) => drawPoint(x, ys[i], 2, "#ab88ddff"))
     if(training) {
         train(na, xs, ys, 0.1)
+        train(na, xs, ys, 0.1)
+        train(na, xs, ys, 0.1)
+
     }
         plotNetwork(na)
         drawPoints(xs, ys)
