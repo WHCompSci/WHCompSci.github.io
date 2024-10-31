@@ -1,6 +1,8 @@
 const canvas = document.getElementById("canvas")
 const mousePos = { x: 0, y: 0 }
 const points = []
+const [xs, ys] = randomPoints(200)
+
 let foundMouse = false
 const gridSize = 25
 const DELETE_RADIUS = 10;
@@ -10,18 +12,20 @@ window.onresize = () => {
 }
 const ctx = canvas.getContext("2d")
 
-function draw() {
-    ctx.fillStyle = "#202020"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = "white"
-    if (foundMouse) {
-        drawGridGlow(mousePos)
-    }
-    points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
-    requestAnimationFrame(draw)
-}
+// function draw() {
+//     ctx.fillStyle = "#202020"
+//     ctx.fillRect(0, 0, canvas.width, canvas.height)
+//     ctx.fillStyle = "white"
+//     if (foundMouse) {
+//         drawGridGlow(mousePos)
+//     }
+//     points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
+//     drawPoints(xs, ys)
+//     plotNetwork(na)
+//     requestAnimationFrame(draw)
+// }
 
-requestAnimationFrame(draw)
+// requestAnimationFrame(draw)
 
 addEventListener("mousemove", (ev) => {
     mousePos.x = ev.clientX
@@ -131,6 +135,7 @@ class Value {
         }
         return out
     }
+
     sub(other) {
         other = other instanceof Value ? other : new Value(other)
         const out = new Value(this.data - other.data, [this, other])
@@ -140,19 +145,6 @@ class Value {
         }
         return out
     }
-    pow(other) {
-        other = other instanceof Value ? other : new Value(other)
-        const out = new Value(Math.pow(this.data, other.data), [this, other])
-        out.backward = () => {
-            this.grad +=  (other.data*Math.pow(this.data, other.data.sub(1))) * out.grad
-            other.grad += () * out.grad
-        }
-        return out
-    }
-    ln() {
-        //implement ln(X)
-    }
-
 
     // multiplies variables of type Value
     mult(other) {
@@ -171,6 +163,14 @@ class Value {
             this.grad += out.data > 0 ? out.grad : 0
         }
         return out
+    }
+    tanh() {
+        const out = new Value(Math.tanh(this.data), [this])
+        out.backward = () => {
+            this.grad += (1 - out.data*out.data) * out.grad
+        }
+        return out
+
     }
 }
 
@@ -193,15 +193,15 @@ class Neuron extends Module {
         }
         this.bias = new Value(0)
         this.nonlin = nonlin
-        // console.log(this.weights)
     }
     // feedforward inside of the neuron
     feedforward(inputs) {
-        let sum = this.bias
+        let sum = new Value(0)
         for (let i = 0; i < this.weights.length; i++) {
             sum = sum.add(this.weights[i].mult(inputs[i]))
         }
-        const activation = this.nonlin ? sum.relu() : sum
+        sum = sum.add(this.bias)
+        const activation = this.nonlin ? sum.tanh() : sum
         return activation
     }
     // returns the parameters in the neuron class
@@ -240,19 +240,19 @@ class Layer extends Module {
 class NeuralNetwork extends Module {
     constructor(nin, layerwidths) {
         super()
-        this.layers = [new Layer(nin, layerwidths[0])]
+        this.layers = [new Layer(nin, layerwidths[0])] // add first layer
         for (let i = 1; i < layerwidths.length; i++) {
             this.layers.push(new Layer(layerwidths[i - 1], layerwidths[i]))
         }
+        this.layers[this.layers.length - 1].nonlin = false;
         console.log("Created a new NN with layers: ", this.layers)
     }
 
     feedforward(inputs) {
-        let output = this.layers[0].feedforward(inputs)
-        for (let i = 1; i < this.layers.length; i++) {
-            output = this.layers[i].feedforward(output)
+        for (let i = 0; i < this.layers.length; i++) {
+            inputs = this.layers[i].feedforward(inputs)
         }
-        return output
+        return inputs
     }
     parameters() {
         const params = []
@@ -273,7 +273,6 @@ function backprop(loss) {
             return
         }
         visited.add(v)
-        console.log("v=", v)
         for (const child of v.children) {
             sortgraph(child)
         }
@@ -281,40 +280,104 @@ function backprop(loss) {
     }
     sortgraph(loss)
     loss.grad = 1
-    console.log("topo", topo)
     for (const value of topo.reverse()) {
         value.backward()
     }
 
 }
 
-const na = new NeuralNetwork(3, [5, 1])
-const output = na.feedforward([.1, .2, .3])
-backprop(output[0])
+function train(net, xs, ys, learningrate) {
+    let loss = new Value(0)
+    for (let i = 0; i < ys.length; i++) {
+        const ypred = net.feedforward([xs[i]])[0]
+        console.log("ypred=", ypred)
+        const yact = ys[i]
+        const error = ypred.sub(yact)
+        console.log("err=", error)
 
-console.log(na.parameters())
+        loss = loss.add(error.mult(error))
+    }
+    loss = loss.mult(1 / ys.length)
+    console.log()
+    net.zero_grad()
+    backprop(loss)
+    console.log("Loss=", loss)
 
-console.log(output)
-// console.log([a,b,c,d,e,f])
-const a = new Value(5)
-console.log(a.relu())
-const b = new Value(-5)
-console.log(b.relu())
-const n = new Neuron(10)
+    for (const p of net.parameters()) {
+        p.data -= learningrate * p.grad
+        console.log("changing by", p.grad)
+    }
+    console.log("net=", net)
 
+}
 
+console.log(xs, ys)
 
-function trainNetwork(xs, ys, iterations) {
-    const nn = new NeuralNetwork(1, [5, 1])
-    for (let i = 0; i < iterations; i++) {
-        // 1. Forward Pass
-        const loss = 0
-        for (let j = 0; j < ys.length; i++) {
-            const act = new Value(ys[j])
-            const pred = nn.feedforward(xs[j])[0]
+function randomPoints(n) {
+    const x = []
+    const y = []
+    for (let i = 0; i < n; i++) {
+        const v = Math.random()
+        const fv = Math.sin(v * 10)  * 0.8 + Math.random() * 0.1 - v*v * 0.2
+        x.push(v)  
+        y.push(fv)
+    }
+    return [x, y]
+}
 
-        }
-        // 2. Backward Pass
-        // 3. Update Gradients
+const margin = 50;
+
+function drawPoints(xs, ys) {
+    for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
+        drawPoint(xs[i] * (canvas.width - 2 * margin) + margin, ys[i] * (canvas.height - 2 * margin) + margin, 10, "#876f35")
+    }
+}
+
+function plotNetwork(net, samplePoints = 100) {
+    let lastX = 0
+    let lastY = net.feedforward([0])[0].data
+    for (let i = 1; i < samplePoints; i++) {
+        const x = i / samplePoints;
+        const y = net.feedforward([x])[0].data
+        ctx.strokeWidth = 10
+        const [x1, y1] = toPixelCoords(x,y)
+        const [x2, y2] = toPixelCoords(lastX, lastY)
+        ctx.strokeStyle = "black"
+        ctx.beginPath()
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
+        ctx.stroke()
+        lastX = x
+        lastY = y
+    }
+
+}
+
+function toPixelCoords(x, y) {
+    const margin = 10;
+    x = x * (canvas.width - 2 * margin) + margin; 
+    y = y * (canvas.height - 2 * margin) + margin; 
+    return [x,y]
+}
+
+const na = new NeuralNetwork(1, [10, 4,1])
+y = na.feedforward([1])
+console.log("y=", y)
+
+drawPoints(xs, ys)
+plotNetwork(na)
+
+document.onkeydown = (ev) => {
+    if(ev.key == 'q' ) {
+        ctx.clearRect(0,0,canvas.width, canvas.height)
+        train(na, xs, ys, 0.2)
+        // train(na, xs, ys, 0.04)
+        // train(na, xs, ys, 0.04)
+
+        plotNetwork(na)
+        drawPoints(xs, ys)
+    }
+    if(ev.key == 'p') {
+        console.log(na.parameters())
     }
 }
