@@ -1,7 +1,7 @@
 const canvas = document.getElementById("canvas")
 const mousePos = { x: 0, y: 0 }
 const points = []
-const [xs, ys] = randomPoints(200)
+const [xs, ys] = randomPoints(30)
 
 let foundMouse = false
 const gridSize = 25
@@ -12,20 +12,25 @@ window.onresize = () => {
 }
 const ctx = canvas.getContext("2d")
 
-// function draw() {
-//     ctx.fillStyle = "#202020"
-//     ctx.fillRect(0, 0, canvas.width, canvas.height)
-//     ctx.fillStyle = "white"
-//     if (foundMouse) {
-//         drawGridGlow(mousePos)
-//     }
-//     points.forEach(point => drawPoint(point.x, point.y, 5, "#ab88ddff"))
-//     drawPoints(xs, ys)
-//     plotNetwork(na)
-//     requestAnimationFrame(draw)
-// }
+function draw() {
+    ctx.fillStyle = "#202020"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "white"
+    if (foundMouse) {
+        drawGridGlow(mousePos)
+    }
+    // xs.forEach((x, i) => drawPoint(x, ys[i], 2, "#ab88ddff"))
+    if(training) {
+        train(na, xs, ys, 0.1)
+    }
+        plotNetwork(na)
+        drawPoints(xs, ys)
+    drawPoints(xs, ys)
+    plotNetwork(na)
+    requestAnimationFrame(draw)
+}
 
-// requestAnimationFrame(draw)
+requestAnimationFrame(draw)
 
 addEventListener("mousemove", (ev) => {
     mousePos.x = ev.clientX
@@ -34,7 +39,7 @@ addEventListener("mousemove", (ev) => {
 })
 
 function drawGridGlow(mousePos) {
-
+    ctx.lineWidth = 2
     const { x: mx, y: my } = mousePos
 
     const radius = 60
@@ -101,14 +106,17 @@ addEventListener("mousedown", (ev) => {
     const x = ev.clientX
     const y = ev.clientY
     if (ev.button == 0) {
-
-        points.push({ x, y })
+        const [xNet, yNet] = toNetworkCoords(x, y)
+        xs.push(xNet)
+        ys.push(yNet)
     }
     else if (ev.button == 2) {
         for (let i = 0; i < points.length; i++) {
-            const p = points[i]
-            if (distanceSquared(p.x, p.y, x, y) < DELETE_RADIUS * DELETE_RADIUS) {
-                points.splice(i, 1)
+            const px = xs[i]
+            const py = ys[i]
+            if (distanceSquared(px, py, x, y) < DELETE_RADIUS * DELETE_RADIUS) {
+                xs.splice(i, 1)
+                ys.splice(i, 1)
                 break
             }
         }
@@ -318,7 +326,7 @@ function randomPoints(n) {
     const y = []
     for (let i = 0; i < n; i++) {
         const v = Math.random()
-        const fv = Math.sin(v * 10)  * 0.8 + Math.random() * 0.1 - v*v * 0.2
+        const fv = Math.sin(v * 10)  * 0.3 + Math.random() * 0.1 - v*v * 0.2 + 0.3
         x.push(v)  
         y.push(fv)
     }
@@ -328,28 +336,32 @@ function randomPoints(n) {
 const margin = 50;
 
 function drawPoints(xs, ys) {
+    
     for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
-        drawPoint(xs[i] * (canvas.width - 2 * margin) + margin, ys[i] * (canvas.height - 2 * margin) + margin, 10, "#876f35")
+        drawPoint(xs[i] * (canvas.width - 2 * margin) + margin, ys[i] * (canvas.height - 2 * margin) + margin, 10, "white")
     }
 }
 
-function plotNetwork(net, samplePoints = 100) {
+function plotNetwork(net, samplePoints = 200) {
     let lastX = 0
     let lastY = net.feedforward([0])[0].data
+    ctx.strokeStyle = "#a5b0d9"
+        ctx.lineWidth = 5
+        ctx.beginPath()
     for (let i = 1; i < samplePoints; i++) {
         const x = i / samplePoints;
         const y = net.feedforward([x])[0].data
         ctx.strokeWidth = 10
         const [x1, y1] = toPixelCoords(x,y)
         const [x2, y2] = toPixelCoords(lastX, lastY)
-        ctx.strokeStyle = "black"
-        ctx.beginPath()
+        
         ctx.moveTo(x1, y1)
         ctx.lineTo(x2, y2)
-        ctx.stroke()
+        
         lastX = x
         lastY = y
     }
+    ctx.stroke()
 
 }
 
@@ -359,25 +371,26 @@ function toPixelCoords(x, y) {
     y = y * (canvas.height - 2 * margin) + margin; 
     return [x,y]
 }
+function toNetworkCoords(x, y) {
+    x = (x - margin) / (canvas.width - 2 * margin)
+    y = (y - margin) / (canvas.height - 2 * margin)
+    return [x, y]
+
+}
 
 const na = new NeuralNetwork(1, [10, 4,1])
 y = na.feedforward([1])
 console.log("y=", y)
 
-drawPoints(xs, ys)
-plotNetwork(na)
-
+// drawPoints(xs, ys)
+// plotNetwork(na)
+let training = false
 document.onkeydown = (ev) => {
-    if(ev.key == 'q' ) {
-        ctx.clearRect(0,0,canvas.width, canvas.height)
-        train(na, xs, ys, 0.2)
-        // train(na, xs, ys, 0.04)
-        // train(na, xs, ys, 0.04)
-
-        plotNetwork(na)
-        drawPoints(xs, ys)
+    if(ev.key == ' ' ) {
+        training = !training
     }
     if(ev.key == 'p') {
         console.log(na.parameters())
     }
 }
+train(na, xs, ys, 0.1)
