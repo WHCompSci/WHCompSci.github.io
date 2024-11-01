@@ -13,6 +13,7 @@ window.onresize = () => {
 const ctx = canvas.getContext("2d")
 
 function draw() {
+
     ctx.fillStyle = "#202020"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = "white"
@@ -21,13 +22,14 @@ function draw() {
     }
     // xs.forEach((x, i) => drawPoint(x, ys[i], 2, "#ab88ddff"))
     if(training) {
-        train(na, xs, ys, 0.1)
-        train(na, xs, ys, 0.1)
-        train(na, xs, ys, 0.1)
-
+        const loss = train(na, xs, ys, 0.03)
+        ctx.font = "20px consolas";
+        ctx.fillText("Loss = "+loss.toFixed(10), 10, 50);
+      
     }
         plotNetwork(na)
         drawPoints(xs, ys)
+
     drawPoints(xs, ys)
     plotNetwork(na)
     requestAnimationFrame(draw)
@@ -300,11 +302,12 @@ function backprop(loss) {
 function train(net, xs, ys, learningrate) {
     let loss = new Value(0)
     for (let i = 0; i < ys.length; i++) {
+        // if (Math.random() < 0.5) continue;
         const ypred = net.feedforward([xs[i]])[0]
-        console.log("ypred=", ypred)
+        // console.log("ypred=", ypred)
         const yact = ys[i]
         const error = ypred.sub(yact)
-        console.log("err=", error)
+        // console.log("err=", error)
 
         loss = loss.add(error.mult(error))
     }
@@ -312,14 +315,14 @@ function train(net, xs, ys, learningrate) {
     console.log()
     net.zero_grad()
     backprop(loss)
-    console.log("Loss=", loss)
+    // console.log("Loss=", loss)
 
     for (const p of net.parameters()) {
         p.data -= learningrate * p.grad
-        console.log("changing by", p.grad)
+        // console.log("changing by", p.grad)
     }
-    console.log("net=", net)
-
+    // console.log("net=", net)
+    return loss.data
 }
 
 console.log(xs, ys)
