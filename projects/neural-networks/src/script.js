@@ -258,8 +258,12 @@ class Layer extends Module {
 }
 
 class NeuralNetwork extends Module {
-    constructor(nin, layerwidths) {
+    constructor(nin, layerwidths, usesins) {
         super()
+        this.usesins = usesins
+        if(this.usesins) {
+            nin *= 2
+        }
         this.layers = [new Layer(nin, layerwidths[0])] // add first layer
         for (let i = 1; i < layerwidths.length; i++) {
             this.layers.push(new Layer(layerwidths[i - 1], layerwidths[i]))
@@ -269,6 +273,9 @@ class NeuralNetwork extends Module {
     }
 
     feedforward(inputs) {
+        if(this.usesins) {
+            inputs = [...inputs, ...inputs.map(Math.sin)]
+        }
         for (let i = 0; i < this.layers.length; i++) {
             inputs = this.layers[i].feedforward(inputs)
         }
@@ -399,12 +406,6 @@ function toNetworkCoords(x, y) {
 
 }
 
-const na = new NeuralNetwork(1, [10, 10 , 1])
-y = na.feedforward([1])
-console.log("y=", y)
-
-// drawPoints(xs, ys)
-// plotNetwork(na)
 let training = false
 document.onkeydown = (ev) => {
     if (ev.key == ' ') {
@@ -420,4 +421,5 @@ document.onkeydown = (ev) => {
         LR -= 0.001
     }
 }
+const na = new NeuralNetwork(1, [10, 10 , 1], true)
 train(na, xs, ys, 0.1 , 20)
