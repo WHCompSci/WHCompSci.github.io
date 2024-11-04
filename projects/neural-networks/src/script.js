@@ -4,7 +4,7 @@ const points = []
 const [xs, ys] = randomPoints(50)
 let foundMouse = false
 const gridSize = 25
-let LR = 0.03
+let LR = 0.07
 let pointHoverIndex = -1
 canvas.width = innerWidth, canvas.height = innerHeight
 window.onresize = () => {
@@ -342,7 +342,7 @@ function randomPoints(n) {
     const y = []
     for (let i = 0; i < n; i++) {
         const v = Math.random()
-        const fv = Math.sin(v * 10) * 0.3 - Math.cos(v * 20) * 0.06 + Math.random() * 0.05 - v * v * 0.2 + 0.3
+        const fv = Math.sin(v * 10) * 0.3 + Math.random() * 0.05 - v * v * 0.2 + 0.3
         x.push(v)
         y.push(fv)
     }
