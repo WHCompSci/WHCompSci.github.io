@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flappy Bird</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            background-color: #ffffff;
+        }
+canvas {
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+    </style>
+<!-- <link rel="stylesheet" href="src/style.css"> -->
+    
+</head>
+<body>
+    <img src="bird.png" hidden id="birdImg"> 
+    <div class="container">
+    <canvas  width="400" height="400" id="game"></canvas>
+
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

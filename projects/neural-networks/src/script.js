@@ -1,11 +1,11 @@
 const canvas = document.getElementById("canvas")
 const mousePos = { x: 0, y: 0 }
 const points = []
-const [xs, ys] = randomPoints(30)
-
+const [xs, ys] = randomPoints(50)
 let foundMouse = false
 const gridSize = 25
-const DELETE_RADIUS = 10;
+let LR = 0.07
+let pointHoverIndex = -1
 canvas.width = innerWidth, canvas.height = innerHeight
 window.onresize = () => {
     canvas.width = innerWidth, canvas.height = innerHeight
@@ -21,16 +21,17 @@ function draw() {
         drawGridGlow(mousePos)
     }
     // xs.forEach((x, i) => drawPoint(x, ys[i], 2, "#ab88ddff"))
-    if(training) {
-        const loss = train(na, xs, ys, 0.03)
-        ctx.font = "20px consolas";
-        ctx.fillText("Loss = "+loss.toFixed(10), 10, 50);
-      
-    }
-        plotNetwork(na)
-        drawPoints(xs, ys)
+    let loss = 0 
+    if (training) {
+        loss = train(na, xs, ys, LR) 
 
-    drawPoints(xs, ys)
+
+    }
+    ctx.font = "20px consolas"
+    ctx.fillText("Loss = " + loss.toFixed(10) + "   Press [ Space ] to pause or unpause training.  Left click to add points, right click to remove points.", 10, 50) 
+    plotNetwork(na)
+    drawPoints(xs, ys, na, pointHoverIndex)
+
     plotNetwork(na)
     requestAnimationFrame(draw)
 }
@@ -41,6 +42,16 @@ addEventListener("mousemove", (ev) => {
     mousePos.x = ev.clientX
     mousePos.y = ev.clientY
     foundMouse = true
+    for(let i = 0; i < xs.length; i++) {
+        const [x, y] = toPixelCoords(xs[i], ys[i])
+        
+        // console.log((x - mousePos.x) * (x - mousePos.x) + (y - mousePos.y) * (y - mousePos.y))
+        if ((x - mousePos.x) * (x - mousePos.x) + (y - mousePos.y)*(y - mousePos.y) < 64) {
+            pointHoverIndex = i
+            return
+        }
+    }
+    pointHoverIndex = -1
 })
 
 function drawGridGlow(mousePos) {
@@ -48,7 +59,7 @@ function drawGridGlow(mousePos) {
     const { x: mx, y: my } = mousePos
 
     const radius = 60
-    const falloff = 10
+    const falloff = 15
     const maxAlpha = .8
     const distBetweenSamples = 5 // resolution
 
@@ -61,7 +72,7 @@ function drawGridGlow(mousePos) {
 
     // drawing vertical lines
 
-    let Xvalue = Math.ceil((mx - radius) / gridSize) * gridSize;
+    let Xvalue = Math.ceil((mx - radius) / gridSize) * gridSize
     while (Xvalue < mx + radius) {
         const Xoffset = mx - Xvalue
         const sqrt = Math.sqrt(radius * radius - (Xoffset * Xoffset))
@@ -116,15 +127,11 @@ addEventListener("mousedown", (ev) => {
         ys.push(yNet)
     }
     else if (ev.button == 2) {
-        for (let i = 0; i < points.length; i++) {
-            const px = xs[i]
-            const py = ys[i]
-            if (distanceSquared(px, py, x, y) < DELETE_RADIUS * DELETE_RADIUS) {
-                xs.splice(i, 1)
-                ys.splice(i, 1)
-                break
-            }
-        }
+       if(pointHoverIndex < 0) return
+       xs.splice(pointHoverIndex, 1)
+        ys.splice(pointHoverIndex, 1)
+        pointHoverIndex = -1
+
     }
 
 })
@@ -180,7 +187,7 @@ class Value {
     tanh() {
         const out = new Value(Math.tanh(this.data), [this])
         out.backward = () => {
-            this.grad += (1 - out.data*out.data) * out.grad
+            this.grad += (1 - out.data * out.data) * out.grad
         }
         return out
 
@@ -209,9 +216,9 @@ class Neuron extends Module {
     }
     // feedforward inside of the neuron
     feedforward(inputs) {
-        let sum = new Value(0)
+        let sum = new Value(0) 
         for (let i = 0; i < this.weights.length; i++) {
-            sum = sum.add(this.weights[i].mult(inputs[i]))
+            sum = sum.add(this.weights[i].mult(inputs[i])) 
         }
         sum = sum.add(this.bias)
         const activation = this.nonlin ? sum.tanh() : sum
@@ -251,17 +258,24 @@ class Layer extends Module {
 }
 
 class NeuralNetwork extends Module {
-    constructor(nin, layerwidths) {
+    constructor(nin, layerwidths, usesins) {
         super()
+        this.usesins = usesins
+        if(this.usesins) {
+            nin *= 2
+        }
         this.layers = [new Layer(nin, layerwidths[0])] // add first layer
         for (let i = 1; i < layerwidths.length; i++) {
             this.layers.push(new Layer(layerwidths[i - 1], layerwidths[i]))
         }
-        this.layers[this.layers.length - 1].nonlin = false;
+        this.layers[this.layers.length - 1].nonlin = false
         console.log("Created a new NN with layers: ", this.layers)
     }
 
     feedforward(inputs) {
+        if(this.usesins) {
+            inputs = [...inputs, ...inputs.map(Math.sin)]
+        }
         for (let i = 0; i < this.layers.length; i++) {
             inputs = this.layers[i].feedforward(inputs)
         }
@@ -300,8 +314,11 @@ function backprop(loss) {
 }
 
 function train(net, xs, ys, learningrate) {
+    console.assert(xs.length == ys.length)
+    const numinputs = xs.length
     let loss = new Value(0)
-    for (let i = 0; i < ys.length; i++) {
+
+    for (let i = 0; i < numinputs; i++) {
         // if (Math.random() < 0.5) continue;
         const ypred = net.feedforward([xs[i]])[0]
         // console.log("ypred=", ypred)
@@ -311,7 +328,7 @@ function train(net, xs, ys, learningrate) {
 
         loss = loss.add(error.mult(error))
     }
-    loss = loss.mult(1 / ys.length)
+    loss = loss.mult(1 / numinputs)
     console.log()
     net.zero_grad()
     backprop(loss)
@@ -332,38 +349,44 @@ function randomPoints(n) {
     const y = []
     for (let i = 0; i < n; i++) {
         const v = Math.random()
-        const fv = Math.sin(v * 10)  * 0.3 + Math.random() * 0.1 - v*v * 0.2 + 0.3
-        x.push(v)  
+        const fv = Math.sin(v * 10) * 0.3 + Math.random() * 0.05 - v * v * 0.2 + 0.3
+        x.push(v)
         y.push(fv)
     }
     return [x, y]
 }
 
-const margin = 50;
+const margin = 100
 
-function drawPoints(xs, ys) {
-    
+function drawPoints(xs, ys, net, pointHoverIndex) {
+
     for (let i = 0; i < Math.min(xs.length, ys.length); i++) {
-        drawPoint(xs[i] * (canvas.width - 2 * margin) + margin, ys[i] * (canvas.height - 2 * margin) + margin, 10, "white")
-    }
+        const color = pointHoverIndex == i ? "#ffe5e5" : "white"
+        const [x1, y1] = toPixelCoords(xs[i], ys[i])
+        const [x2, y2] = toPixelCoords(xs[i], net.feedforward([xs[i]])[0].data)
+        
+        ctx.lineWidth = 3
+        drawLine(x1, y1, x2, y2, "#60729f5c")
+        drawPoint(x1, y1, 8, color) 
+    } 
 }
 
 function plotNetwork(net, samplePoints = 200) {
     let lastX = 0
     let lastY = net.feedforward([0])[0].data
-    ctx.strokeStyle = "#a5b0d9"
-        ctx.lineWidth = 5
-        ctx.beginPath()
+    ctx.strokeStyle = "#60729f"
+    ctx.lineWidth = 5
+    ctx.beginPath()
     for (let i = 1; i < samplePoints; i++) {
-        const x = i / samplePoints;
+        const x = i / samplePoints
         const y = net.feedforward([x])[0].data
         ctx.strokeWidth = 10
-        const [x1, y1] = toPixelCoords(x,y)
+        const [x1, y1] = toPixelCoords(x, y)
         const [x2, y2] = toPixelCoords(lastX, lastY)
-        
+
         ctx.moveTo(x1, y1)
         ctx.lineTo(x2, y2)
-        
+
         lastX = x
         lastY = y
     }
@@ -372,10 +395,9 @@ function plotNetwork(net, samplePoints = 200) {
 }
 
 function toPixelCoords(x, y) {
-    const margin = 10;
-    x = x * (canvas.width - 2 * margin) + margin; 
-    y = y * (canvas.height - 2 * margin) + margin; 
-    return [x,y]
+    x = x * (canvas.width - 2 * margin) + margin
+    y = y * (canvas.height - 2 * margin) + margin
+    return [x, y]
 }
 function toNetworkCoords(x, y) {
     x = (x - margin) / (canvas.width - 2 * margin)
@@ -384,19 +406,20 @@ function toNetworkCoords(x, y) {
 
 }
 
-const na = new NeuralNetwork(1, [10, 4,1])
-y = na.feedforward([1])
-console.log("y=", y)
-
-// drawPoints(xs, ys)
-// plotNetwork(na)
 let training = false
 document.onkeydown = (ev) => {
-    if(ev.key == ' ' ) {
+    if (ev.key == ' ') {
         training = !training
     }
-    if(ev.key == 'p') {
+    if (ev.key == 'p') {
         console.log(na.parameters())
     }
+    if(ev.key == "e") {
+        LR += 0.001
+    }
+    if(ev.key == "q") {
+        LR -= 0.001
+    }
 }
-train(na, xs, ys, 0.1)
+const na = new NeuralNetwork(1, [10, 10 , 1], true)
+train(na, xs, ys, 0.1 , 20)
