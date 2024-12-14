@@ -8,192 +8,134 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
         <style>
             :root {
-                --bg-color: #ffffff;
-                --primary-color: #4f4f4f;
-                --secondary-color: #41669a;
+                --bg-color: hsl(0, 0%, 95%);
+                --txt-color:hsl(0, 0%, 0%);
+                --bg-color-hover: hsl(0, 0%, 90%);
+                --primary-color: hsl(0, 0%, 80%);
+                --secondary-color: hsl(225, 76.3%, 48%);
+                /* --bg-color: #262626;
+                --txt-color:white;
+                --bg-color-hover: #404040;
+                --primary-color: hsl(0, 0%, 9%);
+                --secondary-color: #6096e0; */
+
             }
             body {
                 font-family: Inter, sans-serif;
                 margin: 0;
-                max-width: 600px;
+                max-width: 800px;
                 margin-left: auto;
                 margin-right: auto;
                 padding: 1rem;
                 background-color: var(--bg-color);
-
-                font-size: 1.5em;
+                color: var(--txt-color);
+                font-size: 1rem;
             }
 
-            h1 {
-                font-family: Roboto, sans-serif;
-                font-size: 2em;
-                color: black
-            }
-
-            img {
-                display: block;
-                margin-right: auto;
-                margin-left: auto;
-            }
 
             p {
                 padding: 1rem 0;
                 line-height: 3rem;
+                color: var(--txt-color);
+                opacity: 0.7;
             }
 
             .card {
                 padding: 1rem;
+                display: flex;
+
                 border-radius: 0.5rem;
-                border: 1px solid var(--primary-color);
-    
+                /* border: 1px solid var(--primary-color); */
+                /* box-shadow: #4f4f4f 10px; */
                 text-decoration: none;
+                transition: all 0.1s ease;
+                
+      
                 
             }
 
-            .card-heading:hover {
-                text-decoration: underline;
-                /* font-size: 1.1rem; */
+            .card:hover {
+                background-color: var(--bg-color-hover);
+                transform: scale(1.05, 1.05);
             }
+            .authors-subheading {
+                color: var(--secondary-color);
+                font-size: 14px;
+                padding-top: 0.5rem;
+                padding-bottom: 0.25rem;
 
+                font-weight: 500;
+            }
             .card-content {
                 display: flex;
                 flex-direction: column;
-                gap:.2rem;
+                gap:.25rem;
+                width: 100%;
     
             }   
             .card-heading {
-                font-size: 1.1rem;
+                font-size: 16px;
                 margin: 0;
-                color: var(--secondary-color);
+                color: var(--txt-color);
                 text-decoration: none;
                 font-weight: 500;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--primary-color);
+
+                
+                width: 100%;
+                display: block;
             }
             .card-image {
                 width: 100%;
                 display: block;
             }
             .heading {
-                font-size: 1.5rem;
+                font-size: 24px;
                 font-weight: 600;
             }
-            .card-list {
-                text-align: center;
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
+            #card-list {
+   
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                grid-auto-rows: minmax(100px, auto);
 
             }
             p {
-                font-size: 1rem;
+                font-size: 14px;
                 line-height: 1.2;
             }
             .author {
-                /* padding-left: 2rem; */
-                color: var(--primary-color);
-                font-size: 0.8rem;
+                 /* padding-left: 0.5rem;  */
+                color: var(--txt-color);
+                opacity: 0.75;
+                font-size: 12px;
             }
-        </style>
+
+            @media (width <= 750px) {
+                #card-list {
+                    grid-template-columns: repeat(2, 1fr);;
+                }
+            }
+            @media (width <= 450px) {
+                #card-list {
+                    grid-template-columns: 1fr;
+                }
+            }
+       
+       </style>
+       <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <body>
-        <!-- NEW CARD DESIGN -->
+   
         <h1 class="heading">Advanced Topics Projects</h1>
         <p>
             This website showcases some of the projects that Warren Hills students have completed in the Honors Advanced Topics class.
         </p>
-        <div class="card-list">
-         
-        
-                <a class="card" href="projects/wrestling/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Wrestling Weight Calculator</h3>
-                        <span class="author">Johnathan Carvalho</span>
-                        <span class="author">Tanner Kalisher</span>
-
-                        
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/text-formatter/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Text Formatter</h3>
-                        <span class="author">Cecilia Orenstein</span>
-                        <span class="author">Tanner Kalisher</span>
-
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/schooldle/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Schooldle</h3>
-                        <span class="author">Nick Staada</span>
-                        <span class="author">Tanner Kalisher</span>
-
-
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/penguin-game/">
-                    <div class="card-content">
-                        <h3 class="card-heading">Penguin Game</h3>
-                        <span class="author">Nick Staada</span>
-
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/othello/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Othello</h3>
-                        <span class="author">Alex Sanchez</span>
-                        <span class="author">Nick Staada</span>
-
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/othello-ai/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Othello AI</h3>
-                        <span class="author">Alex Sanchez</span>
-                        <span class="author">Tanner Kalisher</span>
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/sokoban/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Sokoban</h3>
-                        <span class="author">Franco Giovannetti</span>
-                        <span class="author">Tanner Kalisher</span>
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/color-wars/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Color Wars</h3>
-                        <span class="author">Alex Sanchez</span>
-                        <span class="author">Tanner Kalisher</span>
-
-                    </div>
-                </a>
-        
-                <a class="card" href="projects/dla-simulation/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">DLA Simulation</h3>
-                        <span class="author">Tanner Kalisher</span>
-
-                    </div>
-                </a>
-
-                <a class="card" href="projects/flappy-bird/index.html">
-                    <div class="card-content">
-                        <h3 class="card-heading">Flappy Bird</h3>
-                        <span class="author">Sienna Kachala</span>
-                        <span class="author">Tanner Kalisher</span>
-
-                    </div>
-                </a>
-        
-          
-        </div>
-        
+        <!-- Project links are added programmatically in projects.js -->
+        <div id="card-list"></div>
+        <script src="projects.js"></script>
     </body>
 </html>
