@@ -4,6 +4,7 @@ const projects = [
     {
         name: "Neural Network",
         href: "/projects/neural-networks/index.html",
+        yearCreated: 2024, 
         authors: [
             "Charlie P",
             "Oleksandr P",
@@ -14,6 +15,7 @@ const projects = [
     {
         name: "Schooldle",
         href: "/projects/schooldle/index.html",
+        yearCreated: 2023, 
         authors: [
             "Nick S",
             "Tanner K"
@@ -22,6 +24,7 @@ const projects = [
     {
         name: "Othello",
         href: "/projects/othello/index.html",
+        yearCreated: 2024, 
         authors: [
             "Alex S",
             "Nick S"
@@ -30,6 +33,7 @@ const projects = [
     {
         name: "Othello AI",
         href: "/projects/othello-ai/index.html",
+        yearCreated: 2024, 
         authors: [
             "Alex S",
             "Tanner K"
@@ -38,6 +42,7 @@ const projects = [
     {
         name: "Sokoban",
         href: "/projects/sokoban/index.html",
+        yearCreated: 2024, 
         authors: [
             "Franco G",
             "Tanner K"
@@ -47,6 +52,7 @@ const projects = [
 
         name: "Flappy Bird",
         href: "/projects/flappy-bird/index.html",
+        yearCreated: 2024, 
         authors: [
             "Siena K",
             "Tanner K"
@@ -56,6 +62,7 @@ const projects = [
     {
         name: "Penguin Game",
         href: "/projects/penguin-game/index.html",
+        yearCreated: 2024, 
         authors: [
             "Nick S",
         ]
@@ -64,6 +71,7 @@ const projects = [
         
         name: "Color Wars",
         href: "/projects/color-wars/index.html",
+        yearCreated: 2024, 
         authors: [
             "Alex S",
             "Tanner K"
@@ -74,6 +82,7 @@ const projects = [
         
         name: "Brownian Trees",
         href: "/projects/dla-simulation/index.html",
+        yearCreated: 2024, 
         authors: [
             "Tanner K"
         ]
@@ -82,6 +91,7 @@ const projects = [
     {
         name: "Wrestling Calculator",
         href: "/projects/wrestling/index.html",
+        yearCreated: 2023, 
         authors: [
             "Johnathan C",
             "Tanner K"
@@ -90,6 +100,7 @@ const projects = [
     {
         name: "Text Formatter",
         href: "/projects/text-formatter/index.html",
+        yearCreated: 2023, 
         authors: [
             "Cecilia O",
             "Tanner K"
@@ -102,7 +113,10 @@ const container = document.querySelector("#card-list")
 const card = (project) => 
 `<a href="${project.href}" class="card" >
     <div class="card-content">
-        <h3 class="card-heading">${project.name}</h3>
+        <div class="card-heading">
+            <h3 class="card-name">${project.name}</h3>
+            <span class="year">${project.yearCreated}</span>
+        </div>
         ${project.authors ? "<div class=\"authors-subheading\">Creators</div>" : ""}
         ${project.authors.map(a => `<span class="author">${a}</span>`).join(" ")}
     </div>

@@ -74,18 +74,30 @@
     
             }   
             .card-heading {
+                width: 100%;
+                gap:0.5rem;
+                display:flex;
+                justify-content: space-between;
+                align-items: center;            
+                flex-direction: row;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            .card-name {
                 font-size: 16px;
                 margin: 0;
                 color: var(--txt-color);
                 text-decoration: none;
                 font-weight: 500;
-                padding-bottom: 0.5rem;
-                border-bottom: 2px solid var(--primary-color);
-
-                
-                width: 100%;
-                display: block;
             }
+            
+            .year {
+                font-size: 12px;
+                color: var(--txt-color);
+                font-style: italic;
+                
+            }
+            
             .card-image {
                 width: 100%;
                 display: block;
@@ -132,7 +144,7 @@
    
         <h1 class="heading">Advanced Topics Projects</h1>
         <p>
-            This website showcases some of the projects that Warren Hills students have completed in the Honors Advanced Topics class.
+            This website contains some of the web-based projects that Warren Hills Computer Science students have worked on in class. 
         </p>
         <!-- Project links are added programmatically in projects.js -->
         <div id="card-list"></div>
