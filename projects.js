@@ -1,17 +1,7 @@
 // add new projects to the projects array. 
 // use firstname last initial
 const projects = [
-    {
-        name: "Neural Network",
-        href: "/projects/neural-networks/index.html",
-        yearCreated: 2024, 
-        authors: [
-            "Charlie P",
-            "Oleksandr P",
-            "Tanner K"
-        ]
-    },
-
+    
     {
         name: "Schooldle",
         href: "/projects/schooldle/index.html",
@@ -22,20 +12,21 @@ const projects = [
         ]
     },
     {
-        name: "Othello",
-        href: "/projects/othello/index.html",
-        yearCreated: 2024, 
-        authors: [
-            "Alex S",
-            "Nick S"
-        ]
-    },
-    {
         name: "Othello AI",
         href: "/projects/othello-ai/index.html",
         yearCreated: 2024, 
         authors: [
             "Alex S",
+            "Tanner K"
+        ]
+    },
+    {
+        name: "Neural Network",
+        href: "/projects/neural-networks/index.html",
+        yearCreated: 2024, 
+        authors: [
+            "Charlie P",
+            "Oleksandr P",
             "Tanner K"
         ]
     },
@@ -95,6 +86,15 @@ const projects = [
         authors: [
             "Johnathan C",
             "Tanner K"
+        ]
+    },
+    {
+        name: "Othello",
+        href: "/projects/othello/index.html",
+        yearCreated: 2024, 
+        authors: [
+            "Alex S",
+            "Nick S"
         ]
     },
     {

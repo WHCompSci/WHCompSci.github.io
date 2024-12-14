@@ -4,7 +4,7 @@ const points = []
 const [xs, ys] = randomPoints(50)
 let foundMouse = false
 const gridSize = 25
-let LR = 0.07
+let LR = 0.03
 let pointHoverIndex = -1
 canvas.width = innerWidth, canvas.height = innerHeight
 window.onresize = () => {
@@ -367,7 +367,7 @@ function drawPoints(xs, ys, net, pointHoverIndex) {
         
         ctx.lineWidth = 3
         drawLine(x1, y1, x2, y2, "#60729f5c")
-        drawPoint(x1, y1, 8, color) 
+        drawPoint(x1, y1, 4, color) 
     } 
 }
 
