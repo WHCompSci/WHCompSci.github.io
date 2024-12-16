@@ -221,7 +221,8 @@ document.onkeypress = (e) => {
   if (keyPressed) return;
   //console.log(e.key);
   if (e.key == " ") {
-    bird.vy = -0.35;
+    canvas.click()
+    bird.vy = -0.35
     keyPressed = true;
   }
 };
@@ -229,3 +230,8 @@ document.onkeypress = (e) => {
 document.addEventListener("keyup", () => {
   keyPressed = false;
 });
+
+
+canvas.addEventListener("mousedown", () => {
+  bird.vy = -0.35
+})
