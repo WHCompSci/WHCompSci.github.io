@@ -11,7 +11,7 @@ canvas.height = 400;
 canvas.width = 400;
 const H = canvas.height;
 const W = canvas.width;
-const gap = 60;
+const gap = 65;
 const thickness = 50;
 const ground = 25;
 let pipes;
@@ -173,8 +173,8 @@ function endGame()
   ctx.lineWidth = 10
   ctx.fillRect(0, 0, W, H);
   ctx.strokeRect(0, 0, W, H);
-
-  document.addEventListener("click", drawTitlePage, {once: true})
+  setTimeout(() => document.addEventListener("click", drawTitlePage, { once: true }), 400)
+  
   ctx.fillStyle = "red";
   ctx.font = "30px Silkscreen"
   drawCenteredText("Game Over!", 150)
