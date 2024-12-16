@@ -1,9 +1,9 @@
 const canvas = document.getElementById("game");
 const birdImg = new Image()
 birdImg.src = "bird.png"
+const font = new FontFace("Silkscreen", "url(https://fonts.gstatic.com/s/silkscreen/v4/m8JXjfVPf62XiF7kO-i9YLNlaw.woff2)")
 birdImg.onload = () => {
-
-    drawTitlePage()
+  font.load().then( () => drawTitlePage())
 }
 
 const ctx = canvas.getContext("2d");
@@ -20,20 +20,23 @@ let bird;
 let score;
 let starttime;
 
-const DEFAULT_BIRD_RADIUS = 20
+const DEFAULT_BIRD_RADIUS = 16
 let wasInGapLastUpdate 
+let prevTime
 function init(ev) {
+  
 
   document.removeEventListener("click", init)
   document.removeEventListener("keypress", init)
   starttime = new Date()
+  prevTime = starttime - 10
   pipes = [];
-  pipesVx = -2;
+  pipesVx = -0.1;
  bird = {
   x: H / 2,
   y: W / 2,
   vx: 0,
-  vy: -4.5,
+  vy: -0.35,
   r: DEFAULT_BIRD_RADIUS
 };
   score = 0;
@@ -44,15 +47,19 @@ addRandomPipe();
 }
 
 function update() {
-  const t = Date.now() - starttime 
+  const t = Date.now()
+  const dt = (t - prevTime)
+  console.log(dt)
+  prevTime = t
   ctx.fillStyle = "#38BDF8"
   ctx.fillRect(0, 0, W, H);
 
   
   //moving pipes
   for (const pipe of pipes) {
-    pipe.x -= Math.log(t/1000 + 4);
+    pipe.x += pipesVx * dt;
 
+  console.log(pipes[0].x)
     drawPipe(pipe.x, pipe.y, thickness, gap);
     
   }
@@ -74,7 +81,7 @@ function update() {
   //checking collision
   
   const {collisionType, pipeIndex} = isColliding()
-  if(collisionType =="front") {
+  if(collisionType == "front" && !wasInGapLastUpdate) {
     endGame()
     
     return;
@@ -95,13 +102,14 @@ function update() {
   wasInGapLastUpdate = isInGap
   //creating bird
   drawBird(bird.x, bird.y, bird.r);
-  bird.x += bird.vx;
-  bird.y += bird.vy;
-  bird.vy += 0.25;
+  bird.x += bird.vx * dt ;
+  bird.y += bird.vy * dt;
+  bird.vy += 0.0009 * dt;
   //adding a ground
   if (bird.y > H - ground - bird.r) {
     endGame()
     return;
+
   }
   if (bird.y < bird.r) {
     bird.y = bird.r;
@@ -111,6 +119,7 @@ function update() {
 }
 //function to draw a bird using x, y, and radius
 function drawBird(x, y, r) {
+  r *= 1.1 // make bird appear bigger than hitbox
 //   ctx.fillStyle = "#FBBF24";
 //   ctx.beginPath();
 //   ctx.arc(x, y, r, 0, 2 * Math.PI);
@@ -160,7 +169,11 @@ function isColliding() {
 function endGame()
 {
   ctx.fillStyle = "white"
+  ctx.strokeStyle = 'red'
+  ctx.lineWidth = 10
   ctx.fillRect(0, 0, W, H);
+  ctx.strokeRect(0, 0, W, H);
+
   document.addEventListener("click", drawTitlePage, {once: true})
   ctx.fillStyle = "red";
   ctx.font = "30px Silkscreen"
@@ -168,6 +181,10 @@ function endGame()
   ctx.fillStyle = "black";
   ctx.font = "20px Silkscreen"
   drawCenteredText("Click Anywhere To Restart", 200)
+  drawCenteredText("Score",250) 
+  ctx.font = "64px Silkscreen"
+  drawCenteredText(score, 310)
+
   
   
 }
@@ -204,7 +221,7 @@ document.onkeypress = (e) => {
   if (keyPressed) return;
   //console.log(e.key);
   if (e.key == " ") {
-    bird.vy = -4.5;
+    bird.vy = -0.35;
     keyPressed = true;
   }
 };
