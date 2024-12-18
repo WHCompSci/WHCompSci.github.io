@@ -12,6 +12,15 @@ const projects = [
         ]
     },
     {
+        name: "PTYPE",
+        href: "https://ptype-omega.vercel.app/",
+        yearCreated: 2024,
+        authors: [
+            "Ryan D",
+            "Sean B"
+        ]
+    },
+    {
         name: "Othello AI",
         href: "/projects/othello-ai/index.html",
         yearCreated: 2024, 
@@ -106,6 +115,7 @@ const projects = [
             "Tanner K"
         ]
     },
+    
 
 ]
 
