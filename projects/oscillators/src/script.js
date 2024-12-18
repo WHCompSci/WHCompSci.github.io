@@ -338,6 +338,8 @@ function update() {
     selected_osc_idx = closest != null && dist < 3000 ? closest : null;
     // Clear the canvas
     ctx.fillStyle = "#e4d5b7";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     //draw paths
     // drawPath(levels[curr_lvl].path, "#A6221D");
