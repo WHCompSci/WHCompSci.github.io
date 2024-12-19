@@ -271,8 +271,6 @@ async function handleClick(event) {
         }
     }
     
-    
-    
     update_status(is_whites_turn, move_number);
     return;
 }

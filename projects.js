@@ -54,7 +54,7 @@ const projects = [
         href: "/projects/flappy-bird/index.html",
         yearCreated: 2024, 
         authors: [
-            "Siena K",
+            "Sienna K",
             "Tanner K"
         ]
 
