@@ -12,7 +12,7 @@ const projects = [
         ]
     },
     {
-        name: "PTYPE",
+        name: "ptype",
         href: "https://ptype-omega.vercel.app/",
         yearCreated: 2024,
         authors: [
