@@ -1,5 +1,6 @@
 const canvas = document.getElementById("game")
 const birdImg = new Image()
+
 birdImg.src = "bird.png"
 const font = new FontFace(
     "Silkscreen",
@@ -10,20 +11,20 @@ birdImg.onload = () => {
 }
 
 const ctx = canvas.getContext("2d")
-canvas.height = 400
-canvas.width = 400
+canvas.width = canvas.height = Math.min(window.innerHeight - 40, window.innerWidth) // 40px == 20px top-padding + 20px bottom-padding
 const H = canvas.height
 const W = canvas.width
-const gap = 65
-const thickness = 50
-const ground = 25
+let scale = H / 400;
+const gap = 65 * scale
+const thickness = 50 * scale
+const ground = 25 * scale
 let pipes
 let pipesVx
 let bird
 let score
 let starttime
 
-const DEFAULT_BIRD_RADIUS = 16
+const DEFAULT_BIRD_RADIUS = 16 * scale
 let wasInGapLastUpdate
 let prevTime
 function init(ev) {
@@ -32,14 +33,15 @@ function init(ev) {
     starttime = new Date()
     prevTime = starttime - 10
     pipes = []
-    pipesVx = -0.1
+    pipesVx = -0.1 * scale
     bird = {
         x: H / 2,
         y: W / 2,
         vx: 0,
-        vy: -0.35,
+        vy: -0.35 * scale,
         r: DEFAULT_BIRD_RADIUS,
     }
+    
     score = 0
     wasInGapLastUpdate = false
     addRandomPipe()
@@ -50,9 +52,11 @@ function init(ev) {
 function update() {
     const t = Date.now()
     const dt = t - prevTime
-    console.log(dt)
+ 
     prevTime = t
     ctx.fillStyle = "#38BDF8"
+    ctx.clearRect(0, 0, W, H);
+    pipesVx += -0.00005 * scale
     ctx.fillRect(0, 0, W, H)
 
     //moving pipes
@@ -103,7 +107,7 @@ function update() {
     drawBird(bird.x, bird.y, bird.r)
     bird.x += bird.vx * dt
     bird.y += bird.vy * dt
-    bird.vy += 0.0009 * dt
+    bird.vy += 0.0009 * scale * dt
     //adding a ground
     if (bird.y > H - ground - bird.r) {
         endGame()
@@ -140,8 +144,8 @@ function drawPipe(x, y, thickness, gap) {
 //adding a new pipe with random gap placement and distance
 function addRandomPipe() {
     const lastPipeX = pipes.length > 0 ? pipes[pipes.length - 1].x : W / 2
-    const minDist = 250
-    const maxDist = 450
+    const minDist = 250 * scale
+    const maxDist = 450 * scale
     const minY = gap
     const maxY = H - (ground + gap)
 
@@ -189,14 +193,14 @@ function endGame() {
     )
 
     ctx.fillStyle = "red"
-    ctx.font = "30px Silkscreen"
-    drawCenteredText("Game Over!", 150)
+    ctx.font = `${30 * scale}px Silkscreen`
+    drawCenteredText("Game Over!", 150 * scale)
     ctx.fillStyle = "black"
-    ctx.font = "20px Silkscreen"
-    drawCenteredText("Click Anywhere To Restart", 200)
-    drawCenteredText("Score", 250)
-    ctx.font = "64px Silkscreen"
-    drawCenteredText(score, 310)
+    ctx.font = `${20 * scale}px Silkscreen`
+    drawCenteredText("Click Anywhere To Restart", 200 * scale)
+    drawCenteredText("Score", 250 * scale)
+    ctx.font = `${64 * scale}px Silkscreen`
+    drawCenteredText(score, 310 * scale )
 }
 
 function drawCenteredText(txt, height) {
@@ -208,11 +212,11 @@ function drawTitlePage() {
     ctx.fillStyle = "#38BDF8"
     ctx.fillRect(0, 0, W, H)
     ctx.fillStyle = "white"
-    ctx.font = "35px Silkscreen"
+    ctx.font = `${35 * scale}px Silkscreen`
     drawCenteredText("Flappy Bird", H / 4)
     drawBird(W / 2, H / 2, DEFAULT_BIRD_RADIUS)
     ctx.fillStyle = "white"
-    ctx.font = "20px Silkscreen"
+    ctx.font = `${20 * scale}px Silkscreen`
     drawCenteredText("Click Anywhere to Start", (3 * H) / 4)
     ctx.fillStyle = "#1E40AF"
     ctx.fillRect(0, H - ground, W, ground)
@@ -228,7 +232,7 @@ document.onkeypress = (e) => {
     //console.log(e.key);
     if (e.key == " ") {
         canvas.click()
-        bird.vy = -0.35
+        bird.vy = -0.35 * scale
         keyPressed = true
     }
 }
@@ -238,5 +242,5 @@ document.addEventListener("keyup", () => {
 })
 
 canvas.addEventListener("mousedown", () => {
-    bird.vy = -0.35
+    bird.vy = -0.35 * scale
 })

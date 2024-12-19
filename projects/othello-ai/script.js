@@ -33,6 +33,8 @@ canvas.style.border = '0px solid #222222';
 function draw_board(b, draw_legal_moves = true) {
     //draw green background #009067
     ctx.fillStyle = '#222222';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = '#009067';
