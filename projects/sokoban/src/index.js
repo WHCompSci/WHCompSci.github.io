@@ -388,7 +388,9 @@ const drawTitleScreen = () => {
   ctx.save()
   ctx.translate(canvas.width * 0.15, canvas.height * 0.75)
   ctx.rotate(Math.PI / 6)
-  ctx.scale(5, 5)
+  const spriteScale = Math.sqrt(canvas.width) * 0.13
+
+  ctx.scale(spriteScale, spriteScale)
   ctx.fillStyle = 'steelblue'
   ctx.fillRect(-50, -50, 100, 100)
   ctx.strokeRect(-50, -50, 100, 100)
@@ -410,7 +412,7 @@ const drawTitleScreen = () => {
   ctx.save()
   ctx.translate(canvas.width * 0.85, canvas.height * 0.75)
   ctx.rotate(-Math.PI / 6)
-  ctx.scale(5, 5)
+  ctx.scale(spriteScale, spriteScale)
 
   ctx.strokeStyle = '#824b33'
   ctx.fillStyle = '#9c593d'
