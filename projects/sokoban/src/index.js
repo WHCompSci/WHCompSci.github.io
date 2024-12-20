@@ -95,11 +95,22 @@ function drawBoard () {
     '😤😤😤',
     '😈😈😈'
   ]
+  const bottomText = ["Controls:", "Movement - WASD or Arrow Keys", "Restart level - space"]
   ctx.fillText(
     currLevel < texts.length ? texts[currLevel] : '',
     canvas.width / 2,
     canvas.height * 0.1
   )
+  for (let i = 0; i < bottomText.length; i++) {
+    const line = bottomText[i]
+    const h = (0.8 + (i / bottomText.length) * 0.2)
+    ctx.fillText(
+      line,
+      canvas.width / 2,
+      canvas.height * h
+    )
+  }
+
   //upper corner put level number
   ctx.fillText(
     '[Level ' + (currLevel + 1) + '/' + (levels.length - 3) + ']',
