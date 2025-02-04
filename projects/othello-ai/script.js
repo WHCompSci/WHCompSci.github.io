@@ -33,6 +33,8 @@ canvas.style.border = '0px solid #222222';
 function draw_board(b, draw_legal_moves = true) {
     //draw green background #009067
     ctx.fillStyle = '#222222';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.fillStyle = '#009067';
@@ -244,6 +246,7 @@ async function handleClick(event) {
                 legal_moves = board.find_legal_moves(is_whites_turn)
                 board.play_move(data.ai_move[0], data.ai_move[1], is_whites_turn)
                 console.log("played move")
+                last_move = [data.ai_move[0], data.ai_move[1]]
                 draw_board(board, false);
                 update_status(is_whites_turn, move_number);
                 move_number++;
@@ -267,8 +270,6 @@ async function handleClick(event) {
 
         }
     }
-    
-    
     
     update_status(is_whites_turn, move_number);
     return;
@@ -314,11 +315,5 @@ new_game_button.addEventListener('click', () => {
     update_status(is_whites_turn, move_number);
 });
 
-undo_button.addEventListener('click', () => {
-    //TODO
-});
-redo_button.addEventListener('click', () => {
-    //TODO
-});
 
 

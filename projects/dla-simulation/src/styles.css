@@ -1,0 +1,111 @@
+/* Reset some default styles */
+body, ul, li {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+
+
+#menu-bar ul {
+    display: flex;
+    list-style: none;
+    justify-content: center;
+}
+
+#menu-bar ul li {
+    margin: 0 15px;
+}
+
+#menu-bar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+#menu-bar ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Style for the main content area */
+#main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 6rem); /* Adjust this based on your menu bar height */
+    background-color: #f4f4f4;
+}
+
+/* Style for the canvas */
+#simulation-canvas {
+    border: 2px solid #333;
+    background-color: #fff;
+}
+/* Style for the menu bar */
+#menu-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background-color: hsl(252, 13%, 15%);
+    color: white;
+}
+
+/* Style for the heading */
+#navbar-heading {
+    margin: 0;
+    font-size: 24px;
+    color: white;
+
+}
+
+/* Style for the list */
+#menu-bar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+/* Style for the list items */
+#menu-bar li {
+    margin-left: 20px;
+}
+
+/* Style for the links */
+#menu-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding:1rem 2rem;
+    border-radius: 20px;
+}
+
+/* Hover effect for the links */
+#menu-bar a:hover {
+    background-color:hsl(252, 13%, 12%);
+    text-decoration: none !important;
+}
+
+.range {
+  width: 200px;
+  height: 23px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #111;
+  outline: none;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 1);
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #b8d0b9;
+  cursor: pointer;
+  border: 4px solid #333;
+  box-shadow: -407px 0 0 400px #b8d0b9;
+}

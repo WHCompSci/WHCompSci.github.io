@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLA Simulation</title>
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+    <!-- Menu Bar -->
+    <div id="menu-bar">
+        <h1 id="navbar-heading">Diffusion Limited Aggregation</h1>
+        <ul>
+            <li><label for="stickiness-slider" id="stickiness-indicator">Stickiness=0.5</label></li>
+            <li><input type="range" class="range" id="stickiness-slider" min="0.01" max="1" step="0.01"></li>
+            <li><a id="save-button" href="#">Save Image</a></li>
+            <li><a id="save-video-button" href="#">Save Video</a></li>
+            <li><a id="restart-button" href="#">Restart</a></li>
+        </ul>
+    </div>
+
+
+    <!-- Main Content Area -->
+    <div id="main-content">
+        <canvas id="simulation-canvas" width="512" height="512"></canvas>
+    </div>
+    <script src="src/script.js"></script>
+</body>
+</html>

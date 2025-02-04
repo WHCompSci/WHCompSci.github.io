@@ -67,10 +67,6 @@ function saveCanvasAsImage() {
 
     // Get the data of the canvas
     const image = canvas.toDataURL('image/png')
-
-
-
-
     // Create a temporary link element and trigger the download
     const link = document.createElement('a')
     link.href = image

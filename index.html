@@ -1,131 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Warren Hills Computer Science Projects</title>
+        <title>WH High School CS Projects</title>
         <link rel="icon" href="/whlogo.png" type="image/png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
         <style>
+            :root {
+                --bg-color: hsl(0, 0%, 95%);
+                --txt-color:hsl(0, 0%, 0%);
+                --bg-color-hover: hsl(0, 0%, 90%);
+                --primary-color: hsl(0, 0%, 80%);
+                --secondary-color: hsl(225, 76.3%, 48%);
+                /* --bg-color: #262626;
+                --txt-color:white;
+                --bg-color-hover: #404040;
+                --primary-color: hsl(0, 0%, 9%);
+                --secondary-color: #6096e0; */
+
+            }
             body {
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
-                margin: 0% 20%;
-                padding: 1em 3em 0em 3em;
-                background-color: #272626;
-                text-align: center;
-                font-size: 1.5em;
-            }
-
-            h1 {
-                text-align: center;
-                font-size: 2em;
-                margin-bottom: 1em;
-                color: rgb(206, 206, 206);
-            }
-
-            img {
-                display: block;
-                margin-right: auto;
+                font-family: Inter, sans-serif;
+                margin: 0;
+                max-width: 800px;
                 margin-left: auto;
+                margin-right: auto;
+                padding: 1rem;
+                background-color: var(--bg-color);
+                color: var(--txt-color);
+                font-size: 1rem;
             }
-            .card-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 20px;
-                padding: 20px;
+
+
+            p {
+                padding: 1rem 0;
+                line-height: 3rem;
+                color: var(--txt-color);
+                opacity: 0.7;
             }
 
             .card {
-                font-size: 0.6em;
-                border-radius: 2px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-                background-color: #333;
-                color: rgb(206, 206, 206);
+                padding: 1rem;
+                display: flex;
+
+                border-radius: 0.5rem;
+                /* border: 1px solid var(--primary-color); */
+                /* box-shadow: #4f4f4f 10px; */
                 text-decoration: none;
-                transition: box-shadow 0.3s ease;
+                transition: all 0.1s ease;
+                
+      
+                
             }
 
             .card:hover {
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                background-color: var(--bg-color-hover);
+                transform: scale(1.05, 1.05);
+            }
+            .authors-subheading {
+                color: var(--secondary-color);
+                font-size: 0.75rem;
+                padding-top: 0.5rem;
+                padding-bottom: 0.25rem;
+
+                font-weight: 500;
+            }
+            .card-content {
+                display: flex;
+                flex-direction: column;
+                gap:.25rem;
+                width: 100%;
+    
+            }   
+            .card-heading {
+                width: 100%;
+                gap:0.5rem;
+                display:flex;
+                justify-content: space-between;
+                align-items: center;            
+                flex-direction: row;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid var(--primary-color);
+            }
+            .card-name {
+                font-size: 1rem;
+                margin: 0;
+                color: var(--txt-color);
+                text-decoration: none;
+                font-weight: 500;
+            }
+            
+            .year {
+                font-size: 0.75rem;
+                color: var(--txt-color);
+                font-style: italic;
+                
+            }
+            
+            .card-image {
+                width: 100%;
+                display: block;
+            }
+            .heading {
+                font-size: 1.5rem;
+                font-weight: 600;
+            }
+            #card-list {
+   
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.75rem;
+                grid-auto-rows: minmax(100px, auto);
+
+            }
+            p {
+                font-size: 0.75rem;
+                line-height: 1.2;
+            }
+            .author {
+                 /* padding-left: 0.5rem;  */
+                color: var(--txt-color);
+                opacity: 0.75;
+                font-size: 0.75rem;
             }
 
-            .card-content {
-                padding: 20px;
+            @media (width <= 750px) {
+                #card-list {
+                    grid-template-columns: repeat(2, 1fr);;
+                }
             }
-            .card-image {
-    width: 100%;
-    display: block;
-}
-        </style>
+            @media (width <= 450px) {
+                #card-list {
+                    grid-template-columns: 1fr;
+                }
+            }
+       
+       </style>
+       <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
     <body>
-        <!-- NEW CARD DESIGN -->
-        <h1>Warren Hills Computer Science Projects</h1>
-        <div class="card-grid">
-            <a class="card" href="projects/wrestling/index.html">
-                <div class="card-content">
-                    <h2>Wrestling Weight Calculator</h2>
-                    <!-- <img class="card-image" src="img/whlogo2.png"> -->
-                </div>
-            </a>
-            <a class="card" href="projects/text-formatter/index.html">
-                <div class="card-content">
-                    <h2>Text Formatter</h2>
-                    <!-- <img class="card-image" src="img/formatting_logo.PNG"> -->
-                </div>
-            </a>
-            <a class="card" href="projects/schooldle/index.html">
-                <div class="card-content">
-                    <h2>Schooldle</h2>
-                    <!-- <img class="card-image" src="img/sch_logo2.PNG"> these images look bad, I wonder how we can make it look better--> 
-                </div>
-            </a>
-            <a class="card" href="projects/penguin-game/">
-                <div class="card-content">
-                    <h2>Penguin Game</h2>
-                </div>
-            </a>
-            <!-- <a class="card" href="projects/yeargame/index.html">
-                <div class="card-content">
-                    <h2>Yeargame Solver</h2>
-                </div>  (commented out because I don't want the kids to cheat on the yeargame!)
-            </a> -->
-            <!-- <a class="card" href="projects/car-racing/index.html">
-                <div class="card-content">
-                    <h2>Accelerating Car Racing</h2> (commented out because it's incomplete)
-                </div>
-            </a> -->
-            <!-- <a class="card" href="projects/oscillators/index.html">
-                <div class="card-content">
-                    <h2>Oscillators</h2>  (commented out because it's incomplete)
-                </div>
-            </a> -->
-            <a class="card" href="projects/othello/index.html">
-                <div class="card-content">
-                    <h2>Othello</h2>
-                </div>
-            </a>
-            <a class="card" href="projects/othello-ai/index.html">
-                <div class="card-content">
-                    <h2>Othello AI</h2>
-                </div>
-            </a>
-            <a class="card" href="projects/sokoban/index.html">
-                <div class="card-content">
-                    <h2>Sokoban</h2>
-                </div>
-            </a>
-            <!-- <a class="card" href="projects/golfai/">
-                <div class="card-content">
-                    <h2>Mini Golf AI</h2> (commented out because it's incomplete)
-                </div>
-            </a> -->
-            <a class="card" href="projects/color-wars/index.html">
-                <div class="card-content">
-                    <h2>Color Wars</h2>
-                </div>
-            </a>
-        
-            <!-- Repeat for each project -->
-        </div>
-        
+   
+        <h1 class="heading">Advanced Topics Projects</h1>
+        <p>
+            This website contains some of the web-based projects that Warren Hills Computer Science students have worked on in class. 
+        </p>
+        <!-- Project links are added programmatically in projects.js -->
+        <div id="card-list"></div>
+        <script src="projects.js"></script>
     </body>
 </html>
