@@ -21,6 +21,14 @@ const projects = [
         ]
     },
     {
+        name: "Boxdozers",
+        href: "/projects/boxdozers/game.html",
+        yearCreated: 2025, 
+        authors: [
+            "Tanner K"
+        ]
+    },
+    {
         name: "Othello AI",
         href: "/projects/othello-ai/index.html",
         yearCreated: 2024, 
