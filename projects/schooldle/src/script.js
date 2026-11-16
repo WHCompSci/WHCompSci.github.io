@@ -328,6 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const lines = content.split("\n");
             lines.forEach((line) => {
                 line = line.trim();
+                if (line === "") return; // skip blank lines (e.g. trailing newline)
                 const collegeInfo = splitCSVLine(line);
                 if (collegeInfo) {
                     const collegeName = collegeInfo[0];
@@ -590,15 +591,13 @@ function buildDropDownMenu() {
         }
         const text = response[i].display;
         collegeDropDownReal.children[i].lastChild.innerText = text;
-        const collegeWebsite = collegeData.get(response[i].name)[7];
-        const url =
-            (/\.(png|svg|jpg|ico)$/i.test(collegeWebsite)
-                ? ""
-                : "https://logo.clearbit.com/") + collegeWebsite;
+
+        const collegeIconName = collegeData.get(response[i].name)[7];
+        const collegeIconPath = "img/college-icons/" + collegeIconName;
         try {
-            collegeDropDownReal.children[i].firstChild.src = url;
+            collegeDropDownReal.children[i].firstChild.src = collegeIconPath;
         } catch (error) {
-            collegeDropDownReal.children[i].firstChild.src = "whlogo.png";
+            collegeDropDownReal.children[i].firstChild.src = "img/marker-final.png";
         }
     }
     if (response.length == 0) {
